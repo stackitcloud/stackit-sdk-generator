@@ -1,0 +1,13 @@
+# IDE
+*.vscode/
+*.idea
+
+# Binaries
+bin/
+
+# Folders to support generation
+sdk/
+oas/
+
+# Generated files
+.go-mod-download.sentinel

@@ -1,0 +1,26 @@
+type {{classname}} struct {
+{{#parent}}
+{{^isMap}}
+{{^isArray}}
+	{{{parent}}}
+{{/isArray}}
+{{/isMap}}
+{{#isArray}}
+	Items {{{parent}}}
+{{/isArray}}
+{{/parent}}
+{{#vars}}
+{{^-first}}
+{{/-first}}
+{{#description}}
+	// {{{.}}}
+{{/description}}
+{{#deprecated}}
+	// Deprecated
+{{/deprecated}}
+{{#required}}
+    // REQUIRED
+{{/required}}
+	{{name}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
+{{/vars}}
+}
