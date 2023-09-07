@@ -1,4 +1,4 @@
-name: Update SDK repo
+name: Update SDK Repo Workflow
 
 on:
   push:
@@ -12,7 +12,7 @@ env:
 
 jobs:
   main:
-    name: Main
+    name: Update SDK Repo
     runs-on: ubuntu-latest
     steps:
       - name: Install SSH Key
