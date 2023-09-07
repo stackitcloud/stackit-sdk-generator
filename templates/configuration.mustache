@@ -1,0 +1,92 @@
+{{>partial_header}}
+package {{packageName}}
+
+import (
+	"{{gitHost}}/{{gitUserId}}/{{gitRepoId}}/core/config"
+)
+
+// NewConfiguration returns a new Configuration object
+func NewConfiguration() *config.Configuration {
+	cfg := &config.Configuration{
+		DefaultHeader:    make(map[string]string),
+		UserAgent:        "{{{httpUserAgent}}}{{^httpUserAgent}}OpenAPI-Generator/{{{packageVersion}}}/go{{/httpUserAgent}}",
+		Debug:            false,
+		{{#servers}}
+		{{#-first}}
+		Servers:          config.ServerConfigurations{
+		{{/-first}}
+			{
+				URL: "{{{url}}}",
+				Description: "{{{description}}}{{^description}}No description provided{{/description}}",
+				{{#variables}}
+				{{#-first}}
+				Variables: map[string]config.ServerVariable{
+				{{/-first}}
+					"{{{name}}}": {
+						Description: "{{{description}}}{{^description}}No description provided{{/description}}",
+						DefaultValue: "{{{defaultValue}}}",
+						{{#enumValues}}
+						{{#-first}}
+						EnumValues: []string{
+						{{/-first}}
+							"{{{.}}}",
+						{{#-last}}
+						},
+						{{/-last}}
+						{{/enumValues}}
+					},
+				{{#-last}}
+				},
+				{{/-last}}
+				{{/variables}}
+			},
+		{{#-last}}
+		},
+		{{/-last}}
+		{{/servers}}
+		{{#apiInfo}}
+		OperationServers: map[string]config.ServerConfigurations{
+		{{#apis}}
+		{{#operations}}
+		{{#operation}}
+		{{#servers}}
+		{{#-first}}
+			"{{{classname}}}Service.{{{nickname}}}": {
+		{{/-first}}
+				{
+					URL: "{{{url}}}",
+					Description: "{{{description}}}{{^description}}No description provided{{/description}}",
+					{{#variables}}
+					{{#-first}}
+					Variables: map[string]config.ServerVariable{
+					{{/-first}}
+						"{{{name}}}": config.ServerVariable{
+							Description: "{{{description}}}{{^description}}No description provided{{/description}}",
+							DefaultValue: "{{{defaultValue}}}",
+							{{#enumValues}}
+							{{#-first}}
+							EnumValues: []string{
+							{{/-first}}
+								"{{{.}}}",
+							{{#-last}}
+							},
+							{{/-last}}
+							{{/enumValues}}
+						},
+					{{#-last}}
+					},
+					{{/-last}}
+					{{/variables}}
+				},
+		{{#-last}}
+			},
+		{{/-last}}
+		{{/servers}}
+		{{/operation}}
+		{{/operations}}
+		{{/apis}}
+		},
+		{{/apiInfo}}
+	}
+	return cfg
+}
