@@ -10,11 +10,20 @@ GENERATOR_PATH="${ROOT_DIR}/scripts/bin"
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 PREPARE_SDK_PATH="${ROOT_DIR}/prepare-sdk"
 SDK_PATH="${ROOT_DIR}/sdk"
+SERVICES_BACKUP_PATH="${ROOT_DIR}/services"
 SDK_REPO="https://github.com/stackitcloud/stackit-sdk-go.git"
 SDK_GO_VERSION="1.18"
 
+mkdir_if_not_exists() {
+    local directory="$1"
+    if [ ! -d "$directory" ]; then
+        mkdir -p "$directory"
+    fi
+}
+
 cleanup() {
     rm -rf ${SDK_PATH}/.git
+    rm -rf ${SERVICES_BACKUP_PATH}
     go env -w GOPRIVATE=${goprivate_backup}
 }
 
@@ -75,15 +84,17 @@ make project-tools
 goprivate_backup=$(go env GOPRIVATE)
 go env -w GOPRIVATE="github.com/stackitcloud"
 
-# Cleanup after we are done
-trap cleanup EXIT
-
-# Remove generated contents of the SDK
+# Save and remove generated contents of the SDK
+mkdir_if_not_exists ${SERVICES_BACKUP_PATH}
+cp -a "${SDK_PATH}/services/." ${SERVICES_BACKUP_PATH}
 rm -rf ${SDK_PATH}/services
 rm ${SDK_PATH}/go.work
 if [ -f "${SDK_PATH}/go.work.sum" ]; then
     rm ${SDK_PATH}/go.work.sum
 fi
+
+# Cleanup after we are done
+trap cleanup EXIT
 
 echo "go ${SDK_GO_VERSION}" >${SDK_PATH}/go.work
 cd ${SDK_PATH}/core
@@ -117,13 +128,13 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
     rm -r ${SDK_PATH}/services/${service}/test/
 
     # If the service has waiter files, move them inside the service folder
-    if [ -f ${ROOT_DIR}/waiters/${service}/wait.txt ]; then
-        echo "Found wait.txt"
-        cp ${ROOT_DIR}/waiters/${service}/wait.txt ${SDK_PATH}/services/${service}/wait.go
+    if [ -f ${SERVICES_BACKUP_PATH}/${service}/wait.go ]; then
+        echo "Found wait.go"
+        cp ${SERVICES_BACKUP_PATH}/${service}/wait.go ${SDK_PATH}/services/${service}/wait.go
     fi
-    if [ -f ${ROOT_DIR}/waiters/${service}/wait_test.txt ]; then
-        echo "Found wait_test.txt"
-        cp ${ROOT_DIR}/waiters/${service}/wait_test.txt ${SDK_PATH}/services/${service}/wait_test.go
+    if [ -f ${SERVICES_BACKUP_PATH}/${service}/wait_test.go ]; then
+        echo "Found wait_test.go"
+        cp ${SERVICES_BACKUP_PATH}/${service}/wait_test.go ${SDK_PATH}/services/${service}/wait_test.go
     fi
 
     cd ${SDK_PATH}/services/${service}
