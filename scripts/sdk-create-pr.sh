@@ -34,12 +34,9 @@ mkdir ${work_dir}/git_repo
 
 # Initialize git repo
 cd ${work_dir}/git_repo
-git init -q
+git clone ${REPO_URL_SSH} ./
 git config user.name "${COMMIT_NAME}"
 git config user.email "${COMMIT_EMAIL}"
-git remote add origin "${REPO_URL_SSH}"
-git pull origin "${REPO_BRANCH}"
-git checkout -b "${REPO_BRANCH}" origin/"${REPO_BRANCH}"
 
 # Replace old SDK with new one
 # Removal of pulled data is necessary because the old version may have files
