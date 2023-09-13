@@ -102,7 +102,19 @@ go work use .
 for service_json in ${ROOT_DIR}/oas/*.json; do
     service="${service_json##*/}"
     service="${service%.json}"
-    service="${service//-/}"
+
+    # Remove invalid characters to ensure a valid Go pkg name
+    service="${service//-/}" # remove dashes
+    service="${service// /}" # remove empty spaces
+    service="${service//_/}" # remove underscores
+    service="${service,,}" # convert upper case letters to lower case
+    service=$(echo "${service}" | tr -d -c '[:alnum:]') # remove non-alphanumeric characters
+
+    if [[ ! ${service} =~ ^[a-z0-9]+$ ]]; # check that it is a single lower case word
+    then 
+        echo "Service ${service} has an invalid Go package name even after removing invalid characters. The generate-sdk.sh script might need to be updated to catch corner case, contact the repo maintainers."
+        exit 1 
+    fi
     echo "Generating ${service} service..."
     cd ${ROOT_DIR}
 
