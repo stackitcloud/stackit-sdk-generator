@@ -13,6 +13,7 @@ SDK_PATH="${ROOT_DIR}/sdk"
 SERVICES_BACKUP_PATH="${ROOT_DIR}/services"
 SDK_REPO="https://github.com/stackitcloud/stackit-sdk-go.git"
 SDK_GO_VERSION="1.18"
+OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
 
 mkdir_if_not_exists() {
     local directory="$1"
@@ -110,11 +111,20 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
     service="${service,,}" # convert upper case letters to lower case
     service=$(echo "${service}" | tr -d -c '[:alnum:]') # remove non-alphanumeric characters
 
-    if [[ ! ${service} =~ ^[a-z0-9]+$ ]]; # check that it is a single lower case word
+    go_pkg_name_format="^[a-z0-9]+$"
+    if [[ ! ${service} =~ ${go_pkg_name_format} ]]; # check that it is a single lower case word
     then 
         echo "Service ${service} has an invalid Go package name even after removing invalid characters. The generate-sdk.sh script might need to be updated to catch corner case, contact the repo maintainers."
         exit 1 
     fi
+
+    contains_empty_space_pattern=" |'"
+    if [[ ${service_json} =~ ${contains_empty_space_pattern} ]];
+    then
+        echo "OAS filename ${service_json} has empty spaces, the generation will fail. If the OAS was downloaded using the make download-oas command, it should be fixed in the api-specifications repo, please contact the repo maintainers at ${OAS_REPO}."
+        exit 1 
+    fi
+
     echo "Generating ${service} service..."
     cd ${ROOT_DIR}
 
