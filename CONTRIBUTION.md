@@ -21,7 +21,6 @@ These commands can be executed from the project root:
 - `make project-tools`: get the required dependencies
 - `make download-oas`: download the latest [REST API specs](https://github.com/stackitcloud/stackit-api-specifications) from the STACKIT services
 - `make generate-sdk`: generate the SDK locally
-- `make test`: run unit tests
 
 ## Code Contributions
 
