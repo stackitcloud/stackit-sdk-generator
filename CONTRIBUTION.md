@@ -25,7 +25,7 @@ These commands can be executed from the project root:
 ## Code Contributions
 
 To make your contribution, follow these steps:
-1. Check open or recently closed [Pull Requests](https://github.com/stackitcloud/stackit-sdk-generator/pulls) and [Issues](https://github.com/stackitcloud/stackit-sdk-generator/issues)to make sure the contribution you are making has not been already tackled by someone else.
+1. Check open or recently closed [Pull Requests](https://github.com/stackitcloud/stackit-sdk-generator/pulls) and [Issues](https://github.com/stackitcloud/stackit-sdk-generator/issues) to make sure the contribution you are making has not been already tackled by someone else.
 2. Fork the repo. 
 3. Make your changes in a branch that is up-to-date with the original repo's `main` branch.
 4. Commit your changes including a descriptive message.
