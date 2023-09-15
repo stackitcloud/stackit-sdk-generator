@@ -44,15 +44,12 @@ git config user.email "${COMMIT_EMAIL}"
 rm -rf ./*
 cp -a ${FOLDER_TO_PUSH_PATH}/. ./
 
-if git diff --exit-code --quiet; then
-    echo "SDK is unchanged, nothing to commit."
-else
-    # Commit and push files
-    git switch -c "$1"
-    git add -A
-    git commit -m "$2"
+# Create PR with new SDK if there are changes
+git switch -c "$1"
+git add -A
+if git commit -m "$2"; then # Commit will fail if it doesn't contain any changes
     git push origin "$1"
-
-    # Create PR
     gh pr create --title "$3" --body "$4" --head "$1" --base "main"
+else
+    echo "SDK is unchanged, nothing to commit."
 fi
