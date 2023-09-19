@@ -20,6 +20,19 @@
             ],
             "currentValueTemplate": "v{{{currentValueNumber}}}",
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+        },
+        {
+            "customType": "regex",
+            "fileMatch": [
+                "go.mod.mustache"
+            ],
+            "matchStrings": [
+                "{{gitHost}}\\/{{gitUserId}}\\/{{gitRepoId}}\\/core ?(?<currentValue>.*?)\\s"
+            ],
+            "datasourceTemplate": "git-tags",
+            "depNameTemplate": "github.com/stackitcloud/stackit-sdk-go",
+            "packageNameTemplate": "core",
+            "versioningTemplate": "semver"
         }
     ]
 }
