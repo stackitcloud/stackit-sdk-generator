@@ -29,7 +29,7 @@
             "matchStrings": [
                 "{{gitHost}}\\/{{gitUserId}}\\/{{gitRepoId}}\\/core ?(?<currentValue>.*?)\\s"
             ],
-            "datasourceTemplate": "git-tags",
+            "datasourceTemplate": "go",
             "depNameTemplate": "github.com/stackitcloud/stackit-sdk-go",
             "packageNameTemplate": "core",
             "versioningTemplate": "semver"
