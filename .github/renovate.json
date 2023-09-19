@@ -16,7 +16,7 @@
                 "generate-sdk.sh"
             ],
             "matchStrings": [
-                "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?) versioning=(?<versioning>.*?)?\\sGENERATOR_VERSION=\\\"?(?<currentValue>.*?)\\\"\\s"
+                "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?) versioning=(?<versioning>.*?)?\\sGENERATOR_VERSION=\\\"?(?<currentValue>.*?)\\\"\\s"
             ],
             "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
         }
