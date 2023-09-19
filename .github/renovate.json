@@ -9,6 +9,13 @@
     "enabledManagers": [
         "github-actions"
     ],
+    "recreateWhen": "always",
+    "prHourlyLimit": 0,
+    "prConcurrentLimit": 0,
+    "baseBranches": [
+        "hs/renovate"
+    ],
+    "useBaseBranchConfig": "merge",
     "regexManagers": [
         {
             "customType": "regex",
