@@ -14,7 +14,7 @@ SDK_GO_VERSION="1.18"
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
 
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
-GENERATOR_VERSION="v6.5.0"
+GENERATOR_VERSION="v6.6.0"
 GENERATOR_VERSION_NUMBER="${GENERATOR_VERSION:1}"
 
 mkdir_if_not_exists() {
