@@ -13,18 +13,16 @@
         {
             "customType": "regex",
             "fileMatch": [
-                "generate-sdk.sh"
+                "(^|\\/)generate-sdk\\.sh$"
             ],
             "matchStrings": [
-                "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?) versioning=(?<versioning>.*?)?\\sGENERATOR_VERSION=\\\"?(?<currentValueNumber>.*?)\\\"\\s"
-            ],
-            "currentValueTemplate": "v{{{currentValueNumber}}}",
-            "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+                "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?) versioning=(?<versioning>.*?)?\\sGENERATOR_VERSION=\\\"?(?<currentValue>.*?)\\\"\\s"
+            ]
         },
         {
             "customType": "regex",
             "fileMatch": [
-                "go.mod.mustache"
+                "(^|\\/)go\\.mod\\.mustache$"
             ],
             "matchStrings": [
                 "{{gitHost}}\\/{{gitUserId}}\\/{{gitRepoId}}\\/core ?(?<currentValue>.*?)\\s"
