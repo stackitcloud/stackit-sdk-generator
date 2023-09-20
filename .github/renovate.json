@@ -1,0 +1,36 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:recommended"
+    ],
+    "repositories": [
+        "stackitcloud/stackit-sdk-generator"
+    ],
+    "enabledManagers": [
+        "github-actions"
+    ],
+    "regexManagers": [
+        {
+            "customType": "regex",
+            "fileMatch": [
+                "(^|\\/)generate-sdk\\.sh$"
+            ],
+            "matchStrings": [
+                "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?) versioning=(?<versioning>.*?)?\\sGENERATOR_VERSION=\\\"?(?<currentValue>.*?)\\\"\\s"
+            ]
+        },
+        {
+            "customType": "regex",
+            "fileMatch": [
+                "(^|\\/)go\\.mod\\.mustache$"
+            ],
+            "matchStrings": [
+                "{{gitHost}}\\/{{gitUserId}}\\/{{gitRepoId}}\\/core ?(?<currentValue>.*?)\\s"
+            ],
+            "datasourceTemplate": "go",
+            "depNameTemplate": "github.com/stackitcloud/stackit-sdk-go",
+            "packageNameTemplate": "github.com/stackitcloud/stackit-sdk-go/core",
+            "versioningTemplate": "semver"
+        }
+    ]
+}

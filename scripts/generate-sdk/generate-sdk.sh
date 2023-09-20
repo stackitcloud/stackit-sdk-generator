@@ -4,8 +4,6 @@
 set -eo pipefail
 
 ROOT_DIR=$(git rev-parse --show-toplevel)
-GENERATOR_VERSION="6.5.0"
-GENERATOR_SHASUM_512="b6f833fac749f1793e82dda86da261beb9236f644d1283904af569cb73825c83ad3b7ffd122fbbc1e27a830a33309290c0430d42c3d78f3d91a1bbe7eabad3fb"
 GENERATOR_PATH="${ROOT_DIR}/scripts/bin"
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 PREPARE_SDK_PATH="${ROOT_DIR}/prepare-sdk"
@@ -14,6 +12,10 @@ SERVICES_BACKUP_PATH="${ROOT_DIR}/services"
 SDK_REPO="https://github.com/stackitcloud/stackit-sdk-go.git"
 SDK_GO_VERSION="1.18"
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
+
+# Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
+GENERATOR_VERSION="v6.5.0"
+GENERATOR_VERSION_NUMBER="${GENERATOR_VERSION:1}"
 
 mkdir_if_not_exists() {
     local directory="$1"
@@ -56,17 +58,13 @@ if [ ! -d ${ROOT_DIR}/oas ]; then
 fi
 
 jar_path="${GENERATOR_PATH}/openapi-generator-cli.jar"
-if [ -e ${jar_path} ] && [ $(java -jar ${jar_path} version) == ${GENERATOR_VERSION} ] && [ $(shasum -a 512 ${jar_path} | awk '{print $1;}') == ${GENERATOR_SHASUM_512} ]; then
+if [ -e ${jar_path} ] && [ $(java -jar ${jar_path} version) == ${GENERATOR_VERSION_NUMBER} ]; then
     :
 else
     echo "Downloading OpenAPI generator (version ${GENERATOR_VERSION}) to ${GENERATOR_PATH}..."
     mkdir -p ${GENERATOR_PATH}
-    wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/${GENERATOR_VERSION}/openapi-generator-cli-${GENERATOR_VERSION}.jar -O ${jar_path}
+    wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/${GENERATOR_VERSION_NUMBER}/openapi-generator-cli-${GENERATOR_VERSION_NUMBER}.jar -O ${jar_path}
     echo "Download done."
-    if [ $(shasum -a 512 ${jar_path} | awk '{print $1;}') != ${GENERATOR_SHASUM_512} ]; then
-        echo "Checksum of downloaded .jar is wrong, download corrupted."
-        exit 1
-    fi
 fi
 
 # Get latest version of SDK
