@@ -31,7 +31,7 @@
             ],
             "datasourceTemplate": "go",
             "depNameTemplate": "github.com/stackitcloud/stackit-sdk-go",
-            "packageNameTemplate": "core",
+            "packageNameTemplate": "github.com/stackitcloud/stackit-sdk-go/core",
             "versioningTemplate": "semver"
         }
     ]
