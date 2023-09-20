@@ -3,6 +3,7 @@
     "extends": [
         "config:recommended"
     ],
+    "prHourlyLimit": 10,
     "repositories": [
         "stackitcloud/stackit-sdk-generator"
     ],
