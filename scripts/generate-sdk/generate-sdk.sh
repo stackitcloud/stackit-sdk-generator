@@ -8,7 +8,6 @@ GENERATOR_PATH="${ROOT_DIR}/scripts/bin"
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 PREPARE_SDK_PATH="${ROOT_DIR}/prepare-sdk"
 SDK_PATH="${ROOT_DIR}/sdk"
-SERVICES_BACKUP_PATH="${ROOT_DIR}/services"
 SDK_REPO="https://github.com/stackitcloud/stackit-sdk-go.git"
 SDK_GO_VERSION="1.18"
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
@@ -17,16 +16,16 @@ OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
 GENERATOR_VERSION="v6.5.0"
 GENERATOR_VERSION_NUMBER="${GENERATOR_VERSION:1}"
 
-mkdir_if_not_exists() {
-    local directory="$1"
-    if [ ! -d "$directory" ]; then
-        mkdir -p "$directory"
-    fi
-}
+# Backup of the current state of the SDK services/
+sdk_services_backup_dir=$(mktemp -d)
+if [[ ! ${sdk_services_backup_dir} || -d {sdk_services_backup_dir} ]]; then
+    echo "Unable to create temporary directory"
+    exit 1
+fi
 
 cleanup() {
     rm -rf ${SDK_PATH}/.git
-    rm -rf ${SERVICES_BACKUP_PATH}
+    rm -rf ${sdk_services_backup_dir}
     go env -w GOPRIVATE=${goprivate_backup}
 }
 
@@ -83,9 +82,8 @@ make project-tools
 goprivate_backup=$(go env GOPRIVATE)
 go env -w GOPRIVATE="github.com/stackitcloud"
 
-# Save and remove generated contents of the SDK
-mkdir_if_not_exists ${SERVICES_BACKUP_PATH}
-cp -a "${SDK_PATH}/services/." ${SERVICES_BACKUP_PATH}
+# Save and remove SDK services/
+cp -a "${SDK_PATH}/services/." ${sdk_services_backup_dir}
 rm -rf ${SDK_PATH}/services
 rm ${SDK_PATH}/go.work
 if [ -f "${SDK_PATH}/go.work.sum" ]; then
@@ -146,13 +144,13 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
     rm -r ${SDK_PATH}/services/${service}/test/
 
     # If the service has waiter files, move them inside the service folder
-    if [ -f ${SERVICES_BACKUP_PATH}/${service}/wait.go ]; then
+    if [ -f ${sdk_services_backup_dir}/${service}/wait.go ]; then
         echo "Found wait.go"
-        cp ${SERVICES_BACKUP_PATH}/${service}/wait.go ${SDK_PATH}/services/${service}/wait.go
+        cp ${sdk_services_backup_dir}/${service}/wait.go ${SDK_PATH}/services/${service}/wait.go
     fi
-    if [ -f ${SERVICES_BACKUP_PATH}/${service}/wait_test.go ]; then
+    if [ -f ${sdk_services_backup_dir}/${service}/wait_test.go ]; then
         echo "Found wait_test.go"
-        cp ${SERVICES_BACKUP_PATH}/${service}/wait_test.go ${SDK_PATH}/services/${service}/wait_test.go
+        cp ${sdk_services_backup_dir}/${service}/wait_test.go ${SDK_PATH}/services/${service}/wait_test.go
     fi
 
     cd ${SDK_PATH}/services/${service}
