@@ -56,7 +56,7 @@ type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/stru
 	apiService *{{classname}}Service
 {{/generateInterfaces}}
 {{#allParams}}
-	{{paramName}} {{#isPathParam}}{{{dataType}}}{{/isPathParam}}{{#isQueryParam}}*{{{dataType}}}{{/isQueryParam}}{{^isQueryParam}}{{^isPathParam}}{{^isFile}}*{{{operationId}}}Payload{{/isFile}}{{/isPathParam}}{{/isQueryParam}}
+	{{paramName}} {{^isPathParam}}{{^isFile}}*{{/isFile}}{{/isPathParam}}{{{dataType}}}
 {{/allParams}}
 }
 
@@ -69,8 +69,7 @@ type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/stru
 // Deprecated
 {{/isDeprecated}}
 
-// func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request) {{vendorExtensions.x-export-param-name}}({{paramName}} {{{dataType}}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request {
-func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request) {{#isQueryParam}}{{vendorExtensions.x-export-param-name}}{{/isQueryParam}}{{^isQueryParam}}{{^isPathParam}}{{^isFile}}{{{operationId}}}Payload{{/isFile}}{{/isPathParam}}{{/isQueryParam}}({{paramName}} {{{dataType}}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request {
+func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request) {{vendorExtensions.x-export-param-name}}({{paramName}} {{{dataType}}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request {
     r.{{paramName}} = {{^isFile}}&{{/isFile}}{{paramName}}
 	return r
 }
