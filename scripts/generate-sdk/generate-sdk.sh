@@ -143,14 +143,10 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
     cp ${SDK_PATH}/services/${service}/test/* ${SDK_PATH}/services/${service}
     rm -r ${SDK_PATH}/services/${service}/test/
 
-    # If the service has waiter files, move them inside the service folder
-    if [ -f ${sdk_services_backup_dir}/${service}/wait.go ]; then
-        echo "Found wait.go"
-        cp ${sdk_services_backup_dir}/${service}/wait.go ${SDK_PATH}/services/${service}/wait.go
-    fi
-    if [ -f ${sdk_services_backup_dir}/${service}/wait_test.go ]; then
-        echo "Found wait_test.go"
-        cp ${sdk_services_backup_dir}/${service}/wait_test.go ${SDK_PATH}/services/${service}/wait_test.go
+    # If the service has a wait package files, move them inside the service folder
+    if [ -f ${sdk_services_backup_dir}/${service}/wait ]; then
+        echo "Found wait package"
+        cp ${sdk_services_backup_dir}/${service}/wait
     fi
 
     cd ${SDK_PATH}/services/${service}
