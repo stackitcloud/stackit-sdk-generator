@@ -145,7 +145,7 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
 
     # If the service has a wait package files, move them inside the service folder
     if [ -d ${sdk_services_backup_dir}/${service}/wait ]; then
-        echo "Found wait package"
+        echo "Found ${service}/wait package"
         cp -r ${sdk_services_backup_dir}/${service}/wait ${SDK_PATH}/services/${service}/wait
     fi
 
