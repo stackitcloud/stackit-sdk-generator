@@ -7,8 +7,8 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 GENERATOR_PATH="${ROOT_DIR}/scripts/bin"
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 PREPARE_SDK_PATH="${ROOT_DIR}/prepare-sdk"
-SDK_PATH="${ROOT_DIR}/sdk"
-SDK_REPO="https://github.com/stackitcloud/stackit-sdk-go.git"
+SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk"
+SDK_REPO_URL="https://github.com/stackitcloud/stackit-sdk-go.git"
 SDK_GO_VERSION="1.18"
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
 
@@ -71,10 +71,10 @@ if [ -d ${ROOT_DIR}/sdk ]; then
     rm -rf ${ROOT_DIR}/sdk
     mkdir ${ROOT_DIR}/sdk
 fi
-git clone -b hs/lint-generated-files ${SDK_REPO} ${SDK_PATH}
+git clone -b hs/lint-generated-files ${SDK_REPO_URL} ${SDK_REPO_LOCAL_PATH}
 
 # Install SDK project tools
-cd ${SDK_PATH}
+cd ${SDK_REPO_LOCAL_PATH}
 make project-tools
 
 # Set GOPRIVATE to download the SDK Go module
@@ -82,18 +82,18 @@ goprivate_backup=$(go env GOPRIVATE)
 go env -w GOPRIVATE="github.com/stackitcloud"
 
 # Save and remove SDK services/
-cp -a "${SDK_PATH}/services/." ${sdk_services_backup_dir}
-rm -rf ${SDK_PATH}/services
-rm ${SDK_PATH}/go.work
-if [ -f "${SDK_PATH}/go.work.sum" ]; then
-    rm ${SDK_PATH}/go.work.sum
+cp -a "${SDK_REPO_LOCAL_PATH}/services/." ${sdk_services_backup_dir}
+rm -rf ${SDK_REPO_LOCAL_PATH}/services
+rm ${SDK_REPO_LOCAL_PATH}/go.work
+if [ -f "${SDK_REPO_LOCAL_PATH}/go.work.sum" ]; then
+    rm ${SDK_REPO_LOCAL_PATH}/go.work.sum
 fi
 
 # Cleanup after we are done
 trap cleanup EXIT
 
-echo "go ${SDK_GO_VERSION}" >${SDK_PATH}/go.work
-cd ${SDK_PATH}/core
+echo "go ${SDK_GO_VERSION}" >${SDK_REPO_LOCAL_PATH}/go.work
+cd ${SDK_REPO_LOCAL_PATH}/core
 go work use .
 for service_json in ${ROOT_DIR}/oas/*.json; do
     service="${service_json##*/}"
@@ -122,12 +122,12 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
     cd ${ROOT_DIR}
 
     GO_POST_PROCESS_FILE="gofmt -w" \
-        mkdir -p ${SDK_PATH}/services/${service}/
-    cp ${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore ${SDK_PATH}/services/${service}/
+        mkdir -p ${SDK_REPO_LOCAL_PATH}/services/${service}/
+    cp ${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore ${SDK_REPO_LOCAL_PATH}/services/${service}/
     java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${jar_path} generate \
         --generator-name go \
         --input-spec ${service_json} \
-        --output ${SDK_PATH}/services/${service} \
+        --output ${SDK_REPO_LOCAL_PATH}/services/${service} \
         --package-name ${service} \
         --template-dir ${ROOT_DIR}/templates/ \
         --enable-post-process-file \
@@ -135,31 +135,31 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
         --git-repo-id stackit-sdk-go \
         --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles \
         --additional-properties=isGoSubmodule=true
-    rm ${SDK_PATH}/services/${service}/.openapi-generator-ignore
-    rm ${SDK_PATH}/services/${service}/.openapi-generator/FILES
+    rm ${SDK_REPO_LOCAL_PATH}/services/${service}/.openapi-generator-ignore
+    rm ${SDK_REPO_LOCAL_PATH}/services/${service}/.openapi-generator/FILES
 
     # Move tests to the service folder
-    cp ${SDK_PATH}/services/${service}/test/* ${SDK_PATH}/services/${service}
-    rm -r ${SDK_PATH}/services/${service}/test/
+    cp ${SDK_REPO_LOCAL_PATH}/services/${service}/test/* ${SDK_REPO_LOCAL_PATH}/services/${service}
+    rm -r ${SDK_REPO_LOCAL_PATH}/services/${service}/test/
 
     # If the service has a wait package files, move them inside the service folder
     if [ -d ${sdk_services_backup_dir}/${service}/wait ]; then
         echo "Found ${service}/wait package"
-        cp -r ${sdk_services_backup_dir}/${service}/wait ${SDK_PATH}/services/${service}/wait
+        cp -r ${sdk_services_backup_dir}/${service}/wait ${SDK_REPO_LOCAL_PATH}/services/${service}/wait
     fi
 
-    cd ${SDK_PATH}/services/${service}
+    cd ${SDK_REPO_LOCAL_PATH}/services/${service}
     go work use .
     go mod tidy
 done
 
 # Add examples to workspace
-for example_dir in ${SDK_PATH}/examples/*; do
+for example_dir in ${SDK_REPO_LOCAL_PATH}/examples/*; do
     cd ${example_dir}
     go work use .
 done
 
 # Cleanup after SDK generation
-cd ${SDK_PATH}
-goimports -w ${SDK_PATH}/services/
+cd ${SDK_REPO_LOCAL_PATH}
+goimports -w ${SDK_REPO_LOCAL_PATH}/services/
 make lint skip-non-generated-files=true
