@@ -29,8 +29,12 @@ fi
 # Delete temp directory on exit
 trap "rm -rf ${work_dir}" EXIT
 
-# Where the git repo will be created
-mkdir ${work_dir}/git_repo
+mkdir ${work_dir}/git_repo    # Where the git repo will be created
+mkdir ${work_dir}/sdk_to_push # Copy of SDK to push
+
+# Prepare SDK to push
+cp -a ${SDK_REPO_LOCAL_PATH}/. ${work_dir}/sdk_to_push
+rm -rf ${work_dir}/sdk_to_push/.git
 
 # Initialize git repo
 cd ${work_dir}/git_repo
@@ -42,7 +46,7 @@ git config user.email "${COMMIT_EMAIL}"
 # Removal of pulled data is necessary because the old version may have files
 # that were deleted in the new version
 rm -rf ./*
-cp -a ${SDK_REPO_LOCAL_PATH}/. ./
+cp -a ${work_dir}/sdk_to_push/. ./
 
 # Create PR with new SDK if there are changes
 git switch -c "$1"
