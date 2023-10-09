@@ -8,6 +8,8 @@ runs:
   using: "composite"
   steps:
     - name: Download OAS
+      shell: bash
       run: make download-oas
     - name: Generate SDK
+      shell: bash
       run: make generate-sdk
