@@ -1,5 +1,5 @@
 #!/bin/bash
-# This script generates the SDK API modules
+# This script clones the SDK repo and updates it with the generated API modules
 # Pre-requisites: Java, goimports, Go
 set -eo pipefail
 
