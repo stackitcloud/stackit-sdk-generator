@@ -5,7 +5,7 @@ set -eo pipefail
 ROOT_DIR=$(git rev-parse --show-toplevel)
 COMMIT_NAME="SDK Generator Bot"
 COMMIT_EMAIL="noreply@stackit.de"
-FOLDER_TO_PUSH_PATH="${ROOT_DIR}/sdk-repo-cloned" # Comes from generate-sdk.sh
+SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-cloned" # Comes from generate-sdk.sh
 REPO_URL_SSH="git@github.com:stackitcloud/stackit-sdk-go.git"
 REPO_BRANCH="main"
 
@@ -14,7 +14,7 @@ if [ $# -ne 4 ]; then
     exit 1
 fi
 
-if [ ! -d ${FOLDER_TO_PUSH_PATH} ]; then
+if [ ! -d ${SDK_REPO_LOCAL_PATH} ]; then
     echo "sdk to commit not found in root. Please run make generate-sdk"
     exit 1
 fi
@@ -42,7 +42,7 @@ git config user.email "${COMMIT_EMAIL}"
 # Removal of pulled data is necessary because the old version may have files
 # that were deleted in the new version
 rm -rf ./*
-cp -a ${FOLDER_TO_PUSH_PATH}/. ./
+cp -a ${SDK_REPO_LOCAL_PATH}/. ./
 
 # Create PR with new SDK if there are changes
 git switch -c "$1"
