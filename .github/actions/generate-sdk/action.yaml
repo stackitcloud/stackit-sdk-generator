@@ -1,0 +1,13 @@
+name: Generate SDK
+description: "Generates the SDK"
+inputs:
+  go-version:
+    description: "Go version to install"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Download OAS
+      run: make download-oas
+    - name: Generate SDK
+      run: make generate-sdk
