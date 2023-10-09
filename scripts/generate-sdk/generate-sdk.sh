@@ -24,7 +24,6 @@ if [[ ! ${sdk_services_backup_dir} || -d {sdk_services_backup_dir} ]]; then
 fi
 
 cleanup() {
-    rm -rf ${SDK_PATH}/.git
     rm -rf ${sdk_services_backup_dir}
     go env -w GOPRIVATE=${goprivate_backup}
 }
