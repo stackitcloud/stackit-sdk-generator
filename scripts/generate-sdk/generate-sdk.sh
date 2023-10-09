@@ -163,4 +163,4 @@ done
 # Cleanup after SDK generation
 cd ${SDK_PATH}
 goimports -w ${SDK_PATH}/services/
-make lint
+make lint skip-non-generated-files=true
