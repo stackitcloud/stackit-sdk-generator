@@ -5,7 +5,7 @@ set -eo pipefail
 ROOT_DIR=$(git rev-parse --show-toplevel)
 COMMIT_NAME="SDK Generator Bot"
 COMMIT_EMAIL="noreply@stackit.de"
-FOLDER_TO_PUSH_PATH="${ROOT_DIR}/sdk" # Comes from generate-sdk.sh
+FOLDER_TO_PUSH_PATH="${ROOT_DIR}/sdk-repo-cloned" # Comes from generate-sdk.sh
 REPO_URL_SSH="git@github.com:stackitcloud/stackit-sdk-go.git"
 REPO_BRANCH="main"
 

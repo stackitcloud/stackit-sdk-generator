@@ -6,7 +6,7 @@
 bin/
 
 # Folders to support generation
-sdk/
+sdk-repo-cloned/
 oas/
 
 # Generated files
