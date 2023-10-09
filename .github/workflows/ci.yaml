@@ -9,7 +9,11 @@ env:
 jobs:
   main:
     name: CI
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        go-version: ['1.18', '1.19', '1.20']
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
@@ -27,11 +31,20 @@ jobs:
         uses: ./.github/actions/build
         with:
           go-version: ${{ env.GO_VERSION_BUILD }}
+      - name: (TEST) Check Go version
+        run: go version
       - name: Download OAS
         run: make download-oas
       - name: Generate SDK
         run: make generate-sdk
+      - name: Install Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: (TEST) Check Go version
+        run: go version
       - name: Lint
+        if: ${{ matrix.go-version == '1.19' || matrix.go-version == '1.20' }}
         working-directory: ./sdk
         run: |
           make lint skip-non-generated-files=true
