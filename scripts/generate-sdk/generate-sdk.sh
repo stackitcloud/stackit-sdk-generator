@@ -72,7 +72,7 @@ if [ -d ${ROOT_DIR}/sdk ]; then
     rm -rf ${ROOT_DIR}/sdk
     mkdir ${ROOT_DIR}/sdk
 fi
-git clone ${SDK_REPO} ${SDK_PATH}
+git clone -b hs/lint-generated-files ${SDK_REPO} ${SDK_PATH}
 
 # Install SDK project tools
 cd ${SDK_PATH}
