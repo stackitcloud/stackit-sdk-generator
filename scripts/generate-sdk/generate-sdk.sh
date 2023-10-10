@@ -64,11 +64,10 @@ else
     echo "Download done."
 fi
 
-# Get latest version of SDK
-if [ -d ${ROOT_DIR}/sdk ]; then
-    echo "Old sdk was found, it will be removed"
-    rm -rf ${ROOT_DIR}/sdk
-    mkdir ${ROOT_DIR}/sdk
+# Clone SDK repo
+if [ -d ${SDK_REPO_LOCAL_PATH} ]; then
+    echo "Old SDK repo clone was found, it will be removed"
+    rm -rf ${SDK_REPO_LOCAL_PATH}
 fi
 git clone ${SDK_REPO_URL} ${SDK_REPO_LOCAL_PATH}
 
