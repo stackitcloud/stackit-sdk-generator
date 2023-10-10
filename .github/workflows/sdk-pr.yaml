@@ -31,10 +31,8 @@ jobs:
         uses: ./.github/actions/build
         with:
           go-version: ${{ env.GO_VERSION }}
-      - name: Download OAS
-        run: make download-oas
       - name: Generate SDK
-        run: make generate-sdk
+        uses: ./.github/actions/generate-sdk
       - name: Push SDK
         env: 
           GH_REPO: 'stackitcloud/stackit-sdk-go'
