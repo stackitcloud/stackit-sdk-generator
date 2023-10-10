@@ -6,7 +6,7 @@ set -eo pipefail
 ROOT_DIR=$(git rev-parse --show-toplevel)
 GENERATOR_PATH="${ROOT_DIR}/scripts/bin"
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
-SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-cloned"
+SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
 SDK_REPO_URL="https://github.com/stackitcloud/stackit-sdk-go.git"
 SDK_GO_VERSION="1.18"
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
