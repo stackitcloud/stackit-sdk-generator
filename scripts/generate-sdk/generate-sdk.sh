@@ -24,7 +24,6 @@ fi
 
 cleanup() {
     rm -rf ${sdk_services_backup_dir}
-    go env -w GOPRIVATE=${goprivate_backup}
 }
 
 if type -p java >/dev/null; then
@@ -74,10 +73,6 @@ git clone ${SDK_REPO_URL} ${SDK_REPO_LOCAL_PATH}
 # Install SDK project tools
 cd ${SDK_REPO_LOCAL_PATH}
 make project-tools
-
-# Set GOPRIVATE to download the SDK Go module
-goprivate_backup=$(go env GOPRIVATE)
-go env -w GOPRIVATE="github.com/stackitcloud"
 
 # Save and remove SDK services/
 cp -a "${SDK_REPO_LOCAL_PATH}/services/." ${sdk_services_backup_dir}
