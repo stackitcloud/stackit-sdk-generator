@@ -155,3 +155,4 @@ done
 # Cleanup after SDK generation
 cd ${SDK_REPO_LOCAL_PATH}
 goimports -w ${SDK_REPO_LOCAL_PATH}/services/
+make sync-tidy
