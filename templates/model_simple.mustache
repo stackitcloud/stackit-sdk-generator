@@ -15,12 +15,18 @@ type {{classname}} struct {
 {{#description}}
 	// {{{.}}}
 {{/description}}
+{{#isShort}}
+	// Can be cast to int32 without loss of precision.
+{{/isShort}}
+{{#isFloat}}
+	// Can be cast to float32 without loss of precision.
+{{/isFloat}}
 {{#deprecated}}
 	// Deprecated
 {{/deprecated}}
 {{#required}}
     // REQUIRED
 {{/required}}
-	{{name}} *{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
+	{{name}} *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
 {{/vars}}
 }
