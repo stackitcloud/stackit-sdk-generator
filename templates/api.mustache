@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"net/url"
 	"{{gitHost}}/{{gitUserId}}/{{gitRepoId}}/core/config"
-    oapiError "{{gitHost}}/{{gitUserId}}/{{gitRepoId}}/core/oapierror"
+    "{{gitHost}}/{{gitUserId}}/{{gitRepoId}}/core/oapierror"
 {{#imports}}	"{{import}}"
 {{/imports}}
 )
@@ -90,7 +90,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
     a := r.apiService
     localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "{{{classname}}}Service.{{{nickname}}}")
     if err != nil {
-    return {{#returnType}}localVarReturnValue, {{/returnType}} &oapiError.GenericOpenAPIError{ErrorMessage: err.Error()}
+    return {{#returnType}}localVarReturnValue, {{/returnType}} &oapierror.GenericOpenAPIError{ErrorMessage: err.Error()}
     }
 
     localVarPath := localBasePath + "{{{path}}}"{{#pathParams}}
@@ -320,7 +320,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
     }
 
     if localVarHTTPResponse.StatusCode >= 300 {
-    newErr := &oapiError.GenericOpenAPIError{
+    newErr := &oapierror.GenericOpenAPIError{
     StatusCode: localVarHTTPResponse.StatusCode,
     Body:  localVarBody,
     ErrorMessage: localVarHTTPResponse.Status,
@@ -351,7 +351,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
                     newErr.ErrorMessage = err.Error()
                     return {{#returnType}}localVarReturnValue, {{/returnType}} newErr
                     }
-                    newErr.ErrorMessage = oapiError.FormatErrorMessage(localVarHTTPResponse.Status, &v)
+                    newErr.ErrorMessage = oapierror.FormatErrorMessage(localVarHTTPResponse.Status, &v)
                     newErr.Model = v
                     {{^-last}}
                         return {{#returnType}}localVarReturnValue, {{/returnType}} newErr
@@ -369,7 +369,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
     {{#returnType}}
         err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
         if err != nil {
-        newErr := &oapiError.GenericOpenAPIError{
+        newErr := &oapierror.GenericOpenAPIError{
         StatusCode: localVarHTTPResponse.StatusCode,
         Body:  localVarBody,
         ErrorMessage: err.Error(),
