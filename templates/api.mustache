@@ -308,6 +308,10 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
     }
 
     localVarHTTPResponse, err := a.client.callAPI(req)
+    contextHTTPResponse, ok := r.ctx.Value(config.ContextHTTPResponse).(**http.Response)
+    if ok {
+    *contextHTTPResponse = localVarHTTPResponse
+    }
     if err != nil || localVarHTTPResponse == nil {
     return {{#returnType}}localVarReturnValue, {{/returnType}} err
     }
