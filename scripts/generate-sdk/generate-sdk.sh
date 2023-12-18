@@ -141,7 +141,7 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
         cp -r ${sdk_services_backup_dir}/${service}/wait ${SDK_REPO_LOCAL_PATH}/services/${service}/wait
     fi
 
-    # If the service has a wait package files, move them inside the service folder
+    # If the service has a CHANGELOG file, move it inside the service folder
     if [ -f ${sdk_services_backup_dir}/${service}/CHANGELOG.md ]; then
         echo "Found ${service} CHANGELOG file"
         cp -r ${sdk_services_backup_dir}/${service}/CHANGELOG.md ${SDK_REPO_LOCAL_PATH}/services/${service}/CHANGELOG.md
