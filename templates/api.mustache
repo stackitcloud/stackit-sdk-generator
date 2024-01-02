@@ -159,7 +159,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
                 if reflect.TypeOf(t).Kind() == reflect.Slice {
                 s := reflect.ValueOf(t)
                 for i := 0; i < s.Len(); i++ {
-                parameterAddToHeaderOrQuery(localVarQueryParams, "{{baseName}}", s.Index(i), "{{collectionFormat}}")
+                parameterAddToHeaderOrQuery(localVarQueryParams, "{{baseName}}", s.Index(i).Interface(), "{{collectionFormat}}")
                 }
                 } else {
                 parameterAddToHeaderOrQuery(localVarQueryParams, "{{baseName}}", t, "{{collectionFormat}}")
@@ -177,7 +177,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
                 if reflect.TypeOf(t).Kind() == reflect.Slice {
                 s := reflect.ValueOf(t)
                 for i := 0; i < s.Len(); i++ {
-                parameterAddToHeaderOrQuery(localVarQueryParams, "{{baseName}}", s.Index(i), "{{collectionFormat}}")
+                parameterAddToHeaderOrQuery(localVarQueryParams, "{{baseName}}", s.Index(i).Interface(), "{{collectionFormat}}")
                 }
                 } else {
                 parameterAddToHeaderOrQuery(localVarQueryParams, "{{baseName}}", t, "{{collectionFormat}}")
