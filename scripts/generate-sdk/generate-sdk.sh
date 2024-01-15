@@ -147,6 +147,18 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
         cp -r ${sdk_services_backup_dir}/${service}/CHANGELOG.md ${SDK_REPO_LOCAL_PATH}/services/${service}/CHANGELOG.md
     fi
 
+    # If the service has a LICENSE file, move it inside the service folder
+    if [ -f ${sdk_services_backup_dir}/${service}/LICENSE.md ]; then
+        echo "Found ${service} LICENSE file"
+        cp -r ${sdk_services_backup_dir}/${service}/LICENSE.md ${SDK_REPO_LOCAL_PATH}/services/${service}/LICENSE.md
+    fi
+
+    # If the service has a NOTICE file, move it inside the service folder
+    if [ -f ${sdk_services_backup_dir}/${service}/NOTICE.txt ]; then
+        echo "Found ${service} NOTICE file"
+        cp -r ${sdk_services_backup_dir}/${service}/NOTICE.txt ${SDK_REPO_LOCAL_PATH}/services/${service}/NOTICE.txt
+    fi
+
     cd ${SDK_REPO_LOCAL_PATH}/services/${service}
     go work use .
     go mod tidy
