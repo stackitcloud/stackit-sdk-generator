@@ -3,8 +3,8 @@ name: CI Workflow
 on: [pull_request, workflow_dispatch]
 
 env:
-  GO_VERSION_BUILD: '1.21'
-  JAVA_VERSION: '11'
+  GO_VERSION_BUILD: "1.21"
+  JAVA_VERSION: "11"
 
 jobs:
   main:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        go-version: ['1.18', '1.19', '1.20', '1.21']
+        go-version: ["1.18", "1.19", "1.20", "1.21"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install SSH Key
@@ -23,7 +23,7 @@ jobs:
       - name: Install Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: "temurin"
           java-version: ${{ env.JAVA_VERSION }}
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
       - name: Generate SDK
         uses: ./.github/actions/generate-sdk
       - name: Install Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
       - name: Lint
