@@ -131,6 +131,15 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
     rm ${SDK_REPO_LOCAL_PATH}/services/${service}/.openapi-generator-ignore
     rm ${SDK_REPO_LOCAL_PATH}/services/${service}/.openapi-generator/FILES
 
+    # If there's a comment at the start of go.mod, copy it
+    go_mod_first_line="$(head -n 1 ${sdk_services_backup_dir}/${service}/go.mod)"
+    is_comment_pattern="^\/\/"
+    if [[ ${go_mod_first_line} =~ ${is_comment_pattern} ]]; then
+        echo "Found comment at the top of ${service}/go.mod"
+        go_mod_path="${SDK_REPO_LOCAL_PATH}/services/${service}/go.mod"
+        echo -e "${go_mod_first_line}\n$(cat ${go_mod_path})" >${go_mod_path}
+    fi
+
     # Move tests to the service folder
     cp ${SDK_REPO_LOCAL_PATH}/services/${service}/test/* ${SDK_REPO_LOCAL_PATH}/services/${service}
     rm -r ${SDK_REPO_LOCAL_PATH}/services/${service}/test/
