@@ -10,6 +10,7 @@ SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
 SDK_REPO_URL="https://github.com/stackitcloud/stackit-sdk-go.git"
 SDK_GO_VERSION="1.18"
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
+SCRIPTS_FOLDER="${SDK_REPO_LOCAL_PATH}/scripts"
 
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
 GENERATOR_VERSION="v6.6.0"
@@ -181,6 +182,10 @@ for example_dir in ${SDK_REPO_LOCAL_PATH}/examples/*; do
     cd ${example_dir}
     go work use .
 done
+
+# Add scripts to workspace
+cd ${SCRIPTS_FOLDER}
+go work use .
 
 # Cleanup after SDK generation
 cd ${SDK_REPO_LOCAL_PATH}
