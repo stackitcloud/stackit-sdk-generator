@@ -1,0 +1,1493 @@
+{
+  "components": {
+    "schemas": {
+      "MaintenanceAutoUpdate": {
+        "properties": {
+          "kubernetesVersion": {
+            "title": "Flag to enable/disable auto-updates of the Kubernetes version",
+            "type": "boolean"
+          },
+          "machineImageVersion": {
+            "title": "Flag to enable/disable auto-updates of the OS image version",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "v1KubeconfigRequest": {
+        "properties": {
+          "expirationSeconds": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "v1NoopFeature": {
+        "properties": {
+          "content": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CreateOrUpdateClusterPayload": {
+        "properties": {
+          "extensions": {
+            "$ref": "#/components/schemas/Extension"
+          },
+          "hibernation": {
+            "$ref": "#/components/schemas/Hibernation"
+          },
+          "kubernetes": {
+            "$ref": "#/components/schemas/Kubernetes"
+          },
+          "maintenance": {
+            "$ref": "#/components/schemas/Maintenance"
+          },
+          "nodepools": {
+            "items": {
+              "$ref": "#/components/schemas/Nodepool"
+            },
+            "maxItems": 10,
+            "minItems": 1,
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ClusterStatus"
+          }
+        },
+        "required": [
+          "kubernetes",
+          "nodepools"
+        ],
+        "type": "object"
+      },
+      "ACL": {
+        "properties": {
+          "allowedCidrs": {
+            "description": "Array of CIDRs to allow access to the kubernetes API.",
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "enabled": {
+            "description": "Enables the acl extension.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "allowedCidrs",
+          "enabled"
+        ],
+        "type": "object"
+      },
+      "Argus": {
+        "properties": {
+          "argusInstanceId": {
+            "description": "Argus instance ID to choose which Argus instance is used.",
+            "type": "string"
+          },
+          "enabled": {
+            "description": "Enables the argus extension.",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "argusInstanceId",
+          "enabled"
+        ],
+        "type": "object"
+      },
+      "AvailabilityZone": {
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CRI": {
+        "properties": {
+          "name": {
+            "enum": [
+              "docker",
+              "containerd"
+            ],
+            "title": "Name of the cri library",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Cluster": {
+        "properties": {
+          "extensions": {
+            "$ref": "#/components/schemas/Extension"
+          },
+          "hibernation": {
+            "$ref": "#/components/schemas/Hibernation"
+          },
+          "kubernetes": {
+            "$ref": "#/components/schemas/Kubernetes"
+          },
+          "maintenance": {
+            "$ref": "#/components/schemas/Maintenance"
+          },
+          "name": {
+            "readOnly": true,
+            "type": "string"
+          },
+          "nodepools": {
+            "items": {
+              "$ref": "#/components/schemas/Nodepool"
+            },
+            "maxItems": 10,
+            "minItems": 1,
+            "type": "array"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ClusterStatus"
+          }
+        },
+        "required": [
+          "kubernetes",
+          "nodepools"
+        ],
+        "type": "object"
+      },
+      "ClusterStatus": {
+        "properties": {
+          "aggregated": {
+            "$ref": "#/components/schemas/ClusterStatusState"
+          },
+          "credentialsRotation": {
+            "$ref": "#/components/schemas/CredentialsRotationState"
+          },
+          "error": {
+            "$ref": "#/components/schemas/RuntimeError"
+          },
+          "hibernated": {
+            "title": "Indicates whether the cluster is currently hibernated",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "ClusterStatusState": {
+        "default": "STATE_UNSPECIFIED",
+        "enum": [
+          "STATE_UNSPECIFIED",
+          "STATE_HEALTHY",
+          "STATE_CREATING",
+          "STATE_DELETING",
+          "STATE_UNHEALTHY",
+          "STATE_RECONCILING",
+          "STATE_HIBERNATED",
+          "STATE_HIBERNATING",
+          "STATE_WAKINGUP"
+        ],
+        "title": "aggregated state of the cluster",
+        "type": "string"
+      },
+      "ListClustersResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Cluster"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Credentials": {
+        "properties": {
+          "certificateAuthorityData": {
+            "title": "Certificate authority data for accessing the cluster",
+            "type": "string"
+          },
+          "kubeconfig": {
+            "description": "This string contains the kubeconfig as yaml. If you want to directly get the yaml without any \n characters you can use the following command: curl -s 'api.stackit.cloud/ske/v1/projects/{projectId}/clusters/{clusterName}/credentials' |jq -r .kubeconfig",
+            "title": "Kubeconfig for the cluster as yml string",
+            "type": "string"
+          },
+          "server": {
+            "title": "Kubernetes api server address",
+            "type": "string"
+          },
+          "token": {
+            "title": "Access token used to authenticate with the cluster",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CredentialsRotationState": {
+        "properties": {
+          "lastCompletionTime": {
+            "type": "string"
+          },
+          "lastInitiationTime": {
+            "type": "string"
+          },
+          "phase": {
+            "description": "Phase of the credentials rotation. \"NEVER\" indicates that no credentials rotation has been performed using the new credentials rotation endpoints yet. Using the deprecated \"/v1/projects/{project_id}/clusters/{cluster_name}/rotate-credentials\" endpoint will not update this status field.",
+            "enum": [
+              "NEVER",
+              "PREPARING",
+              "PREPARED",
+              "COMPLETING",
+              "COMPLETED"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Extension": {
+        "properties": {
+          "acl": {
+            "$ref": "#/components/schemas/ACL"
+          },
+          "argus": {
+            "$ref": "#/components/schemas/Argus"
+          }
+        },
+        "type": "object"
+      },
+      "Hibernation": {
+        "properties": {
+          "schedules": {
+            "items": {
+              "$ref": "#/components/schemas/HibernationSchedule"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "schedules"
+        ],
+        "type": "object"
+      },
+      "HibernationSchedule": {
+        "properties": {
+          "end": {
+            "pattern": "(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\\d+(ns|us|µs|ms|s|m|h))+)|((((\\d+,)+\\d+|(\\d+(\\/|-)\\d+)|\\d+|\\*) ?){5,7})",
+            "title": "End time of cluster hibernation, in crontab syntax; this is the time the cluster will be woken up",
+            "type": "string"
+          },
+          "start": {
+            "pattern": "(@(annually|yearly|monthly|weekly|daily|hourly|reboot))|(@every (\\d+(ns|us|µs|ms|s|m|h))+)|((((\\d+,)+\\d+|(\\d+(\\/|-)\\d+)|\\d+|\\*) ?){5,7})",
+            "title": "Start time of cluster hibernation, in crontab syntax",
+            "type": "string"
+          },
+          "timezone": {
+            "title": "Timezone name corresponding to a file in the IANA Time Zone database (like Go's time.LoadLocation).\nAn example would be \"Europe/Berlin\"",
+            "type": "string"
+          }
+        },
+        "required": [
+          "end",
+          "start"
+        ],
+        "type": "object"
+      },
+      "Image": {
+        "description": "For valid names and versions please take a look at /provider-options machineImages",
+        "properties": {
+          "name": {
+            "title": "Name of os image",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version of os image",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "type": "object"
+      },
+      "Kubeconfig": {
+        "properties": {
+          "expirationTimestamp": {
+            "type": "string"
+          },
+          "kubeconfig": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Kubernetes": {
+        "description": "For valid versions please take a look at /provider-options kubernetesVersions",
+        "properties": {
+          "allowPrivilegedContainers": {
+            "description": "DEPRECATED as of Kubernetes 1.25+\nFlag to specify if privileged mode for containers is enabled or not.\nThis should be used with care since it also disables a couple of other features like the use of some volume type (e.g. PVCs).\nBy default this is set to true.",
+            "type": "boolean"
+          },
+          "version": {
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "title": "Kubernetes version used for the cluster",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version"
+        ],
+        "type": "object"
+      },
+      "KubernetesVersion": {
+        "properties": {
+          "expirationDate": {
+            "title": "Expiration date until the version will be supported if known yet",
+            "type": "string"
+          },
+          "featureGates": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "List of feature gates supported by the Kubernetes version",
+            "type": "object"
+          },
+          "state": {
+            "title": "State of the kubernetes version",
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "title": "Kubernetes version",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Machine": {
+        "properties": {
+          "image": {
+            "$ref": "#/components/schemas/Image"
+          },
+          "type": {
+            "description": "For valid types please take a look at /provider-options machineTypes",
+            "type": "string"
+          }
+        },
+        "required": [
+          "image",
+          "type"
+        ],
+        "type": "object"
+      },
+      "MachineImage": {
+        "properties": {
+          "name": {
+            "title": "Image name",
+            "type": "string"
+          },
+          "versions": {
+            "items": {
+              "$ref": "#/components/schemas/MachineImageVersion"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "MachineImageVersion": {
+        "properties": {
+          "cri": {
+            "items": {
+              "$ref": "#/components/schemas/CRI"
+            },
+            "title": "supported container runtimes",
+            "type": "array"
+          },
+          "expirationDate": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "version": {
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "title": "Image version",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "MachineType": {
+        "properties": {
+          "cpu": {
+            "title": "number of CPU cores",
+            "type": "integer"
+          },
+          "memory": {
+            "title": "memory in GB",
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Maintenance": {
+        "properties": {
+          "autoUpdate": {
+            "$ref": "#/components/schemas/MaintenanceAutoUpdate"
+          },
+          "timeWindow": {
+            "$ref": "#/components/schemas/TimeWindow"
+          }
+        },
+        "required": [
+          "autoUpdate",
+          "timeWindow"
+        ],
+        "type": "object"
+      },
+      "Nodepool": {
+        "properties": {
+          "availabilityZones": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "cri": {
+            "$ref": "#/components/schemas/CRI"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "title": "List of labels attached to all worker nodes of this node pool",
+            "type": "object"
+          },
+          "machine": {
+            "$ref": "#/components/schemas/Machine"
+          },
+          "maxSurge": {
+            "maximum": 10,
+            "minimum": 1,
+            "title": "Maximum number of additional VMs that are created during an update",
+            "type": "integer"
+          },
+          "maxUnavailable": {
+            "title": "Maximum number of VMs that that can be unavailable during an update",
+            "type": "integer"
+          },
+          "maximum": {
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Maximum number of nodes in the pool",
+            "type": "integer"
+          },
+          "minimum": {
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Minimum number of nodes in the pool",
+            "type": "integer"
+          },
+          "name": {
+            "description": "Maximum 15 chars",
+            "title": "Name of the node pool",
+            "type": "string"
+          },
+          "taints": {
+            "items": {
+              "$ref": "#/components/schemas/Taint"
+            },
+            "title": "List of taints for all the worker nodes of this node pool",
+            "type": "array"
+          },
+          "volume": {
+            "$ref": "#/components/schemas/Volume"
+          }
+        },
+        "required": [
+          "availabilityZones",
+          "machine",
+          "maximum",
+          "minimum",
+          "name",
+          "volume"
+        ],
+        "type": "object"
+      },
+      "ProjectResponse": {
+        "properties": {
+          "projectId": {
+            "type": "string"
+          },
+          "state": {
+            "$ref": "#/components/schemas/ProjectState"
+          }
+        },
+        "type": "object"
+      },
+      "ProjectState": {
+        "default": "STATE_UNSPECIFIED",
+        "enum": [
+          "STATE_UNSPECIFIED",
+          "STATE_CREATING",
+          "STATE_CREATED",
+          "STATE_DELETING",
+          "STATE_FAILED"
+        ],
+        "type": "string"
+      },
+      "ProviderOptions": {
+        "properties": {
+          "availabilityZones": {
+            "items": {
+              "$ref": "#/components/schemas/AvailabilityZone"
+            },
+            "type": "array"
+          },
+          "kubernetesVersions": {
+            "items": {
+              "$ref": "#/components/schemas/KubernetesVersion"
+            },
+            "title": "List of supported Kubernetes versions",
+            "type": "array"
+          },
+          "machineImages": {
+            "items": {
+              "$ref": "#/components/schemas/MachineImage"
+            },
+            "type": "array"
+          },
+          "machineTypes": {
+            "items": {
+              "$ref": "#/components/schemas/MachineType"
+            },
+            "title": "List of supported machine types",
+            "type": "array"
+          },
+          "volumeTypes": {
+            "items": {
+              "$ref": "#/components/schemas/VolumeType"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "RuntimeError": {
+        "properties": {
+          "code": {
+            "description": "- Code:    \"SKE_UNSPECIFIED\"\n  Message: \"An error occurred. Please open a support ticket if this error persists.\"\n- Code:    \"SKE_TMP_AUTH_ERROR\"\n  Message: \"Authentication failed. This is a temporary error. Please wait while the system recovers.\"\n- Code:    \"SKE_QUOTA_EXCEEDED\"\n  Message: \"Your project's resource quotas are exhausted. Please make sure your quota is sufficient for the ordered cluster.\"\n- Code:    \"SKE_ARGUS_INSTANCE_NOT_FOUND\"\n  Message: \"The provided Argus instance could not be found.\"\n- Code:    \"SKE_RATE_LIMITS\"\n  Message: \"While provisioning your cluster, request rate limits where incurred. Please wait while the system recovers.\"\n- Code:    \"SKE_INFRA_ERROR\"\n  Message: \"An error occurred with the underlying infrastructure. Please open a support ticket if this error persists.\"\n- Code:    \"SKE_REMAINING_RESOURCES\"\n  Message: \"There are remaining Kubernetes resources in your cluster that prevent deletion. Please make sure to remove them.\"\n- Code:    \"SKE_CONFIGURATION_PROBLEM\"\n  Message: \"A configuration error occurred. Please open a support ticket if this error persists.\"\n- Code:    \"SKE_UNREADY_NODES\"\n  Message: \"Not all worker nodes are ready. Please open a support ticket if this error persists.\"\n- Code:    \"SKE_API_SERVER_ERROR\"\n  Message: \"The Kubernetes API server is not reporting readiness. Please open a support ticket if this error persists.\"\n",
+            "enum": [
+              "SKE_UNSPECIFIED",
+              "SKE_TMP_AUTH_ERROR",
+              "SKE_QUOTA_EXCEEDED",
+              "SKE_ARGUS_INSTANCE_NOT_FOUND",
+              "SKE_RATE_LIMITS",
+              "SKE_INFRA_ERROR",
+              "SKE_REMAINING_RESOURCES",
+              "SKE_CONFIGURATION_PROBLEM",
+              "SKE_UNREADY_NODES",
+              "SKE_API_SERVER_ERROR"
+            ],
+            "type": "string"
+          },
+          "details": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Taint": {
+        "properties": {
+          "effect": {
+            "enum": [
+              "NoSchedule",
+              "PreferNoSchedule",
+              "NoExecute"
+            ],
+            "type": "string"
+          },
+          "key": {
+            "title": "Taint key to be applied to a node",
+            "type": "string"
+          },
+          "value": {
+            "title": "Taint value corresponding to the taint key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "effect",
+          "key"
+        ],
+        "type": "object"
+      },
+      "TimeWindow": {
+        "properties": {
+          "end": {
+            "title": "Format: 0000-01-01THH:MM:SS+00:00 e.g. 0000-01-01T24:00:00+00:00",
+            "type": "string"
+          },
+          "start": {
+            "title": "Format: 0000-01-01THH:MM:SS+00:00 e.g. 0000-01-01T23:00:00+00:00",
+            "type": "string"
+          }
+        },
+        "required": [
+          "end",
+          "start"
+        ],
+        "type": "object"
+      },
+      "Volume": {
+        "properties": {
+          "size": {
+            "maximum": 10240,
+            "minimum": 20,
+            "title": "Size of volume in GB",
+            "type": "integer"
+          },
+          "type": {
+            "description": "For valid values please take a look at /provider-options volumeTypes",
+            "type": "string"
+          }
+        },
+        "required": [
+          "size"
+        ],
+        "type": "object"
+      },
+      "VolumeType": {
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "contact": {
+      "name": "STACKIT Kubernetes Engine (SKE) Team",
+      "url": "https://support.stackit.cloud/servicedesk"
+    },
+    "description": "The SKE API provides endpoints to create, update, delete clusters within STACKIT portal projects and to trigger further cluster management tasks.",
+    "termsOfService": "https://stackit.de/en/imprint",
+    "title": "SKE-API",
+    "version": "1.1"
+  },
+  "openapi": "3.0.1",
+  "paths": {
+    "/v1/projects/{projectId}": {
+      "delete": {
+        "description": "Deletes the SKE project specified by 'project_id' (portalProjectID). Deleting a project deletes all corresponding shoots.",
+        "operationId": "DisableService",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Accepted. Deletion happens asynchronously."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid request."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "Delete a project"
+      },
+      "get": {
+        "description": "Get a Project specified by 'project_id' (portalProjectID).",
+        "operationId": "GetServiceStatus",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponse"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Project not found."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "Get a Project"
+      },
+      "put": {
+        "description": "Returns creation state of Project specified by 'project_id' (portalProjectID).",
+        "operationId": "EnableService",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectResponse"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid request."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "Create a Project"
+      }
+    },
+    "/v1/projects/{projectId}/clusters": {
+      "get": {
+        "description": "Return a list of Kubernetes clusters in the project specified by 'project_id' (portalProjectID).",
+        "operationId": "ListClusters",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListClustersResponse"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid request."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Project not found."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "List all clusters"
+      }
+    },
+    "/v1/projects/{projectId}/clusters/{clusterName}": {
+      "delete": {
+        "description": "Delete Kubernetes cluster specified by the identifier, belonging to the project specified by 'project_id' (portalProjectID).",
+        "operationId": "DeleteCluster",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "clusterName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Accepted, deletion of cluster happens asynchronously. The deletion is done as soon as GetCluster returns a 404 code. The progress can be observerd in the GetCluster's lastOperation field that contains a progress indicator."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "Delete a cluster"
+      },
+      "get": {
+        "description": "Get Kubernetes cluster for the specified identifier, belonging to the project specified by 'project_id' (portalProjectID).",
+        "operationId": "GetCluster",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "clusterName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cluster"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "Get a cluster"
+      },
+      "put": {
+        "description": "Create a new cluster in your project or modify an existing one. To get valid values for certain properties please check the /provider-options endpoint.",
+        "operationId": "CreateOrUpdateCluster",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "clusterName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrUpdateClusterPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cluster"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Accepted, creation/ update of cluster happens asynchronously. The status of the cluster is specified in the status.conditions array of the response object. An entry in the status.conditions array represents the status of a condition type, whereat following types are supported: APIServerAvailable, ControlPlaneHealthy, EveryNodeReady, SystemComponentsHealthy. After creation of a cluster is triggered, the status of those types is initially 'Progressing' and changes to 'True' when the related type is successfully created and available."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid request."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Project not found."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "Create or update a cluster"
+      }
+    },
+    "/v1/projects/{projectId}/clusters/{clusterName}/credentials": {
+      "get": {
+        "description": "This endpoint is deprecated since version 1.1 of this API. It will not work for clusters with Kubernetes v1.27+, or if the new endpoints for credentials rotation have already been used. Use \"/v1/projects/{project_id}/clusters/{cluster_name}/kubeconfig\" instead to obtain a kubeconfig. For more information, please see [docs link].\n\nGet credentials for the cluster specified by 'cluster_name', belonging to the project specified by 'project_id' (portalProjectID).",
+        "operationId": "GetCredentials",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "clusterName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Credentials"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Invalid request."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Credentials were not found."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "Get credentials for a cluster (deprecated)"
+      }
+    },
+    "/v1/projects/{projectId}/clusters/{clusterName}/hibernate": {
+      "post": {
+        "description": "Trigger immediate hibernation of the cluster. If the cluster is already in hibernation state, the method does nothing.",
+        "operationId": "TriggerHibernate",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "clusterName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Accepted, execution happens asynchronously. Use GetCluster endpoint to read the status of the cluster via status.conditions."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Cluster not found."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "Trigger cluster hibernation"
+      }
+    },
+    "/v1/projects/{projectId}/clusters/{clusterName}/maintenance": {
+      "post": {
+        "description": "Trigger immediate maintenance of the cluster. The autoUpdate configuration specified in the Maintenance object of the cluster spec defines what is updated during the immediate maintenance operation.",
+        "operationId": "TriggerMaintenance",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "clusterName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Accepted, execution happens asynchronously. Use GetCluster endpoint to read the status of the cluster via status.conditions."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Cluster not found."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "Trigger cluster maintenance"
+      }
+    },
+    "/v1/projects/{projectId}/clusters/{clusterName}/reconcile": {
+      "post": {
+        "description": "Trigger immediate reconciliation of the complete cluster without changing the cluster specification.",
+        "operationId": "TriggerReconcile",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "clusterName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Accepted, execution happens asynchronously. Use GetCluster endpoint to read the status of the cluster via status.conditions."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Cluster not found."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "Trigger cluster reconciliation"
+      }
+    },
+    "/v1/projects/{projectId}/clusters/{clusterName}/rotate-credentials": {
+      "post": {
+        "description": "This endpoint is deprecated since version 1.1 of this API. It will not work for clusters with Kubernetes v1.27+, or if a kubeconfig has already been obtained from the new \"/v1/projects/{project_id}/clusters/{cluster_name}/kubeconfig\" endpoint. Use \"/v1/projects/{project_id}/clusters/{cluster_name}/start-credentials-rotation\" instead to rotate all cluster credentials. For more information, please see [docs link].\n\nTrigger credential rotation. The old credentials (kubeconfig) will be invalid after the operation.",
+        "operationId": "TriggerRotateCredentials",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "clusterName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Accepted, execution happens asynchronously. Use GetCluster endpoint to read the status of the cluster via status.conditions."
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Cluster not found."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "Rotate cluster credentials (deprecated)"
+      }
+    },
+    "/v1/provider-options": {
+      "get": {
+        "description": "Returns a list of supported Kubernetes versions and a list of supported machine types for the cluster nodes.",
+        "operationId": "ListProviderOptions",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderOptions"
+                }
+              }
+            },
+            "description": "A successful response."
+          },
+          "default": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuntimeError"
+                }
+              }
+            },
+            "description": "An unexpected error response."
+          }
+        },
+        "summary": "List provider options"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://ske.api.{region}stackit.cloud",
+      "variables": {
+        "region": {
+          "default": "eu01.",
+          "enum": [
+            "eu01."
+          ]
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "description": "Cluster related actions",
+      "name": "Cluster"
+    },
+    {
+      "description": "Endpoints for credentials",
+      "name": "Credentials"
+    },
+    {
+      "description": "Cluster operations",
+      "name": "Operation"
+    },
+    {
+      "description": "Endpoints for provider-options",
+      "name": "ProviderOptions"
+    },
+    {
+      "description": "Project related actions",
+      "name": "Project"
+    }
+  ]
+}

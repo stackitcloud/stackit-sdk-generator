@@ -1,0 +1,2030 @@
+{
+  "components": {
+    "schemas": {
+      "instance.CreateDatabaseRequest": {
+        "properties": {
+          "collation": {
+            "example": "SQL_Latin1_General_CP1_CI_AS",
+            "type": "string"
+          },
+          "name": {
+            "example": "Test",
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Database specific options",
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "instance.CreateDatabaseResponse": {
+        "properties": {
+          "database": {
+            "$ref": "#/components/schemas/instance.Database"
+          }
+        },
+        "type": "object"
+      },
+      "instance.DataPoint": {
+        "properties": {
+          "timestamp": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "instance.Database": {
+        "properties": {
+          "collation": {
+            "example": "SQL_Latin1_General_CP1_CI_AS",
+            "type": "string"
+          },
+          "createDate": {
+            "example": "2003-04-08T09:13:36.39Z",
+            "type": "string"
+          },
+          "id": {
+            "example": "1",
+            "type": "string"
+          },
+          "name": {
+            "example": "Peter_pan",
+            "type": "string"
+          },
+          "options": {
+            "description": "Database specific options",
+            "type": "object"
+          }
+        },
+        "type": "object"
+      },
+      "instance.Host": {
+        "properties": {
+          "hostMetrics": {
+            "items": {
+              "$ref": "#/components/schemas/instance.HostMetric"
+            },
+            "type": "array"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "instance.HostMetric": {
+        "properties": {
+          "datapoints": {
+            "items": {
+              "$ref": "#/components/schemas/instance.DataPoint"
+            },
+            "type": "array"
+          },
+          "name": {
+            "type": "string"
+          },
+          "units": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "instance.ListDatabasesResponse": {
+        "properties": {
+          "databases": {
+            "items": {
+              "$ref": "#/components/schemas/instance.Database"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "instance.ListInstance": {
+        "properties": {
+          "id": {
+            "example": "df727477-8991-486c-a3ed-d11d9d9beb1c",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "example": "RUNNING",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "instance.MetricsResponse": {
+        "properties": {
+          "hosts": {
+            "items": {
+              "$ref": "#/components/schemas/instance.Host"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "CreateInstancePayload": {
+        "properties": {
+          "acl": {
+            "$ref": "#/components/schemas/ACL"
+          },
+          "backupSchedule": {
+            "example": "6 6 * * *",
+            "type": "string"
+          },
+          "flavorId": {
+            "example": "1.1",
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Labels field is not certain/clear",
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "replicas": {
+            "example": 3,
+            "type": "integer"
+          },
+          "storage": {
+            "$ref": "#/components/schemas/Storage"
+          },
+          "version": {
+            "example": "1.0",
+            "type": "string"
+          }
+        },
+        "required": [
+          "acl",
+          "backupSchedule",
+          "flavorId",
+          "name",
+          "options",
+          "replicas",
+          "storage",
+          "version"
+        ],
+        "type": "object"
+      },
+      "PartialUpdateInstancePayload": {
+        "properties": {
+          "acl": {
+            "$ref": "#/components/schemas/ACL"
+          },
+          "backupSchedule": {
+            "example": "6 6 * * *",
+            "type": "string"
+          },
+          "flavorId": {
+            "example": "1.1",
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Labels field is not certain/clear",
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "replicas": {
+            "example": 3,
+            "type": "integer"
+          },
+          "storage": {
+            "$ref": "#/components/schemas/Storage"
+          },
+          "version": {
+            "example": "1.0",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateBackupSchedulePayload": {
+        "properties": {
+          "backupSchedule": {
+            "example": "6 6 * * *",
+            "type": "string"
+          }
+        },
+        "required": [
+          "backupSchedule"
+        ],
+        "type": "object"
+      },
+      "CloneInstancePayload": {
+        "properties": {
+          "class": {
+            "example": "premium-perf6-stackit",
+            "type": "string"
+          },
+          "size": {
+            "example": 10,
+            "type": "integer"
+          },
+          "timestamp": {
+            "description": "The timestamp should be specified in UTC time following the format provided in the example.",
+            "example": "2023-04-17T09:28:00+00:00",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CreateUserPayload": {
+        "properties": {
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateUserPayload": {
+        "properties": {
+          "database": {
+            "type": "string"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "PartialUpdateUserPayload": {
+        "properties": {
+          "database": {
+            "type": "string"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "ACL": {
+        "properties": {
+          "items": {
+            "example": [
+              "0.0.0.0/0"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Backup": {
+        "properties": {
+          "endTime": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "name": {
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "startTime": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CloneInstanceResponse": {
+        "properties": {
+          "instanceId": {
+            "example": "df727477-8991-486c-a3ed-d11d9d9beb1c",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CreateInstanceResponse": {
+        "properties": {
+          "id": {
+            "example": "df727477-8991-486c-a3ed-d11d9d9beb1c",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CreateUserResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "type": "object"
+      },
+      "Error": {
+        "properties": {
+          "code": {
+            "example": 404,
+            "type": "integer"
+          },
+          "fields": {
+            "additionalProperties": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "database not found",
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Flavor": {
+        "properties": {
+          "cpu": {
+            "example": 1,
+            "type": "integer"
+          },
+          "description": {
+            "example": "Small, Compute optimized",
+            "type": "string"
+          },
+          "id": {
+            "example": "1.1",
+            "type": "string"
+          },
+          "memory": {
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "GetBackupResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Backup"
+          }
+        },
+        "type": "object"
+      },
+      "ListStoragesResponse": {
+        "properties": {
+          "storageClasses": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "storageRange": {
+            "$ref": "#/components/schemas/StorageRange"
+          }
+        },
+        "type": "object"
+      },
+      "ListFlavorsResponse": {
+        "properties": {
+          "flavors": {
+            "items": {
+              "$ref": "#/components/schemas/Flavor"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "InstanceResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Instance"
+          }
+        },
+        "type": "object"
+      },
+      "ListVersionsResponse": {
+        "properties": {
+          "versions": {
+            "example": [
+              "1.0"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "ListBackupsResponse": {
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Backup"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "ListInstancesResponse": {
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/instance.ListInstance"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "ListUsersResponseItem": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ListUsersResponse": {
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ListUsersResponseItem"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "ResetUserResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "type": "object"
+      },
+      "Instance": {
+        "properties": {
+          "acl": {
+            "$ref": "#/components/schemas/ACL"
+          },
+          "backupSchedule": {
+            "example": "6 6 * * *",
+            "type": "string"
+          },
+          "flavor": {
+            "$ref": "#/components/schemas/Flavor"
+          },
+          "id": {
+            "example": "df727477-8991-486c-a3ed-d11d9d9beb1c",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "replicas": {
+            "example": 3,
+            "type": "integer"
+          },
+          "status": {
+            "example": "RUNNING",
+            "type": "string"
+          },
+          "storage": {
+            "$ref": "#/components/schemas/Storage"
+          },
+          "version": {
+            "example": "1.0",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Storage": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "size": {
+            "example": 10,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "StorageRange": {
+        "properties": {
+          "max": {
+            "example": 1000,
+            "type": "integer"
+          },
+          "min": {
+            "example": 10,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PartialUpdateInstanceResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Instance"
+          }
+        },
+        "type": "object"
+      },
+      "User": {
+        "properties": {
+          "database": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "uri": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CreateUserRequest": {
+        "properties": {
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "GetUserResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/UserResponse"
+          }
+        },
+        "type": "object"
+      },
+      "UserResponse": {
+        "properties": {
+          "host": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "contact": {
+      "email": "support@stackit.cloud",
+      "name": "STACKIT Postgres Service Support",
+      "url": "https://www.stackit.de/en/contact"
+    },
+    "description": "This is the documentation for the STACKIT postgres service",
+    "termsOfService": "https://www.stackit.de/en/general-terms-and-conditions/",
+    "title": "STACKIT PostgreSQL Flex API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.0.1",
+  "paths": {
+    "/v1/projects/{projectId}/flavors": {
+      "get": {
+        "description": "Get available flavors for a specific projectID",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListFlavorsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Get Flavors",
+        "operationId": "ListFlavors"
+      }
+    },
+    "/v1/projects/{projectId}/instances": {
+      "get": {
+        "description": "List available instances",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListInstancesResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "List Instances",
+        "operationId": "ListInstances"
+      },
+      "post": {
+        "description": "Create a new instance of a postgres database",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInstancePayload"
+              }
+            }
+          },
+          "description": "Body",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateInstanceResponse"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Create Instance",
+        "operationId": "CreateInstance"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}": {
+      "delete": {
+        "description": "Delete available instance",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Delete Instance",
+        "operationId": "DeleteInstance"
+      },
+      "get": {
+        "description": "Get specific available instances",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InstanceResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Get specific instance",
+        "operationId": "GetInstance"
+      },
+      "patch": {
+        "description": "Update available instance of a postgres database. Supported Versions are 12, 13, 14, 15 -- only upgrades are allowed!",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialUpdateInstancePayload"
+              }
+            }
+          },
+          "description": "Body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PartialUpdateInstanceResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Update Instance",
+        "operationId": "PartialUpdateInstance"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/backups": {
+      "get": {
+        "description": "List all backups which are available for a specific instance",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListBackupsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "List backups",
+        "operationId": "ListBackups"
+      },
+      "put": {
+        "description": "Update backup schedule",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBackupSchedulePayload"
+              }
+            }
+          },
+          "description": "Body",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Update Backup Schedule",
+        "operationId": "UpdateBackupSchedule"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/backups/{backupId}": {
+      "get": {
+        "description": "Get specific available backup",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Backup ID",
+            "explode": false,
+            "in": "path",
+            "name": "backupId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBackupResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Get specific backup",
+        "operationId": "GetBackup"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/clone": {
+      "post": {
+        "description": "Clone an existing instance of a postgres database to a new destination instance",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloneInstancePayload"
+              }
+            }
+          },
+          "description": "Body",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloneInstanceResponse"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Clone Instance",
+        "operationId": "CloneInstance"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/users": {
+      "get": {
+        "description": "List available users for an instance",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListUsersResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "List Users",
+        "operationId": "ListUsers"
+      },
+      "post": {
+        "description": "Create user for an instance",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserPayload"
+              }
+            }
+          },
+          "description": "body",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserResponse"
+                }
+              }
+            },
+            "description": "Created"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Create User",
+        "operationId": "CreateUser"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/users/{userId}": {
+      "delete": {
+        "description": "Delete user for an instance",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "User ID",
+            "explode": false,
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Delete User",
+        "operationId": "DeleteUser"
+      },
+      "get": {
+        "description": "Get specific available user for an instance",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "User ID",
+            "explode": false,
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Get User",
+        "operationId": "GetUser"
+      },
+      "patch": {
+        "description": "Update user for an instance. Only the roles are updatable.",
+        "parameters": [
+          {
+            "description": "The ID of the project",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The ID of the instance",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The ID of the user in the database",
+            "explode": false,
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialUpdateUserPayload"
+              }
+            }
+          },
+          "description": "The Request body only required in PUT endpoint. If empty request body is send via patch, then login and createdb roles are removed from user. The field "
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Update User",
+        "operationId": "PartialUpdateUser"
+      },
+      "put": {
+        "description": "Update user for an instance. Only the roles are updatable.",
+        "parameters": [
+          {
+            "description": "The ID of the project",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The ID of the instance",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "The ID of the user in the database",
+            "explode": false,
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserPayload"
+              }
+            }
+          },
+          "description": "The Request body only required in PUT endpoint. If empty request body is send via patch, then login and createdb roles are removed from user. The field "
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Update User",
+        "operationId": "UpdateUser"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/users/{userId}/reset": {
+      "post": {
+        "description": "Reset user password for a postgres instance",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "user ID",
+            "explode": false,
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetUserResponse"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Reset User",
+        "operationId": "ResetUser"
+      }
+    },
+    "/v1/projects/{projectId}/storages/{flavorId}": {
+      "get": {
+        "description": "Get available storages for a specific flavor",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Flavor ID",
+            "explode": false,
+            "in": "path",
+            "name": "flavorId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListStoragesResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Get Storages",
+        "operationId": "ListStorages"
+      }
+    },
+    "/v1/projects/{projectId}/versions": {
+      "get": {
+        "description": "Get available versions for postgres database",
+        "parameters": [
+          {
+            "description": "Project ID",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "Instance ID",
+            "explode": true,
+            "in": "query",
+            "name": "instanceId",
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListVersionsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "405": {
+            "description": "Method Not Allowed"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Get Versions",
+        "operationId": "ListVersions"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://postgres-flex-service.api.{region}stackit.cloud",
+      "variables": {
+        "region": {
+          "default": "eu01.",
+          "enum": [
+            "eu01."
+          ]
+        }
+      }
+    }
+  ]
+}

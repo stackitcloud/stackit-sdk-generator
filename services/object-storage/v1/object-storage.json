@@ -1,0 +1,1592 @@
+{
+  "components": {
+    "schemas": {
+      "AccessKey": {
+        "properties": {
+          "displayName": {
+            "example": "****************TGVP",
+            "title": "Displayname",
+            "type": "string"
+          },
+          "expires": {
+            "example": "2022-12-02T17:23:00.000Z",
+            "title": "Expires",
+            "type": "string"
+          },
+          "keyId": {
+            "description": "Identifies the pair of access key and secret access key for deletion",
+            "example": "abcABC_01234-0123456789abcABCabc0123456789==",
+            "title": "Keyid",
+            "type": "string"
+          }
+        },
+        "required": [
+          "displayName",
+          "keyId",
+          "expires"
+        ],
+        "title": "AccessKey",
+        "type": "object"
+      },
+      "Bucket": {
+        "properties": {
+          "name": {
+            "example": "bucket-1",
+            "title": "Name",
+            "type": "string"
+          },
+          "region": {
+            "example": "eu01",
+            "title": "Region",
+            "type": "string"
+          },
+          "urlPathStyle": {
+            "description": "URL in path style",
+            "example": "https://object.storage.eu01.onstackit.cloud/bucket-1",
+            "title": "Urlpathstyle",
+            "type": "string"
+          },
+          "urlVirtualHostedStyle": {
+            "description": "URL in virtual hosted style",
+            "example": "https://bucket-1.object.storage.eu01.onstackit.cloud",
+            "title": "Urlvirtualhostedstyle",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "region",
+          "urlPathStyle",
+          "urlVirtualHostedStyle"
+        ],
+        "title": "Bucket",
+        "type": "object"
+      },
+      "CreateAccessKeyResponse": {
+        "properties": {
+          "accessKey": {
+            "description": "Access key",
+            "example": "AF17TKP7BTQX4HSLOXBA",
+            "title": "Accesskey",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "Obfuscated access key",
+            "example": "****************OXBA",
+            "title": "Displayname",
+            "type": "string"
+          },
+          "expires": {
+            "description": "Expiration date. Null means never expires.",
+            "example": "2020-09-04T00:00:00.000Z",
+            "title": "Expires",
+            "type": "string"
+          },
+          "keyId": {
+            "description": "Identifies the pair of access key and secret access key for deletion",
+            "example": "abcABC_01234-0123456789abcABCabc0123456789==",
+            "title": "Keyid",
+            "type": "string"
+          },
+          "project": {
+            "description": "Project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "title": "Project",
+            "type": "string"
+          },
+          "secretAccessKey": {
+            "description": "Secret access key",
+            "example": "abcABC+123456789012345678901234567890123",
+            "title": "Secretaccesskey",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "keyId",
+          "displayName",
+          "expires",
+          "accessKey",
+          "secretAccessKey"
+        ],
+        "title": "CreateAccessKeyResponse",
+        "type": "object"
+      },
+      "CreateBucketResponse": {
+        "properties": {
+          "bucket": {
+            "description": "Name of the bucket",
+            "example": "bucket-1",
+            "title": "Bucket",
+            "type": "string"
+          },
+          "project": {
+            "description": "Project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "title": "Project",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "bucket"
+        ],
+        "title": "CreateBucketResponse",
+        "type": "object"
+      },
+      "CreateCredentialsGroupResponse": {
+        "properties": {
+          "credentialsGroup": {
+            "$ref": "#/components/schemas/CredentialsGroup"
+          },
+          "project": {
+            "description": "Project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "title": "Project",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "credentialsGroup"
+        ],
+        "title": "CreateCredentialsGroupResponse",
+        "type": "object"
+      },
+      "CredentialsGroup": {
+        "properties": {
+          "credentialsGroupId": {
+            "description": "The ID of the credentials group",
+            "example": "3969597f-d2f3-4c07-8533-1a4bf8159c0e",
+            "title": "Credentials group ID",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "Name of the group holding credentials",
+            "example": "group-name-1",
+            "title": "Credentials group name",
+            "type": "string"
+          },
+          "urn": {
+            "description": "Credentials group URN",
+            "example": "urn:sgws:identity::12345678901234567890:user/credentials-group-123456",
+            "title": "Urn",
+            "type": "string"
+          }
+        },
+        "required": [
+          "credentialsGroupId",
+          "urn",
+          "displayName"
+        ],
+        "title": "CredentialsGroup",
+        "type": "object"
+      },
+      "DeleteAccessKeyResponse": {
+        "properties": {
+          "keyId": {
+            "description": "Identifies the pair of access key and secret access key for deletion",
+            "example": "abcABC_01234-0123456789abcABCabc0123456789==",
+            "title": "Keyid",
+            "type": "string"
+          },
+          "project": {
+            "description": "Project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "title": "Project",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "keyId"
+        ],
+        "title": "DeleteAccessKeyResponse",
+        "type": "object"
+      },
+      "DeleteBucketResponse": {
+        "properties": {
+          "bucket": {
+            "description": "Name of the bucket",
+            "example": "bucket-1",
+            "title": "Bucket",
+            "type": "string"
+          },
+          "project": {
+            "description": "Project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "title": "Project",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "bucket"
+        ],
+        "title": "DeleteBucketResponse",
+        "type": "object"
+      },
+      "DeleteCredentialsGroupResponse": {
+        "properties": {
+          "credentialsGroupId": {
+            "description": "The ID of the credentials group",
+            "example": "3969597f-d2f3-4c07-8533-1a4bf8159c0e",
+            "title": "Credentials group ID",
+            "type": "string"
+          },
+          "project": {
+            "description": "Project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "title": "Project",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "credentialsGroupId"
+        ],
+        "title": "DeleteCredentialsGroupResponse",
+        "type": "object"
+      },
+      "DetailedError": {
+        "properties": {
+          "key": {
+            "example": "example.error_key",
+            "title": "Error Key",
+            "type": "string"
+          },
+          "msg": {
+            "example": "Some details about the error.",
+            "title": "Error message",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "msg"
+        ],
+        "title": "DetailedError",
+        "type": "object"
+      },
+      "ErrorMessage": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/DetailedError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "required": [
+          "detail"
+        ],
+        "title": "ErrorMessage",
+        "type": "object"
+      },
+      "GetBucketResponse": {
+        "properties": {
+          "bucket": {
+            "$ref": "#/components/schemas/Bucket"
+          },
+          "project": {
+            "description": "Project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "title": "Project",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "bucket"
+        ],
+        "title": "GetBucketResponse",
+        "type": "object"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "title": "Detail",
+            "type": "array"
+          }
+        },
+        "title": "HTTPValidationError",
+        "type": "object"
+      },
+      "ProjectScope": {
+        "description": "The scope of a STACKIT project can be public (default) or\ncan have client specific special requirements.",
+        "enum": [
+          "PUBLIC",
+          "SCHWARZ"
+        ],
+        "title": "ProjectScope"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "title": "Location",
+            "type": "array"
+          },
+          "msg": {
+            "title": "Message",
+            "type": "string"
+          },
+          "type": {
+            "title": "Error Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError",
+        "type": "object"
+      },
+      "CreateAccessKeyPayload": {
+        "properties": {
+          "expires": {
+            "description": "Expiration date. Null means never expires.",
+            "example": "2020-09-04T00:00:00.000Z",
+            "format": "date-time",
+            "title": "Expires",
+            "type": "string"
+          }
+        },
+        "title": "CreateAccessKeyRequest",
+        "type": "object"
+      },
+      "CreateCredentialsGroupPayload": {
+        "properties": {
+          "displayName": {
+            "description": "Name of the group holding credentials",
+            "example": "group-name-1",
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Credentials group name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "displayName"
+        ],
+        "title": "CreateCredentialsGroupRequest",
+        "type": "object"
+      },
+      "ListAccessKeysResponse": {
+        "properties": {
+          "accessKeys": {
+            "items": {
+              "$ref": "#/components/schemas/AccessKey"
+            },
+            "title": "Accesskeys",
+            "type": "array"
+          },
+          "project": {
+            "description": "Project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "title": "Project",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "accessKeys"
+        ],
+        "title": "GetAccessKeysResponse",
+        "type": "object"
+      },
+      "ListBucketsResponse": {
+        "properties": {
+          "buckets": {
+            "items": {
+              "$ref": "#/components/schemas/Bucket"
+            },
+            "title": "Buckets",
+            "type": "array"
+          },
+          "project": {
+            "description": "Project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "title": "Project",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "buckets"
+        ],
+        "title": "GetBucketsResponse",
+        "type": "object"
+      },
+      "ListCredentialsGroupsResponse": {
+        "properties": {
+          "credentialsGroups": {
+            "items": {
+              "$ref": "#/components/schemas/CredentialsGroup"
+            },
+            "title": "Credentialsgroups",
+            "type": "array"
+          },
+          "project": {
+            "description": "Project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "title": "Project",
+            "type": "string"
+          }
+        },
+        "required": [
+          "project",
+          "credentialsGroups"
+        ],
+        "title": "GetCredentialsGroupsResponse",
+        "type": "object"
+      },
+      "ProjectStatus": {
+        "properties": {
+          "project": {
+            "description": "Project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "title": "Project",
+            "type": "string"
+          },
+          "scope": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ProjectScope"
+              }
+            ],
+            "description": "Project Scope",
+            "example": "PUBLIC"
+          }
+        },
+        "required": [
+          "project",
+          "scope"
+        ],
+        "title": "ProjectResponse",
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "STACKIT API to manage the Object Storage",
+    "termsOfService": "https://stackit.de/en/imprint",
+    "title": "STACKIT Object Storage API",
+    "version": "1.0.8"
+  },
+  "openapi": "3.0.2",
+  "paths": {
+    "/v1/project/{projectId}": {
+      "delete": {
+        "description": "Delete the given project",
+        "operationId": "DisableService",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete Project"
+      },
+      "get": {
+        "description": "Get project details.",
+        "operationId": "GetServiceStatus",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Project"
+      },
+      "post": {
+        "description": "Create a project. Creation will also be successful if the project\nalready exists, but will not create a duplicate",
+        "operationId": "EnableService",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectStatus"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectStatus"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Create Project"
+      }
+    },
+    "/v1/project/{projectId}/access-key": {
+      "post": {
+        "description": "Create an access key for the given project.",
+        "operationId": "CreateAccessKey",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "credentials-group",
+            "schema": {
+              "maxLength": 36,
+              "minLength": 36,
+              "title": "Credentials-Group",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAccessKeyPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateAccessKeyResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Create Access Key"
+      }
+    },
+    "/v1/project/{projectId}/access-key/{keyId}": {
+      "delete": {
+        "description": "Delete an access key from the given project.",
+        "operationId": "DeleteAccessKey",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Object storage access key",
+            "example": "abcABC_01234-0123456789abcABCabc0123456789==",
+            "in": "path",
+            "name": "keyId",
+            "required": true,
+            "schema": {
+              "description": "Object storage access key",
+              "title": "Key Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "credentials-group",
+            "schema": {
+              "maxLength": 36,
+              "minLength": 36,
+              "title": "Credentials-Group",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteAccessKeyResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "307": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Temporary Redirect"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete Access Key"
+      }
+    },
+    "/v1/project/{projectId}/access-keys": {
+      "get": {
+        "description": "Get a list of access keys for the given project.",
+        "operationId": "ListAccessKeys",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "credentials-group",
+            "schema": {
+              "maxLength": 36,
+              "minLength": 36,
+              "title": "Credentials-Group",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAccessKeysResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Access Keys"
+      }
+    },
+    "/v1/project/{projectId}/bucket/{bucketName}": {
+      "delete": {
+        "description": "Delete a bucket from the given project.",
+        "operationId": "DeleteBucket",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The name has to be dns-conform.",
+            "example": "bucket-1",
+            "in": "path",
+            "name": "bucketName",
+            "required": true,
+            "schema": {
+              "description": "The name has to be dns-conform.",
+              "maxLength": 63,
+              "minLength": 3,
+              "title": "Bucket Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteBucketResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete Bucket"
+      },
+      "get": {
+        "description": "Get information for the given bucket in the project.",
+        "operationId": "GetBucket",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The name has to be dns-conform.",
+            "example": "bucket-1",
+            "in": "path",
+            "name": "bucketName",
+            "required": true,
+            "schema": {
+              "description": "The name has to be dns-conform.",
+              "maxLength": 63,
+              "minLength": 3,
+              "title": "Bucket Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBucketResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Bucket"
+      },
+      "post": {
+        "description": "Create a bucket for the given project. Bucket with the same name\ncannot already exists in the object storage",
+        "operationId": "CreateBucket",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          },
+          {
+            "description": "The name has to be dns-conform.",
+            "example": "bucket-1",
+            "in": "path",
+            "name": "bucketName",
+            "required": true,
+            "schema": {
+              "description": "The name has to be dns-conform.",
+              "maxLength": 63,
+              "minLength": 3,
+              "title": "Bucket Name",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBucketResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Unprocessable Entity"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Create Bucket"
+      }
+    },
+    "/v1/project/{projectId}/buckets": {
+      "get": {
+        "description": "Get the list of all buckets in the given project",
+        "operationId": "ListBuckets",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListBucketsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Buckets"
+      }
+    },
+    "/v1/project/{projectId}/credentials-group": {
+      "post": {
+        "operationId": "CreateCredentialsGroup",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCredentialsGroupPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCredentialsGroupResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Forbidden"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Create Credentials Group"
+      }
+    },
+    "/v1/project/{projectId}/credentials-group/{groupId}": {
+      "delete": {
+        "description": "Delete a credentials group inside a project if the project\nexists and no valid access keys are left in the group.",
+        "operationId": "DeleteCredentialsGroup",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Id of the credentials group",
+            "example": "3969597f-d2f3-4c07-8533-1a4bf8159c0e",
+            "in": "path",
+            "name": "groupId",
+            "required": true,
+            "schema": {
+              "description": "Id of the credentials group",
+              "title": "Credentials Group Id",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteCredentialsGroupResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Delete Credentials Group"
+      }
+    },
+    "/v1/project/{projectId}/credentials-groups": {
+      "get": {
+        "description": "Get credentials groups inside a project if the project exists",
+        "operationId": "ListCredentialsGroups",
+        "parameters": [
+          {
+            "description": "STACKIT project ID",
+            "example": "cd5e788d-5b7b-4ab9-a20d-e790205df10b",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "description": "STACKIT project ID",
+              "title": "Project ID",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCredentialsGroupsResponse"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorMessage"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "summary": "Get Credentials Groups"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://object-storage.api.{region}stackit.cloud",
+      "variables": {
+        "region": {
+          "default": "eu01.",
+          "enum": [
+            "eu01."
+          ]
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "description": "Manage access keys.",
+      "name": "access-key"
+    },
+    {
+      "description": "Manage buckets.",
+      "name": "bucket"
+    },
+    {
+      "description": "Manage groups that hold access credentials",
+      "name": "credentials-group"
+    },
+    {
+      "description": "Manage projects.",
+      "name": "project"
+    }
+  ]
+}

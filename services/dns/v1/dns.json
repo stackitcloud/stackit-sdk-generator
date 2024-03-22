@@ -1,0 +1,2531 @@
+{
+  "components": {
+    "schemas": {
+      "label.ResponseAllLabels": {
+        "description": "ResponseAllLabels.",
+        "properties": {
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/Label"
+            },
+            "type": "array"
+          },
+          "message": {
+            "example": "Success",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "label.ResponseDeleteLabel": {
+        "description": "ResponseDeleteLabel.",
+        "properties": {
+          "label": {
+            "$ref": "#/components/schemas/Label"
+          },
+          "message": {
+            "example": "Success",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "label.ResponseUpsertLabel": {
+        "description": "ResponseUpsertLabel.",
+        "properties": {
+          "label": {
+            "$ref": "#/components/schemas/Label"
+          },
+          "message": {
+            "example": "Success",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CreateZonePayload": {
+        "description": "Zone to create.",
+        "properties": {
+          "acl": {
+            "default": "0.0.0.0/0,::/0",
+            "description": "access control list",
+            "example": "0.0.0.0/0,::/0",
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "contactEmail": {
+            "default": "hostmaster@stackit.cloud",
+            "description": "contact e-mail for the zone",
+            "example": "hostmaster@stackit.cloud",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "defaultTTL": {
+            "description": "default time to live",
+            "example": 3600,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "description": {
+            "description": "description of the zone",
+            "example": "this is our example zone",
+            "maxLength": 1024,
+            "type": "string"
+          },
+          "dnsName": {
+            "description": "zone name",
+            "example": "example.com",
+            "maxLength": 253,
+            "minLength": 1,
+            "type": "string"
+          },
+          "expireTime": {
+            "description": "expire time",
+            "example": 1209600,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "isReverseZone": {
+            "default": false,
+            "description": "if the zone is a reverse zone or not",
+            "example": false,
+            "type": "boolean"
+          },
+          "name": {
+            "description": "user given name",
+            "example": "test",
+            "maxLength": 63,
+            "minLength": 1,
+            "type": "string"
+          },
+          "negativeCache": {
+            "description": "negative caching",
+            "example": 60,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "primaries": {
+            "description": "primary name server for secondary zone",
+            "example": [
+              "1.2.3.4"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "refreshTime": {
+            "description": "refresh time",
+            "example": 3600,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "retryTime": {
+            "description": "retry time",
+            "example": 600,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "type": {
+            "default": "primary",
+            "description": "zone type",
+            "enum": [
+              "primary",
+              "secondary"
+            ],
+            "example": "primary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dnsName",
+          "name"
+        ],
+        "type": "object"
+      },
+      "PartialUpdateZonePayload": {
+        "properties": {
+          "acl": {
+            "default": "0.0.0.0/0,::/0",
+            "description": "access control list",
+            "example": "0.0.0.0/0,::/0",
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "contactEmail": {
+            "default": "hostmaster@stackit.cloud",
+            "description": "contact e-mail for the zone",
+            "example": "hostmaster@stackit.cloud",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "defaultTTL": {
+            "description": "default time to live",
+            "example": 3600,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "description": {
+            "description": "description of the zone",
+            "example": "this is our example zone",
+            "maxLength": 1024,
+            "type": "string"
+          },
+          "expireTime": {
+            "description": "expire time",
+            "example": 1209600,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "name": {
+            "description": "user given name",
+            "example": "test",
+            "maxLength": 63,
+            "minLength": 1,
+            "type": "string"
+          },
+          "negativeCache": {
+            "description": "negative caching",
+            "example": 60,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "primaries": {
+            "description": "primary name server for secondary zone",
+            "example": [
+              "1.2.3.4"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "refreshTime": {
+            "description": "refresh time",
+            "example": 3600,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "retryTime": {
+            "description": "retry time",
+            "example": 600,
+            "minimum": 60,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "CreateRecordSetPayload": {
+        "description": "RRSetPost for rr set info.",
+        "properties": {
+          "comment": {
+            "description": "user comment",
+            "example": "this is our example comment",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "name": {
+            "description": "name of the record which should be a valid domain according to rfc1035 Section 2.3.4",
+            "example": "example.com.",
+            "maxLength": 63,
+            "minLength": 1,
+            "type": "string"
+          },
+          "records": {
+            "description": "records",
+            "items": {
+              "$ref": "#/components/schemas/RecordPayload"
+            },
+            "type": "array"
+          },
+          "ttl": {
+            "description": "time to live. If nothing provided we will set the zone ttl.",
+            "example": 3600,
+            "maximum": 99999999,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "type": {
+            "description": "record set type",
+            "enum": [
+              "A",
+              "AAAA",
+              "SOA",
+              "CNAME",
+              "NS",
+              "MX",
+              "TXT",
+              "SRV",
+              "PTR",
+              "ALIAS",
+              "DNAME",
+              "CAA",
+              "DNSKEY",
+              "DS",
+              "LOC",
+              "NAPTR",
+              "SSHFP",
+              "TLSA",
+              "URI",
+              "CERT"
+            ],
+            "example": "A",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "records",
+          "type"
+        ],
+        "type": "object"
+      },
+      "PartialUpdateRecordSetPayload": {
+        "description": "RRSetPatch for rr patch set info.",
+        "properties": {
+          "comment": {
+            "description": "user comment",
+            "example": "this is our example comment",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "name": {
+            "description": "rfc1035 Section 2.3.4",
+            "example": "example.com.",
+            "maxLength": 63,
+            "minLength": 1,
+            "type": "string"
+          },
+          "records": {
+            "description": "records",
+            "items": {
+              "$ref": "#/components/schemas/RecordPayload"
+            },
+            "type": "array"
+          },
+          "ttl": {
+            "description": "time to live",
+            "example": 3600,
+            "maximum": 99999999,
+            "minimum": 30,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "PartialUpdateRecordPayload": {
+        "description": "RecordPatch for record patch in record set.",
+        "properties": {
+          "action": {
+            "enum": [
+              "add",
+              "delete"
+            ],
+            "type": "string"
+          },
+          "records": {
+            "description": "records",
+            "items": {
+              "$ref": "#/components/schemas/RecordPayload"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "action",
+          "records"
+        ],
+        "type": "object"
+      },
+      "CloneZonePayload": {
+        "description": "metadata to clone a zone.",
+        "properties": {
+          "adjustRecords": {
+            "description": "Adjust record set content and replace the dns name of the original zone with the new dns name of the cloned zone",
+            "example": true,
+            "type": "boolean"
+          },
+          "description": {
+            "description": "New Description for the cloned zone. Leave empty to use the same description as the original zone",
+            "example": "this is our example zone",
+            "maxLength": 1024,
+            "type": "string"
+          },
+          "dnsName": {
+            "description": "DnsName is the dns name of the zone to clone",
+            "example": "example.com",
+            "maxLength": 253,
+            "minLength": 1,
+            "type": "string"
+          },
+          "name": {
+            "description": "New Name for the cloned zone. Leave empty to use the same name as the original zone",
+            "example": "test",
+            "maxLength": 63,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "dnsName"
+        ],
+        "type": "object"
+      },
+      "Label": {
+        "properties": {
+          "key": {
+            "example": "stage",
+            "maxLength": 63,
+            "minLength": 1,
+            "type": "string"
+          },
+          "value": {
+            "example": "prod",
+            "maxLength": 63,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ],
+        "type": "object"
+      },
+      "RecordSet": {
+        "description": "RRSet.",
+        "properties": {
+          "active": {
+            "description": "if the record set is active or not",
+            "example": true,
+            "type": "boolean"
+          },
+          "comment": {
+            "description": "comment",
+            "example": "This is a comment",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "creationFinished": {
+            "description": "when record set creation finished",
+            "example": "2022-01-31T10:00:00Z",
+            "type": "string"
+          },
+          "creationStarted": {
+            "description": "when record set creation started",
+            "example": "2022-01-31T10:00:00Z",
+            "type": "string"
+          },
+          "error": {
+            "description": "Error shows error in case create/update/delete failed",
+            "example": "error message",
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "id": {
+            "description": "rr set id",
+            "example": "37403b63-86ce-41e9-9b0b-1d8c5b3b2b96",
+            "type": "string"
+          },
+          "name": {
+            "description": "name of the record which should be a valid domain according to rfc1035 Section 2.3.4",
+            "example": "example.com.",
+            "maxLength": 63,
+            "minLength": 1,
+            "type": "string"
+          },
+          "records": {
+            "description": "records",
+            "items": {
+              "$ref": "#/components/schemas/Record"
+            },
+            "minItems": 1,
+            "type": "array"
+          },
+          "state": {
+            "description": "record set state",
+            "enum": [
+              "CREATING",
+              "CREATE_SUCCEEDED",
+              "CREATE_FAILED",
+              "DELETING",
+              "DELETE_SUCCEEDED",
+              "DELETE_FAILED",
+              "UPDATING",
+              "UPDATE_SUCCEEDED",
+              "UPDATE_FAILED"
+            ],
+            "example": "CREATE_SUCCEEDED",
+            "type": "string"
+          },
+          "ttl": {
+            "description": "time to live",
+            "example": 3600,
+            "maximum": 99999999,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "type": {
+            "description": "record set type",
+            "enum": [
+              "A",
+              "AAAA",
+              "SOA",
+              "CNAME",
+              "NS",
+              "MX",
+              "TXT",
+              "SRV",
+              "PTR",
+              "ALIAS",
+              "DNAME",
+              "CAA"
+            ],
+            "example": "A",
+            "type": "string"
+          },
+          "updateFinished": {
+            "description": "when record set update/deletion finished",
+            "example": "2022-01-31T10:00:00Z",
+            "type": "string"
+          },
+          "updateStarted": {
+            "description": "when record set update/deletion started",
+            "example": "2022-01-31T10:00:00Z",
+            "type": "string"
+          }
+        },
+        "required": [
+          "creationFinished",
+          "creationStarted",
+          "id",
+          "name",
+          "records",
+          "state",
+          "ttl",
+          "type",
+          "updateFinished",
+          "updateStarted"
+        ],
+        "type": "object"
+      },
+      "Record": {
+        "description": "Record.",
+        "properties": {
+          "content": {
+            "description": "content of the record",
+            "example": "1.2.3.4",
+            "maxLength": 64000,
+            "minLength": 1,
+            "type": "string"
+          },
+          "id": {
+            "description": "rr set id",
+            "example": "37403b63-86ce-41e9-9b0b-1d8c5b3b2b96",
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "content",
+          "id"
+        ],
+        "type": "object"
+      },
+      "Zone": {
+        "description": "Zone.",
+        "properties": {
+          "acl": {
+            "description": "access control list",
+            "example": "0.0.0.0/0,::/0",
+            "type": "string"
+          },
+          "active": {
+            "example": true,
+            "type": "boolean"
+          },
+          "contactEmail": {
+            "description": "contact email from soa record",
+            "example": "hostmaster.at.stackit.cloud.",
+            "maxLength": 255,
+            "type": "string"
+          },
+          "creationFinished": {
+            "description": "when zone creation finished",
+            "example": "2022-01-31T10:00:00Z",
+            "type": "string"
+          },
+          "creationStarted": {
+            "description": "when zone creation started",
+            "example": "2022-01-31T10:00:00Z",
+            "type": "string"
+          },
+          "defaultTTL": {
+            "description": "default time to live",
+            "example": 3600,
+            "maximum": 99999999,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "description": {
+            "description": "description of the zone",
+            "example": "this is our example zone",
+            "maxLength": 1024,
+            "type": "string"
+          },
+          "dnsName": {
+            "description": "zone name",
+            "example": "example.com",
+            "maxLength": 253,
+            "minLength": 1,
+            "type": "string"
+          },
+          "error": {
+            "description": "Error shows error in case create/update/delete failed",
+            "example": "error message",
+            "maxLength": 2000,
+            "type": "string"
+          },
+          "expireTime": {
+            "description": "expire time",
+            "example": 1209600,
+            "maximum": 99999999,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "id": {
+            "description": "zone id",
+            "example": "37403b63-86ce-41e9-9b0b-1d8c5b3b2b96",
+            "type": "string"
+          },
+          "isReverseZone": {
+            "description": "if the zone is a reverse zone or not",
+            "example": false,
+            "type": "boolean"
+          },
+          "labels": {
+            "items": {
+              "$ref": "#/components/schemas/Label"
+            },
+            "type": "array"
+          },
+          "name": {
+            "description": "user given name",
+            "example": "test",
+            "maxLength": 63,
+            "minLength": 1,
+            "type": "string"
+          },
+          "negativeCache": {
+            "description": "negative caching",
+            "example": 60,
+            "maximum": 99999999,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "primaries": {
+            "description": "primary name server for secondary zone",
+            "example": [
+              "1.2.3.4"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 10,
+            "type": "array"
+          },
+          "primaryNameServer": {
+            "description": "primary name server. FQDN",
+            "example": "example.com",
+            "type": "string"
+          },
+          "recordCount": {
+            "description": "record count how many records are in the zone",
+            "example": 300,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "refreshTime": {
+            "description": "refresh time",
+            "example": 3600,
+            "maximum": 99999999,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "retryTime": {
+            "description": "retry time",
+            "example": 600,
+            "maximum": 99999999,
+            "minimum": 60,
+            "type": "integer"
+          },
+          "serialNumber": {
+            "description": "serial number",
+            "example": 2022111400,
+            "type": "integer"
+          },
+          "state": {
+            "description": "zone state",
+            "enum": [
+              "CREATING",
+              "CREATE_SUCCEEDED",
+              "CREATE_FAILED",
+              "DELETING",
+              "DELETE_SUCCEEDED",
+              "DELETE_FAILED",
+              "UPDATING",
+              "UPDATE_SUCCEEDED",
+              "UPDATE_FAILED"
+            ],
+            "example": "CREATE_SUCCEEDED",
+            "type": "string"
+          },
+          "type": {
+            "description": "zone type",
+            "enum": [
+              "primary",
+              "secondary"
+            ],
+            "example": "primary",
+            "type": "string"
+          },
+          "updateFinished": {
+            "description": "when zone update/deletion finished",
+            "example": "2022-01-31T10:00:00Z",
+            "type": "string"
+          },
+          "updateStarted": {
+            "description": "when zone update/deletion started",
+            "example": "2022-01-31T10:00:00Z",
+            "type": "string"
+          },
+          "visibility": {
+            "description": "visibility of the zone",
+            "enum": [
+              "public"
+            ],
+            "example": "public",
+            "type": "string"
+          }
+        },
+        "required": [
+          "acl",
+          "creationFinished",
+          "creationStarted",
+          "defaultTTL",
+          "dnsName",
+          "expireTime",
+          "id",
+          "name",
+          "negativeCache",
+          "primaryNameServer",
+          "refreshTime",
+          "retryTime",
+          "serialNumber",
+          "state",
+          "type",
+          "updateFinished",
+          "updateStarted",
+          "visibility"
+        ],
+        "type": "object"
+      },
+      "MoveZonePayload": {
+        "description": "body to move zone from one project to another.",
+        "properties": {
+          "code": {
+            "description": "Code to move the zone. It must be valid, not expired and belong",
+            "example": "3sLuLCLpLEbbQ6GZ05tu2U56dmKx1uCdWquTHz6BK34=",
+            "maxLength": 1024,
+            "minLength": 1,
+            "type": "string"
+          },
+          "zoneDnsName": {
+            "description": "ZoneDnsName is the dns name of the zone to move",
+            "example": "example.com",
+            "maxLength": 253,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "zoneDnsName"
+        ],
+        "type": "object"
+      },
+      "RecordPayload": {
+        "description": "RecordPost for rr set info.",
+        "properties": {
+          "content": {
+            "description": "content of the record",
+            "example": "1.2.3.4",
+            "maxLength": 64000,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "content"
+        ],
+        "type": "object"
+      },
+      "RecordSetResponse": {
+        "description": "ResponseRRSet for rr set info.",
+        "properties": {
+          "message": {
+            "example": "Success",
+            "type": "string"
+          },
+          "rrset": {
+            "$ref": "#/components/schemas/RecordSet"
+          }
+        },
+        "required": [
+          "rrset"
+        ],
+        "type": "object"
+      },
+      "ListRecordSetsResponse": {
+        "description": "ResponseRRSetAll.",
+        "properties": {
+          "itemsPerPage": {
+            "example": 1,
+            "type": "integer"
+          },
+          "message": {
+            "example": "Success",
+            "type": "string"
+          },
+          "rrSets": {
+            "items": {
+              "$ref": "#/components/schemas/RecordSet"
+            },
+            "type": "array"
+          },
+          "totalItems": {
+            "example": 1,
+            "type": "integer"
+          },
+          "totalPages": {
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "required": [
+          "itemsPerPage",
+          "rrSets",
+          "totalItems",
+          "totalPages"
+        ],
+        "type": "object"
+      },
+      "ErrorMessage": {
+        "properties": {
+          "error": {
+            "example": "Error",
+            "type": "string"
+          },
+          "message": {
+            "example": "Error message",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Message": {
+        "properties": {
+          "message": {
+            "example": "Success",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "MoveCodeResponse": {
+        "properties": {
+          "code": {
+            "description": "code to move the zone. It is one time shown so better keep it.",
+            "example": "3sLuLCLpLEbbQ6GZ05tu2U56dmKx1uCdWquTHz6BK34=",
+            "type": "string"
+          },
+          "expiresAt": {
+            "description": "when the code expires",
+            "example": "2023-08-08T08:58:25Z",
+            "type": "string"
+          },
+          "message": {
+            "description": "human readable message",
+            "example": "successfully created code to move the zone",
+            "type": "string"
+          }
+        },
+        "required": [
+          "code",
+          "expiresAt"
+        ],
+        "type": "object"
+      },
+      "ValidateMoveCodePayload": {
+        "description": "PostValidateMoveCodeRequest body to validate move code request.",
+        "properties": {
+          "code": {
+            "description": "code that should be validated. It validates if it is valid, not expired and belongs to the zone.",
+            "example": "3sLuLCLpLEbbQ6GZ05tu2U56dmKx1uCdWquTHz6BK34=",
+            "maxLength": 1024,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "type": "object"
+      },
+      "ZoneResponse": {
+        "description": "ResponseZone for user info.",
+        "properties": {
+          "message": {
+            "example": "Success",
+            "type": "string"
+          },
+          "zone": {
+            "$ref": "#/components/schemas/Zone"
+          }
+        },
+        "required": [
+          "zone"
+        ],
+        "type": "object"
+      },
+      "ListZonesResponse": {
+        "description": "ResponseZoneAll for filtered zones.",
+        "properties": {
+          "itemsPerPage": {
+            "example": 1,
+            "type": "integer"
+          },
+          "message": {
+            "example": "Success",
+            "type": "string"
+          },
+          "totalItems": {
+            "example": 1,
+            "type": "integer"
+          },
+          "totalPages": {
+            "example": 1,
+            "type": "integer"
+          },
+          "zones": {
+            "items": {
+              "$ref": "#/components/schemas/Zone"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "itemsPerPage",
+          "totalItems",
+          "totalPages",
+          "zones"
+        ],
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "contact": {
+      "email": "stackit-dns@mail.schwarz",
+      "name": "stackit-dns"
+    },
+    "description": "This api provides dns",
+    "termsOfService": "https://stackit.de/en/imprint",
+    "title": "STACKIT DNS API",
+    "version": "1.0"
+  },
+  "openapi": "3.0.1",
+  "paths": {
+    "/v1/projects/{projectId}/zones": {
+      "get": {
+        "description": "All zone",
+        "operationId": "ListZones",
+        "parameters": [
+          {
+            "description": "project id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "page",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "page size",
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "default": 100,
+              "maximum": 10000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "filter dns name equal",
+            "in": "query",
+            "name": "dnsName[eq]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter dns name like",
+            "in": "query",
+            "name": "dnsName[like]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter type",
+            "in": "query",
+            "name": "type[eq]",
+            "schema": {
+              "enum": [
+                "primary",
+                "secondary"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter name equal",
+            "in": "query",
+            "name": "name[eq]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter name not equal",
+            "in": "query",
+            "name": "name[neq]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter name like",
+            "in": "query",
+            "name": "name[like]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter description equal",
+            "in": "query",
+            "name": "description[eq]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter description not equal",
+            "in": "query",
+            "name": "description[neq]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter description like",
+            "in": "query",
+            "name": "description[like]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter state",
+            "in": "query",
+            "name": "state[eq]",
+            "schema": {
+              "enum": [
+                "CREATING",
+                "CREATE_SUCCEEDED",
+                "CREATE_FAILED",
+                "DELETING",
+                "DELETE_SUCCEEDED",
+                "DELETE_FAILED",
+                "UPDATING",
+                "UPDATE_SUCCEEDED",
+                "UPDATE_FAILED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter state",
+            "in": "query",
+            "name": "state[neq]",
+            "schema": {
+              "enum": [
+                "CREATING",
+                "CREATE_SUCCEEDED",
+                "CREATE_FAILED",
+                "DELETING",
+                "DELETE_SUCCEEDED",
+                "DELETE_FAILED",
+                "UPDATING",
+                "UPDATE_SUCCEEDED",
+                "UPDATE_FAILED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter primary name server equal",
+            "in": "query",
+            "name": "primaryNameServer[eq]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter primary name server like",
+            "in": "query",
+            "name": "primaryNameServer[like]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter reverse zone equal",
+            "in": "query",
+            "name": "isReverseZone[eq]",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "filter active equal",
+            "in": "query",
+            "name": "active[eq]",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "filter creation started greater with utc timestamp",
+            "in": "query",
+            "name": "creationStarted[gt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation started lesser with utc timestamp",
+            "in": "query",
+            "name": "creationStarted[lt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation started greater equal with utc timestamp",
+            "in": "query",
+            "name": "creationStarted[gte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation started lesser equal with utc timestamp",
+            "in": "query",
+            "name": "creationStarted[lte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation finished greater with utc timestamp",
+            "in": "query",
+            "name": "creationFinished[gt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation finished lesser with utc timestamp",
+            "in": "query",
+            "name": "creationFinished[lt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation finished greater equal with utc timestamp",
+            "in": "query",
+            "name": "creationFinished[gte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation finished lesser equal with utc timestamp",
+            "in": "query",
+            "name": "creationFinished[lte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update started greater with utc timestamp",
+            "in": "query",
+            "name": "updateStarted[gt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update started lesser with utc timestamp",
+            "in": "query",
+            "name": "updateStarted[lt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update started greater equal with utc timestamp",
+            "in": "query",
+            "name": "updateStarted[gte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update started lesser equal with utc timestamp",
+            "in": "query",
+            "name": "updateStarted[lte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update finished greater with utc timestamp",
+            "in": "query",
+            "name": "updateFinished[gt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update finished lesser with utc timestamp",
+            "in": "query",
+            "name": "updateFinished[lt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update finished greater equal with utc timestamp",
+            "in": "query",
+            "name": "updateFinished[gte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update finished lesser equal with utc timestamp",
+            "in": "query",
+            "name": "updateFinished[lte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter zones according to the zone label keys.",
+            "explode": false,
+            "in": "query",
+            "name": "labelKey[eq]",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "style": "form"
+          },
+          {
+            "description": "filter zones according to the zone label values.",
+            "explode": false,
+            "in": "query",
+            "name": "labelValue[eq]",
+            "schema": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "style": "form"
+          },
+          {
+            "description": "order by dns name",
+            "in": "query",
+            "name": "orderBy[dnsName]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by name",
+            "in": "query",
+            "name": "orderBy[name]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by record count",
+            "in": "query",
+            "name": "orderBy[recordCount]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by type",
+            "in": "query",
+            "name": "orderBy[type]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by description",
+            "in": "query",
+            "name": "orderBy[description]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by creationStarted",
+            "in": "query",
+            "name": "orderBy[creationStarted]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by creationFinished",
+            "in": "query",
+            "name": "orderBy[creationFinished]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by updateStarted",
+            "in": "query",
+            "name": "orderBy[updateStarted]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by updateFinished",
+            "in": "query",
+            "name": "orderBy[updateFinished]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListZonesResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        },
+        "summary": "All get selected zones"
+      },
+      "post": {
+        "description": "Post zone create a new zone",
+        "operationId": "CreateZone",
+        "parameters": [
+          {
+            "description": "project id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateZonePayload"
+              }
+            }
+          },
+          "description": "zone to create",
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZoneResponse"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        },
+        "summary": "Post create a new zone"
+      }
+    },
+    "/v1/projects/{projectId}/zones/{zoneId}": {
+      "delete": {
+        "description": "Delete a zone",
+        "operationId": "DeleteZone",
+        "parameters": [
+          {
+            "description": "project id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "zone id",
+            "in": "path",
+            "name": "zoneId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        },
+        "summary": "Delete a zone"
+      },
+      "get": {
+        "description": "Get zone",
+        "operationId": "GetZone",
+        "parameters": [
+          {
+            "description": "project id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "zone id",
+            "in": "path",
+            "name": "zoneId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZoneResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        },
+        "summary": "Get a single zone"
+      },
+      "patch": {
+        "description": "Patch update an existing zone",
+        "operationId": "PartialUpdateZone",
+        "parameters": [
+          {
+            "description": "project id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "zone id",
+            "in": "path",
+            "name": "zoneId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialUpdateZonePayload"
+              }
+            }
+          },
+          "description": "zone to update",
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ZoneResponse"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        },
+        "summary": "Patch update an existing zone"
+      }
+    },
+    "/v1/projects/{projectId}/zones/{zoneId}/rrsets": {
+      "get": {
+        "description": "All RRSet",
+        "operationId": "ListRecordSets",
+        "parameters": [
+          {
+            "description": "project id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "page",
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "default": 1,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "page size",
+            "in": "query",
+            "name": "pageSize",
+            "schema": {
+              "default": 100,
+              "maximum": 10000,
+              "minimum": 1,
+              "type": "integer"
+            }
+          },
+          {
+            "description": "filter name equal",
+            "in": "query",
+            "name": "name[eq]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter name like",
+            "in": "query",
+            "name": "name[like]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter type",
+            "in": "query",
+            "name": "type[eq]",
+            "schema": {
+              "enum": [
+                "A",
+                "AAAA",
+                "SOA",
+                "CNAME",
+                "NS",
+                "MX",
+                "TXT",
+                "SRV",
+                "PTR",
+                "ALIAS",
+                "DNAME",
+                "CAA",
+                "DNSKEY",
+                "DS",
+                "LOC",
+                "NAPTR",
+                "SSHFP",
+                "TLSA",
+                "URI",
+                "CERT"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter state",
+            "in": "query",
+            "name": "state[eq]",
+            "schema": {
+              "enum": [
+                "CREATING",
+                "CREATE_SUCCEEDED",
+                "CREATE_FAILED",
+                "DELETING",
+                "DELETE_SUCCEEDED",
+                "DELETE_FAILED",
+                "UPDATING",
+                "UPDATE_SUCCEEDED",
+                "UPDATE_FAILED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter state",
+            "in": "query",
+            "name": "state[neq]",
+            "schema": {
+              "enum": [
+                "CREATING",
+                "CREATE_SUCCEEDED",
+                "CREATE_FAILED",
+                "DELETING",
+                "DELETE_SUCCEEDED",
+                "DELETE_FAILED",
+                "UPDATING",
+                "UPDATE_SUCCEEDED",
+                "UPDATE_FAILED"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter active equal",
+            "in": "query",
+            "name": "active[eq]",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "description": "filter creation started greater with utc timestamp",
+            "in": "query",
+            "name": "creationStarted[gt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation started lesser with utc timestamp",
+            "in": "query",
+            "name": "creationStarted[lt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation started greater equal with utc timestamp",
+            "in": "query",
+            "name": "creationStarted[gte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation started lesser equal with utc timestamp",
+            "in": "query",
+            "name": "creationStarted[lte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation finished greater with utc timestamp",
+            "in": "query",
+            "name": "creationFinished[gt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation finished lesser with utc timestamp",
+            "in": "query",
+            "name": "creationFinished[lt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation finished greater equal with utc timestamp",
+            "in": "query",
+            "name": "creationFinished[gte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter creation finished lesser equal with utc timestamp",
+            "in": "query",
+            "name": "creationFinished[lte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update started greater with utc timestamp",
+            "in": "query",
+            "name": "updateStarted[gt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update started lesser with utc timestamp",
+            "in": "query",
+            "name": "updateStarted[lt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update started greater equal with utc timestamp",
+            "in": "query",
+            "name": "updateStarted[gte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update started lesser equal with utc timestamp",
+            "in": "query",
+            "name": "updateStarted[lte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update finished greater with utc timestamp",
+            "in": "query",
+            "name": "updateFinished[gt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update finished lesser with utc timestamp",
+            "in": "query",
+            "name": "updateFinished[lt]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update finished greater equal with utc timestamp",
+            "in": "query",
+            "name": "updateFinished[gte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "filter update finished lesser equal with utc timestamp",
+            "in": "query",
+            "name": "updateFinished[lte]",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by name",
+            "in": "query",
+            "name": "orderBy[name]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by creationStarted",
+            "in": "query",
+            "name": "orderBy[creationStarted]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by creationFinished",
+            "in": "query",
+            "name": "orderBy[creationFinished]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by updateStarted",
+            "in": "query",
+            "name": "orderBy[updateStarted]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by updateFinished",
+            "in": "query",
+            "name": "orderBy[updateFinished]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by type",
+            "in": "query",
+            "name": "orderBy[type]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by state",
+            "in": "query",
+            "name": "orderBy[state]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "order by record count",
+            "in": "query",
+            "name": "orderBy[recordCount]",
+            "schema": {
+              "enum": [
+                "ASC",
+                "DESC"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "description": "zone id",
+            "in": "path",
+            "name": "zoneId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListRecordSetsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        },
+        "summary": "All get selected RRSets"
+      },
+      "post": {
+        "description": "Post record set",
+        "operationId": "CreateRecordSet",
+        "parameters": [
+          {
+            "description": "project id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "zone id",
+            "in": "path",
+            "name": "zoneId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRecordSetPayload"
+              }
+            }
+          },
+          "description": "record set to create",
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecordSetResponse"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        },
+        "summary": "Post record set"
+      }
+    },
+    "/v1/projects/{projectId}/zones/{zoneId}/rrsets/{rrSetId}": {
+      "delete": {
+        "description": "Delete a record set",
+        "operationId": "DeleteRecordSet",
+        "parameters": [
+          {
+            "description": "project id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "zone id",
+            "in": "path",
+            "name": "zoneId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "record set id",
+            "in": "path",
+            "name": "rrSetId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        },
+        "summary": "Delete a record set"
+      },
+      "get": {
+        "description": "Get rrset",
+        "operationId": "GetRecordSet",
+        "parameters": [
+          {
+            "description": "project id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "zone id",
+            "in": "path",
+            "name": "zoneId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "record set id",
+            "in": "path",
+            "name": "rrSetId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecordSetResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        },
+        "summary": "Get a single rrset"
+      },
+      "patch": {
+        "description": "Patch record set",
+        "operationId": "PartialUpdateRecordSet",
+        "parameters": [
+          {
+            "description": "project id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "zone id",
+            "in": "path",
+            "name": "zoneId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "record set id",
+            "in": "path",
+            "name": "rrSetId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialUpdateRecordSetPayload"
+              }
+            }
+          },
+          "description": "record set to patch",
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        },
+        "summary": "Patch updates a record set"
+      }
+    },
+    "/v1/projects/{projectId}/zones/{zoneId}/rrsets/{rrSetId}/records": {
+      "patch": {
+        "description": "PatchRecords rrset updates a record in a rrset",
+        "operationId": "PartialUpdateRecord",
+        "parameters": [
+          {
+            "description": "project id",
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "zone id",
+            "in": "path",
+            "name": "zoneId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "description": "record set id",
+            "in": "path",
+            "name": "rrSetId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialUpdateRecordPayload"
+              }
+            }
+          },
+          "description": "rrset to update",
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "502": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
+                }
+              }
+            },
+            "description": "Bad Gateway"
+          }
+        },
+        "summary": "PatchRecords updates a record in a rrset"
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://dns.api.{region}stackit.cloud",
+      "variables": {
+        "region": {
+          "default": ""
+        }
+      }
+    }
+  ]
+}
