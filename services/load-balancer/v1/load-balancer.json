@@ -1,0 +1,1523 @@
+{
+  "components": {
+    "schemas": {
+      "ActiveHealthCheck": {
+        "properties": {
+          "healthyThreshold": {
+            "description": "Healthy threshold of the health checking",
+            "title": "Healthy threshold",
+            "type": "integer"
+          },
+          "interval": {
+            "description": "Interval duration of health checking in seconds",
+            "example": "3s",
+            "pattern": "^-?(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,9})?s$",
+            "title": "Interval",
+            "type": "string"
+          },
+          "intervalJitter": {
+            "description": "Interval duration threshold of the health checking in seconds",
+            "example": "3s",
+            "pattern": "^-?(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,9})?s$",
+            "title": "Interval threshold",
+            "type": "string"
+          },
+          "timeout": {
+            "description": "Active health checking timeout duration in seconds",
+            "example": "3s",
+            "pattern": "^-?(?:0|[1-9][0-9]{0,11})(?:\\.[0-9]{1,9})?s$",
+            "title": "Timeout",
+            "type": "string"
+          },
+          "unhealthyThreshold": {
+            "description": "Unhealthy threshold of the health checking",
+            "title": "Unhealthy threshold",
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "CreateCredentialsResponse": {
+        "properties": {
+          "credential": {
+            "$ref": "#/components/schemas/CredentialsResponse"
+          }
+        },
+        "type": "object"
+      },
+      "CreateMigrationBody": {
+        "properties": {
+          "loadBalancer": {
+            "$ref": "#/components/schemas/LoadBalancer"
+          },
+          "migrationParams": {
+            "$ref": "#/components/schemas/MigrationParams"
+          }
+        },
+        "type": "object"
+      },
+      "CreateMigrationResponse": {
+        "properties": {
+          "loadBalancer": {
+            "$ref": "#/components/schemas/LoadBalancer"
+          },
+          "migrationParams": {
+            "$ref": "#/components/schemas/MigrationParams"
+          },
+          "migrationState": {
+            "enum": [
+              "MIGRATION_STATE_UNSPECIFIED",
+              "MIGRATION_STATE_INITIALIZING",
+              "MIGRATION_STATE_PREPARE",
+              "MIGRATION_STATE_MIGRATE",
+              "MIGRATION_STATE_COMPLETE"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Credentials": {
+        "properties": {
+          "displayName": {
+            "description": "Credential name",
+            "example": "my-metrics-credential",
+            "pattern": "^[0-9a-z](?:(?:[0-9a-z]|-){0,251}[0-9a-z])?$",
+            "type": "string"
+          },
+          "password": {
+            "description": "The password used for the ARGUS instance",
+            "title": "Password",
+            "type": "string"
+          },
+          "username": {
+            "description": "The username used for the ARGUS instance",
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CredentialsResponse": {
+        "properties": {
+          "credentialsRef": {
+            "description": "The credentials reference can be used for observability of the Load Balancer.",
+            "title": "Credentials reference",
+            "type": "string"
+          },
+          "displayName": {
+            "description": "Credential name",
+            "example": "my-metrics-credential",
+            "pattern": "^[0-9a-z](?:(?:[0-9a-z]|-){0,61}[0-9a-z])?$",
+            "type": "string"
+          },
+          "username": {
+            "description": "The username used for the ARGUS instance",
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "DeleteCredentialsResponse": {
+        "type": "object"
+      },
+      "DeleteLoadBalancerResponse": {
+        "description": "Response for deleting a load balancer has an empty body if successful.",
+        "type": "object"
+      },
+      "GetCredentialsResponse": {
+        "properties": {
+          "credential": {
+            "$ref": "#/components/schemas/CredentialsResponse"
+          }
+        },
+        "type": "object"
+      },
+      "GetMigrationResponse": {
+        "properties": {
+          "loadBalancer": {
+            "$ref": "#/components/schemas/LoadBalancer"
+          },
+          "migrationParams": {
+            "$ref": "#/components/schemas/MigrationParams"
+          },
+          "migrationState": {
+            "enum": [
+              "MIGRATION_STATE_UNSPECIFIED",
+              "MIGRATION_STATE_INITIALIZING",
+              "MIGRATION_STATE_PREPARE",
+              "MIGRATION_STATE_MIGRATE",
+              "MIGRATION_STATE_COMPLETE"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "GetQuotaResponse": {
+        "properties": {
+          "maxLoadBalancers": {
+            "description": "The maximum number of load balancing servers in this project. Unlimited if set to -1.",
+            "maximum": 999,
+            "minimum": -1,
+            "title": "Load Balancer quota",
+            "type": "integer"
+          },
+          "projectId": {
+            "description": "Project identifier",
+            "example": "2438ac3c-37eb-4902-adef-ed16b4431030",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            "readOnly": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "HealthzResponse": {
+        "description": "Response to ping with projectId.",
+        "properties": {
+          "message": {
+            "description": "Human readable explanation about the response.",
+            "example": "healthy in the last line",
+            "format": "string",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ListCredentialsResponse": {
+        "properties": {
+          "credentials": {
+            "items": {
+              "$ref": "#/components/schemas/CredentialsResponse"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "ListLoadBalancersResponse": {
+        "properties": {
+          "loadBalancers": {
+            "items": {
+              "$ref": "#/components/schemas/LoadBalancer"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Listener": {
+        "properties": {
+          "displayName": {
+            "type": "string"
+          },
+          "name": {
+            "description": "Will be used to reference a listener and will replace display name in the future. Currently uses \u003cprotocol\u003e-\u003cport\u003e as the name if no display name is given.",
+            "example": "my-listener",
+            "readOnly": true,
+            "type": "string"
+          },
+          "port": {
+            "description": "Port number where we listen for traffic",
+            "maximum": 65535,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "protocol": {
+            "description": "Protocol is the highest network protocol we understand to load balance. Currently only PROTOCOL_TCP, PROTOCOL_TCP_PROXY and PROTOCOL_TLS_PASSTHROUGH are supported.",
+            "enum": [
+              "PROTOCOL_UNSPECIFIED",
+              "PROTOCOL_TCP",
+              "PROTOCOL_UDP",
+              "PROTOCOL_TCP_PROXY",
+              "PROTOCOL_TLS_PASSTHROUGH"
+            ],
+            "type": "string"
+          },
+          "serverNameIndicators": {
+            "description": "Server Name Idicators config for domains to be routed to the desired target pool for this listener.",
+            "items": {
+              "$ref": "#/components/schemas/ServerNameIndicator"
+            },
+            "type": "array"
+          },
+          "targetPool": {
+            "description": "Reference target pool by target pool name.",
+            "example": "my-target-pool",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "LoadBalancer": {
+        "properties": {
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/LoadBalancerError"
+            },
+            "readOnly": true,
+            "type": "array"
+          },
+          "externalAddress": {
+            "description": "External load balancer IP address where this load balancer is exposed. Not changeable after creation.",
+            "example": "192.0.2.5",
+            "type": "string"
+          },
+          "listeners": {
+            "description": "List of all listeners which will accept traffic. Limited to 20.",
+            "items": {
+              "$ref": "#/components/schemas/Listener"
+            },
+            "type": "array"
+          },
+          "name": {
+            "description": "Load balancer name. Not changeable after creation.",
+            "example": "my-load-balancer",
+            "pattern": "^[0-9a-z](?:(?:[0-9a-z]|-){0,61}[0-9a-z])?$",
+            "type": "string"
+          },
+          "networks": {
+            "description": "List of networks that listeners and targets reside in. Currently limited to one. Not changeable after creation.",
+            "items": {
+              "$ref": "#/components/schemas/Network"
+            },
+            "type": "array"
+          },
+          "options": {
+            "$ref": "#/components/schemas/LoadBalancerOptions"
+          },
+          "privateAddress": {
+            "description": "Transient private load balancer IP address that can change any time.",
+            "example": "10.0.0.1",
+            "readOnly": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "STATUS_UNSPECIFIED",
+              "STATUS_PENDING",
+              "STATUS_READY",
+              "STATUS_ERROR",
+              "STATUS_TERMINATING"
+            ],
+            "readOnly": true,
+            "type": "string"
+          },
+          "targetPools": {
+            "description": "List of all target pools which will be used in the load balancer. Limited to 20.",
+            "items": {
+              "$ref": "#/components/schemas/TargetPool"
+            },
+            "type": "array"
+          },
+          "version": {
+            "description": "Load balancer resource version.\nMust be empty or unset for creating load balancers, non-empty for updating load balancers. Semantics:\nWhile retrieving load balancers, this is the current version of this load balancer resource that changes during updates of the load balancers. On updates this field specified the load balancer version you calculated your update for instead of the future version to enable concurrency safe updates. Update calls will then report the new version in their result as you would see with a load balancer retrieval call later. There exist no total order of the version, so you can only compare it for equality, but not for less/greater than another version. Since the creation of load balancer is always intended to create the first version of it, there should be no existing version. That's why this field must by empty of not present in that case.",
+            "example": "lb-238165323",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "LoadBalancerError": {
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "TYPE_UNSPECIFIED",
+              "TYPE_INTERNAL",
+              "TYPE_QUOTA_SECGROUP_EXCEEDED",
+              "TYPE_QUOTA_SECGROUPRULE_EXCEEDED",
+              "TYPE_PORT_NOT_CONFIGURED",
+              "TYPE_FIP_NOT_CONFIGURED",
+              "TYPE_TARGET_NOT_ACTIVE"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "LoadBalancerOptions": {
+        "description": "Defines any optional functionality you want to have enabled on your load balancer.",
+        "properties": {
+          "accessControl": {
+            "$ref": "#/components/schemas/LoadbalancerOptionAccessControl"
+          },
+          "ephemeralAddress": {
+            "type": "boolean"
+          },
+          "observability": {
+            "$ref": "#/components/schemas/LoadbalancerOptionObservability"
+          },
+          "privateNetworkOnly": {
+            "description": "Load Balancer is accessible only via a private network ip address. Not changeable after creation.",
+            "title": "Private Network Only",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "LoadbalancerOptionAccessControl": {
+        "description": "Use this option to limit the IP ranges that can use the load balancer. Not changeable after creation.",
+        "properties": {
+          "allowedSourceRanges": {
+            "description": "Load Balancer is accessible only from an IP address in this range",
+            "items": {
+              "type": "string"
+            },
+            "title": "Load Balancer source ranges",
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "LoadbalancerOptionLogs": {
+        "properties": {
+          "credentialsRef": {
+            "description": "Credentials reference for metrics. Enables monitoring via logs for the Load Balancer.",
+            "title": "Credentials reference",
+            "type": "string"
+          },
+          "pushUrl": {
+            "description": "The ARGUS/Loki Push URL you want the logs to be send to.",
+            "example": "https://logs.stackit4.argus.eu01.stackit.cloud/instances/\u003cargus-instance-id\u003e/loki/api/v1/push",
+            "title": "Push URL",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "LoadbalancerOptionMetrics": {
+        "properties": {
+          "credentialsRef": {
+            "description": "Credentials reference for metrics. Enables monitoring via remote write for the Load Balancer.",
+            "title": "Credentials reference",
+            "type": "string"
+          },
+          "pushUrl": {
+            "description": "The ARGUS/Prometheus remote write Push URL you want the metrics to be send to.",
+            "example": "https://push.metrics.stackit5.argus.eu01.stackit.cloud/instances/\u003cargus-instance-id\u003e/api/v1/receive",
+            "title": "Push URL",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "LoadbalancerOptionObservability": {
+        "description": "We offer Load Balancer metrics observability via ARGUS or external solutions. Not changeable after creation.",
+        "properties": {
+          "logs": {
+            "$ref": "#/components/schemas/LoadbalancerOptionLogs"
+          },
+          "metrics": {
+            "$ref": "#/components/schemas/LoadbalancerOptionMetrics"
+          }
+        },
+        "type": "object"
+      },
+      "MigrationParams": {
+        "properties": {
+          "fipId": {
+            "type": "string"
+          },
+          "portId": {
+            "type": "string"
+          },
+          "secGroupId": {
+            "type": "string"
+          },
+          "secGroupName": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Network": {
+        "properties": {
+          "networkId": {
+            "description": "Openstack network ID",
+            "example": "2028e5d4-af4f-45e2-98df-502be37a4317",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            "type": "string"
+          },
+          "role": {
+            "description": "The role defines how the load balancer is using the network. Currently only ROLE_LISTENERS_AND_TARGETS is supported.",
+            "enum": [
+              "ROLE_UNSPECIFIED",
+              "ROLE_LISTENERS_AND_TARGETS",
+              "ROLE_LISTENERS",
+              "ROLE_TARGETS"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "PingResponse": {
+        "description": "Response to ping with projectId.",
+        "properties": {
+          "projectId": {
+            "description": "Same project identifier as passed in on request.",
+            "example": "2438ac3c-37eb-4902-adef-ed16b4431030",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ServerNameIndicator": {
+        "properties": {
+          "name": {
+            "description": "The domain name for this SNI config.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "SessionPersistence": {
+        "properties": {
+          "useSourceIpAddress": {
+            "description": "Enable using source IP address to persist sessions from a single IP",
+            "example": true,
+            "title": "UseSourceIPAddress",
+            "type": "boolean"
+          }
+        },
+        "type": "object"
+      },
+      "Target": {
+        "properties": {
+          "displayName": {
+            "description": "Target name",
+            "example": "my-target",
+            "pattern": "^[0-9a-z](?:(?:[0-9a-z]|-){0,61}[0-9a-z])?$",
+            "type": "string"
+          },
+          "ip": {
+            "description": "Target IP",
+            "example": "192.0.2.5",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "TargetPool": {
+        "properties": {
+          "activeHealthCheck": {
+            "$ref": "#/components/schemas/ActiveHealthCheck"
+          },
+          "name": {
+            "description": "Target pool name",
+            "example": "my-target-pool",
+            "pattern": "^[0-9a-z](?:(?:[0-9a-z]|-){0,18}[0-9a-z])?$",
+            "type": "string"
+          },
+          "sessionPersistence": {
+            "$ref": "#/components/schemas/SessionPersistence"
+          },
+          "targetPort": {
+            "description": "Identical port number where each target listens for traffic.",
+            "maximum": 65535,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "targets": {
+            "description": "List of all targets which will be used in the pool. Limited to 250.",
+            "items": {
+              "$ref": "#/components/schemas/Target"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateMigrationBody": {
+        "properties": {
+          "state": {
+            "description": "The new migration state of the loadbalancer.\nAllowed transitions are:\n- MIGRATION_STATE_PREPARE → MIGRATION_STATE_MIGRATE\n- MIGRATION_STATE_MIGRATE → MIGRATION_STATE_PREPARE\n- MIGRATION_STATE_MIGRATE → MIGRATION_STATE_COMPLETE\nUpdates other than the migration state should be done by the regular update endpoints.Aborting a migration can be done by deleting the loadbalancer.",
+            "enum": [
+              "MIGRATION_STATE_UNSPECIFIED",
+              "MIGRATION_STATE_INITIALIZING",
+              "MIGRATION_STATE_PREPARE",
+              "MIGRATION_STATE_MIGRATE",
+              "MIGRATION_STATE_COMPLETE"
+            ],
+            "example": "MIGRATION_STATE_MIGRATE",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateMigrationResponse": {
+        "properties": {
+          "loadBalancer": {
+            "$ref": "#/components/schemas/LoadBalancer"
+          },
+          "migrationParams": {
+            "$ref": "#/components/schemas/MigrationParams"
+          },
+          "migrationState": {
+            "enum": [
+              "MIGRATION_STATE_UNSPECIFIED",
+              "MIGRATION_STATE_INITIALIZING",
+              "MIGRATION_STATE_PREPARE",
+              "MIGRATION_STATE_MIGRATE",
+              "MIGRATION_STATE_COMPLETE"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateQuotaRequest": {
+        "properties": {
+          "maxLoadBalancers": {
+            "description": "The maximum number of load balancing servers in this project. Unlimited if set to -1.",
+            "maximum": 999,
+            "minimum": -1,
+            "title": "Load Balancer quota",
+            "type": "integer"
+          },
+          "projectId": {
+            "description": "Project identifier",
+            "example": "2438ac3c-37eb-4902-adef-ed16b4431030",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            "readOnly": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateQuotaResponse": {
+        "properties": {
+          "maxLoadBalancers": {
+            "description": "The maximum number of load balancing servers in this project. Unlimited if set to -1.",
+            "maximum": 999,
+            "minimum": -1,
+            "title": "Load Balancer quota",
+            "type": "integer"
+          },
+          "projectId": {
+            "description": "Project identifier",
+            "example": "2438ac3c-37eb-4902-adef-ed16b4431030",
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$",
+            "readOnly": true,
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CreateCredentialsPayload": {
+        "properties": {
+          "displayName": {
+            "description": "Credential name",
+            "example": "my-metrics-credential",
+            "pattern": "^[0-9a-z](?:(?:[0-9a-z]|-){0,251}[0-9a-z])?$",
+            "type": "string"
+          },
+          "password": {
+            "description": "The password used for the ARGUS instance",
+            "title": "Password",
+            "type": "string"
+          },
+          "username": {
+            "description": "The username used for the ARGUS instance",
+            "title": "Username",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CreateLoadBalancerPayload": {
+        "properties": {
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/LoadBalancerError"
+            },
+            "readOnly": true,
+            "type": "array"
+          },
+          "externalAddress": {
+            "description": "External load balancer IP address where this load balancer is exposed. Not changeable after creation.",
+            "example": "192.0.2.5",
+            "type": "string"
+          },
+          "listeners": {
+            "description": "List of all listeners which will accept traffic. Limited to 20.",
+            "items": {
+              "$ref": "#/components/schemas/Listener"
+            },
+            "type": "array"
+          },
+          "name": {
+            "description": "Load balancer name. Not changeable after creation.",
+            "example": "my-load-balancer",
+            "pattern": "^[0-9a-z](?:(?:[0-9a-z]|-){0,61}[0-9a-z])?$",
+            "type": "string"
+          },
+          "networks": {
+            "description": "List of networks that listeners and targets reside in. Currently limited to one. Not changeable after creation.",
+            "items": {
+              "$ref": "#/components/schemas/Network"
+            },
+            "type": "array"
+          },
+          "options": {
+            "$ref": "#/components/schemas/LoadBalancerOptions"
+          },
+          "privateAddress": {
+            "description": "Transient private load balancer IP address that can change any time.",
+            "example": "10.0.0.1",
+            "readOnly": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "STATUS_UNSPECIFIED",
+              "STATUS_PENDING",
+              "STATUS_READY",
+              "STATUS_ERROR",
+              "STATUS_TERMINATING"
+            ],
+            "readOnly": true,
+            "type": "string"
+          },
+          "targetPools": {
+            "description": "List of all target pools which will be used in the load balancer. Limited to 20.",
+            "items": {
+              "$ref": "#/components/schemas/TargetPool"
+            },
+            "type": "array"
+          },
+          "version": {
+            "description": "Load balancer resource version.\nMust be empty or unset for creating load balancers, non-empty for updating load balancers. Semantics:\nWhile retrieving load balancers, this is the current version of this load balancer resource that changes during updates of the load balancers. On updates this field specified the load balancer version you calculated your update for instead of the future version to enable concurrency safe updates. Update calls will then report the new version in their result as you would see with a load balancer retrieval call later. There exist no total order of the version, so you can only compare it for equality, but not for less/greater than another version. Since the creation of load balancer is always intended to create the first version of it, there should be no existing version. That's why this field must by empty of not present in that case.",
+            "example": "lb-238165323",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateLoadBalancerPayload": {
+        "properties": {
+          "errors": {
+            "items": {
+              "$ref": "#/components/schemas/LoadBalancerError"
+            },
+            "readOnly": true,
+            "type": "array"
+          },
+          "externalAddress": {
+            "description": "External load balancer IP address where this load balancer is exposed. Not changeable after creation.",
+            "example": "192.0.2.5",
+            "type": "string"
+          },
+          "listeners": {
+            "description": "List of all listeners which will accept traffic. Limited to 20.",
+            "items": {
+              "$ref": "#/components/schemas/Listener"
+            },
+            "type": "array"
+          },
+          "name": {
+            "description": "Load balancer name. Not changeable after creation.",
+            "example": "my-load-balancer",
+            "pattern": "^[0-9a-z](?:(?:[0-9a-z]|-){0,61}[0-9a-z])?$",
+            "type": "string"
+          },
+          "networks": {
+            "description": "List of networks that listeners and targets reside in. Currently limited to one. Not changeable after creation.",
+            "items": {
+              "$ref": "#/components/schemas/Network"
+            },
+            "type": "array"
+          },
+          "options": {
+            "$ref": "#/components/schemas/LoadBalancerOptions"
+          },
+          "privateAddress": {
+            "description": "Transient private load balancer IP address that can change any time.",
+            "example": "10.0.0.1",
+            "readOnly": true,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "STATUS_UNSPECIFIED",
+              "STATUS_PENDING",
+              "STATUS_READY",
+              "STATUS_ERROR",
+              "STATUS_TERMINATING"
+            ],
+            "readOnly": true,
+            "type": "string"
+          },
+          "targetPools": {
+            "description": "List of all target pools which will be used in the load balancer. Limited to 20.",
+            "items": {
+              "$ref": "#/components/schemas/TargetPool"
+            },
+            "type": "array"
+          },
+          "version": {
+            "description": "Load balancer resource version.\nMust be empty or unset for creating load balancers, non-empty for updating load balancers. Semantics:\nWhile retrieving load balancers, this is the current version of this load balancer resource that changes during updates of the load balancers. On updates this field specified the load balancer version you calculated your update for instead of the future version to enable concurrency safe updates. Update calls will then report the new version in their result as you would see with a load balancer retrieval call later. There exist no total order of the version, so you can only compare it for equality, but not for less/greater than another version. Since the creation of load balancer is always intended to create the first version of it, there should be no existing version. That's why this field must by empty of not present in that case.",
+            "example": "lb-238165323",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateTargetPoolPayload": {
+        "properties": {
+          "activeHealthCheck": {
+            "$ref": "#/components/schemas/ActiveHealthCheck"
+          },
+          "name": {
+            "description": "Target pool name",
+            "example": "my-target-pool",
+            "pattern": "^[0-9a-z](?:(?:[0-9a-z]|-){0,18}[0-9a-z])?$",
+            "type": "string"
+          },
+          "sessionPersistence": {
+            "$ref": "#/components/schemas/SessionPersistence"
+          },
+          "targetPort": {
+            "description": "Identical port number where each target listens for traffic.",
+            "maximum": 65535,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "targets": {
+            "description": "List of all targets which will be used in the pool. Limited to 250.",
+            "items": {
+              "$ref": "#/components/schemas/Target"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "DisableServiceResponse": {
+        "description": "Response for disabling the load balancer has empty body if successful.",
+        "type": "object"
+      },
+      "EnableServiceResponse": {
+        "description": "Response for enabling the load balancer has empty body if successful.",
+        "type": "object"
+      },
+      "GetServiceStatusResponse": {
+        "description": "Response with customer project status.",
+        "properties": {
+          "status": {
+            "description": "status of the project",
+            "enum": [
+              "STATUS_UNSPECIFIED",
+              "STATUS_READY",
+              "STATUS_FAILED",
+              "STATUS_UPDATING",
+              "STATUS_DELETING",
+              "STATUS_DISABLED"
+            ],
+            "type": "string"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "description": "This API offers an interface to provision and manage load balancing servers in your STACKIT project. It also has the possibility of pooling target servers for load balancing purposes.\n\nFor each load balancer provided, two VMs are deployed in your OpenStack project subject to a fee.",
+    "title": "Load Balancer API",
+    "version": "1.6.0"
+  },
+  "openapi": "3.0.3",
+  "paths": {
+    "/v1/projects/{projectId}": {
+      "delete": {
+        "description": "Disable will disable the load balancer functionality for the project specified.",
+        "operationId": "DisableService",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisableServiceResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "description": "One or more fields are invalid."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this projectId is not allowed to try this API"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "Disables the functionality of load balancers for the project specified."
+      },
+      "get": {
+        "description": "Status will return the load balancer functionality status for the project specified.",
+        "operationId": "GetServiceStatus",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetServiceStatusResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "description": "One or more fields are invalid."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this project_id is not allowed to try this API"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "Return the status of load balancer functionality for the project specified."
+      },
+      "post": {
+        "description": "Enable will enable the load balancer functionality for the project specified.",
+        "operationId": "EnableService",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "2438ac3c-37eb-4902-adef-ed16b4431030",
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnableServiceResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "description": "One or more fields are invalid."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this project_id is not allowed to try this API"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "Enables the functionality of load balancers for the project specified."
+      }
+    },
+    "/v1/projects/{projectId}/credentials": {
+      "get": {
+        "description": "List Credentials",
+        "operationId": "ListCredentials",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCredentialsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this project_id is not allowed to try this API"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "List all credentials in a project."
+      },
+      "post": {
+        "description": "Create credentials will create credentials, which can be used for load balancer observability",
+        "operationId": "CreateCredentials",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "2438ac3c-37eb-4902-adef-ed16b4431030",
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCredentialsPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCredentialsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "description": "One or more fields are invalid."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this project_id is not allowed to try this API"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "Create credentials for observability of the Load Balancer"
+      }
+    },
+    "/v1/projects/{projectId}/credentials/{credentialsRef}": {
+      "delete": {
+        "description": "Delete Credential",
+        "operationId": "DeleteCredentials",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "credentialsRef",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteCredentialsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this project_id is not allowed to try this API"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "Delete a single credential in a project."
+      },
+      "get": {
+        "description": "Get Credentials",
+        "operationId": "GetCredentials",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "credentialsRef",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCredentialsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this project_id is not allowed to try this API"
+          },
+          "404": {
+            "description": "credential reference not found"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "Get a single credential reference in a project."
+      }
+    },
+    "/v1/projects/{projectId}/load-balancers": {
+      "get": {
+        "description": "ListLoadBalancer will list load balancers of a project.",
+        "operationId": "ListLoadBalancers",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListLoadBalancersResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "description": "One or more fields are invalid."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this project_id is not allowed to try this API"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "List load balancers in a project."
+      },
+      "post": {
+        "description": "Create Load Balancer will create a load balancer.",
+        "operationId": "CreateLoadBalancer",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "example": "2438ac3c-37eb-4902-adef-ed16b4431030",
+            "in": "header",
+            "name": "X-Request-ID",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLoadBalancerPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadBalancer"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "description": "One or more fields are invalid."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this project_id is not allowed to try this API"
+          },
+          "409": {
+            "description": "load balancer already exists"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "Create a load balancer in a project."
+      }
+    },
+    "/v1/projects/{projectId}/load-balancers/{name}": {
+      "delete": {
+        "description": "DeleteLoadBalancer will delete a given load balancer.",
+        "operationId": "DeleteLoadBalancer",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeleteLoadBalancerResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "description": "One or more fields are invalid."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this project_id is not allowed to try this API"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "Delete a given load balancer in a project."
+      },
+      "get": {
+        "description": "Get Load Balancer will get a single load balancer of a project.",
+        "operationId": "GetLoadBalancer",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadBalancer"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "description": "One or more fields are invalid."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this project_id is not allowed to try this API"
+          },
+          "404": {
+            "description": "load balancer not found"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "Get a single load balancer in a project."
+      },
+      "put": {
+        "description": "Update Load Balancer allows the change of listeners and target pools of an existing Load Balancer.\n The Load balancer resource version needs to be the current version to ensure concurrency safe updates.",
+        "operationId": "UpdateLoadBalancer",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLoadBalancerPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoadBalancer"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "description": "One or more fields are invalid."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this project_id is not allowed to try this API"
+          },
+          "409": {
+            "description": "Conflict with current state"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "Update a load balancer in a project."
+      }
+    },
+    "/v1/projects/{projectId}/load-balancers/{name}/target-pools/{targetPoolName}": {
+      "put": {
+        "description": "ReplaceTargetPool will replace a specific target pool of a load balancer with new content.\n Useful to  add/remove target servers. will update a load balancer.\n Only replaces the mentioned target pools and leaves others unchanged.\n Cannot be used to create or rename a target pool.",
+        "operationId": "UpdateTargetPool",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "targetPoolName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTargetPoolPayload"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TargetPool"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "description": "One or more fields are invalid."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "this project_id is not allowed to try this API"
+          },
+          "500": {
+            "description": "internal error - please retry again later or contact support if the issue persists"
+          }
+        },
+        "summary": "Update a single target pool of a load balancer in a project."
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "servers": [
+    {
+      "url": "https://load-balancer.api.{region}stackit.cloud",
+      "variables": {
+        "region": {
+          "default": "eu01.",
+          "enum": [
+            "eu01."
+          ]
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "description": "All endpoints in the Load Balancer API",
+      "name": "APIService"
+    },
+    {
+      "description": "Only API calls to provision and manage load balancing servers",
+      "name": "Load Balancer"
+    },
+    {
+      "description": "Get the state of load balancing functionality in a project. To enable or disable load balancing functionality use service-enablement.",
+      "name": "Project"
+    }
+  ]
+}

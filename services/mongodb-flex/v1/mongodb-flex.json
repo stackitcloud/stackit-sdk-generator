@@ -1,0 +1,2767 @@
+{
+  "components": {
+    "schemas": {
+      "dev.azure.com_schwarzit_schwarzit.stackit-mongodb_stackit-mongodb-api.git_handlers_infra.Flavor": {
+        "properties": {
+          "categories": {
+            "example": [
+              "Replica"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "cpu": {
+            "example": 1,
+            "type": "integer"
+          },
+          "description": {
+            "example": "Small, Compute optimized",
+            "type": "string"
+          },
+          "id": {
+            "example": "1.1",
+            "type": "string"
+          },
+          "memory": {
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "dev.azure.com_schwarzit_schwarzit.stackit-mongodb_stackit-mongodb-api.git_handlers_infra.GetFlavorsResponse": {
+        "properties": {
+          "flavors": {
+            "items": {
+              "$ref": "#/components/schemas/dev.azure.com_schwarzit_schwarzit.stackit-mongodb_stackit-mongodb-api.git_handlers_infra.Flavor"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "dev.azure.com_schwarzit_schwarzit.stackit-mongodb_stackit-mongodb-api.git_handlers_instances.GetInstanceResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Instance"
+          }
+        },
+        "type": "object"
+      },
+      "handlers_instances.GetInstanceResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Instance"
+          }
+        },
+        "type": "object"
+      },
+      "instance.ListInstance": {
+        "properties": {
+          "id": {
+            "example": "df727477-8991-486c-a3ed-d11d9d9beb1c",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "example": "RUNNING",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "instance.ResponseUser": {
+        "properties": {
+          "database": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CreateInstancePayload": {
+        "properties": {
+          "acl": {
+            "$ref": "#/components/schemas/ACL"
+          },
+          "backupSchedule": {
+            "example": "6 6 * * *",
+            "type": "string"
+          },
+          "flavorId": {
+            "example": "1.1",
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Labels field is not certain/clear",
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "replicas": {
+            "example": 3,
+            "type": "integer"
+          },
+          "storage": {
+            "$ref": "#/components/schemas/Storage"
+          },
+          "version": {
+            "example": "1.0",
+            "type": "string"
+          }
+        },
+        "required": [
+          "acl",
+          "backupSchedule",
+          "flavorId",
+          "name",
+          "options",
+          "replicas",
+          "storage",
+          "version"
+        ],
+        "type": "object"
+      },
+      "UpdateInstancePayload": {
+        "properties": {
+          "acl": {
+            "$ref": "#/components/schemas/ACL"
+          },
+          "backupSchedule": {
+            "example": "6 6 * * *",
+            "type": "string"
+          },
+          "flavorId": {
+            "example": "1.1",
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Labels field is not certain/clear",
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "replicas": {
+            "example": 3,
+            "type": "integer"
+          },
+          "storage": {
+            "$ref": "#/components/schemas/Storage"
+          },
+          "version": {
+            "example": "1.0",
+            "type": "string"
+          }
+        },
+        "required": [
+          "acl",
+          "backupSchedule",
+          "flavorId",
+          "name",
+          "options",
+          "replicas",
+          "storage",
+          "version"
+        ],
+        "type": "object"
+      },
+      "PartialUpdateInstancePayload": {
+        "properties": {
+          "acl": {
+            "$ref": "#/components/schemas/ACL"
+          },
+          "backupSchedule": {
+            "example": "6 6 * * *",
+            "type": "string"
+          },
+          "flavorId": {
+            "example": "1.1",
+            "type": "string"
+          },
+          "labels": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Labels field is not certain/clear",
+            "type": "object"
+          },
+          "name": {
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "replicas": {
+            "example": 3,
+            "type": "integer"
+          },
+          "storage": {
+            "$ref": "#/components/schemas/Storage"
+          },
+          "version": {
+            "example": "1.0",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateBackupSchedulePayload": {
+        "properties": {
+          "backupSchedule": {
+            "type": "string"
+          },
+          "dailySnapshotRetentionDays": {
+            "type": "integer"
+          },
+          "monthlySnapshotRetentionMonths": {
+            "type": "integer"
+          },
+          "pointInTimeWindowHours": {
+            "type": "integer"
+          },
+          "snapshotRetentionDays": {
+            "type": "integer"
+          },
+          "weeklySnapshotRetentionWeeks": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "CloneInstancePayload": {
+        "properties": {
+          "instanceId": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "instanceId"
+        ],
+        "type": "object"
+      },
+      "RestoreInstancePayload": {
+        "properties": {
+          "backupId": {
+            "type": "string"
+          },
+          "instanceId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "backupId",
+          "instanceId"
+        ],
+        "type": "object"
+      },
+      "CreateUserPayload": {
+        "properties": {
+          "database": {
+            "type": "string"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "database",
+          "roles"
+        ],
+        "type": "object"
+      },
+      "UpdateUserPayload": {
+        "properties": {
+          "database": {
+            "type": "string"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "required": [
+          "database",
+          "roles"
+        ],
+        "type": "object"
+      },
+      "PartialUpdateUserPayload": {
+        "properties": {
+          "database": {
+            "type": "string"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "HandlersInfraFlavor": {
+        "properties": {
+          "categories": {
+            "example": [
+              "Replica"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "cpu": {
+            "example": 1,
+            "type": "integer"
+          },
+          "description": {
+            "example": "Small, Compute optimized",
+            "type": "string"
+          },
+          "id": {
+            "example": "1.1",
+            "type": "string"
+          },
+          "memory": {
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "ListFlavorsResponse": {
+        "properties": {
+          "flavors": {
+            "items": {
+              "$ref": "#/components/schemas/HandlersInfraFlavor"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "ACL": {
+        "properties": {
+          "items": {
+            "example": [
+              "0.0.0.0/0"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Backup": {
+        "properties": {
+          "endTime": {
+            "type": "string"
+          },
+          "error": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "name": {
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "size": {
+            "type": "integer"
+          },
+          "startTime": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CloneInstanceResponse": {
+        "properties": {
+          "instanceId": {
+            "example": "df727477-8991-486c-a3ed-d11d9d9beb1c",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "CreateInstanceResponse": {
+        "properties": {
+          "id": {
+            "example": "df727477-8991-486c-a3ed-d11d9d9beb1c",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "RestoreInstanceResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/RestoreInstanceStatus"
+          }
+        },
+        "type": "object"
+      },
+      "CreateUserRequest": {
+        "properties": {
+          "database": {
+            "type": "string"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "database",
+          "roles"
+        ],
+        "type": "object"
+      },
+      "CreateUserResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "type": "object"
+      },
+      "DataPoint": {
+        "properties": {
+          "timestamp": {
+            "type": "string"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "type": "object"
+      },
+      "Error": {
+        "properties": {
+          "code": {
+            "example": 404,
+            "type": "integer"
+          },
+          "fields": {
+            "additionalProperties": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "type": "object"
+          },
+          "message": {
+            "example": "database not found",
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Flavor": {
+        "properties": {
+          "cpu": {
+            "example": 1,
+            "type": "integer"
+          },
+          "description": {
+            "example": "Small, Compute optimized",
+            "type": "string"
+          },
+          "id": {
+            "example": "1.1",
+            "type": "string"
+          },
+          "memory": {
+            "example": 1,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "GetBackupResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Backup"
+          }
+        },
+        "type": "object"
+      },
+      "ListStoragesResponse": {
+        "properties": {
+          "storageClasses": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "storageRange": {
+            "$ref": "#/components/schemas/StorageRange"
+          }
+        },
+        "type": "object"
+      },
+      "GetUserResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/instance.ResponseUser"
+          }
+        },
+        "type": "object"
+      },
+      "ListVersionsResponse": {
+        "properties": {
+          "versions": {
+            "example": [
+              "1.0"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "Host": {
+        "properties": {
+          "hostMetrics": {
+            "items": {
+              "$ref": "#/components/schemas/HostMetric"
+            },
+            "type": "array"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "HostMetric": {
+        "properties": {
+          "datapoints": {
+            "items": {
+              "$ref": "#/components/schemas/DataPoint"
+            },
+            "type": "array"
+          },
+          "name": {
+            "type": "string"
+          },
+          "units": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ListBackupsResponse": {
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/Backup"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "ListInstancesResponse": {
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/instance.ListInstance"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "ListRestoreJobsResponse": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/RestoreInstanceStatus"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "ListUser": {
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "ListUsersResponse": {
+        "properties": {
+          "count": {
+            "type": "integer"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/ListUser"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "ListMetricsResponse": {
+        "properties": {
+          "hosts": {
+            "items": {
+              "$ref": "#/components/schemas/Host"
+            },
+            "type": "array"
+          }
+        },
+        "type": "object"
+      },
+      "RestoreInstanceStatus": {
+        "properties": {
+          "backupID": {
+            "example": "1",
+            "type": "string"
+          },
+          "date": {
+            "example": "2009-11-10 23:00:00 +0000 UTC m=+0.000000001",
+            "type": "string"
+          },
+          "id": {
+            "example": "1",
+            "type": "string"
+          },
+          "instanceId": {
+            "example": "df727477-8991-486c-a3ed-d11d9d9beb1c",
+            "type": "string"
+          },
+          "status": {
+            "example": "RUNNING",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Instance": {
+        "properties": {
+          "acl": {
+            "$ref": "#/components/schemas/ACL"
+          },
+          "backupSchedule": {
+            "example": "6 6 * * *",
+            "type": "string"
+          },
+          "flavor": {
+            "$ref": "#/components/schemas/Flavor"
+          },
+          "id": {
+            "example": "df727477-8991-486c-a3ed-d11d9d9beb1c",
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "options": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object"
+          },
+          "replicas": {
+            "example": 3,
+            "type": "integer"
+          },
+          "status": {
+            "example": "RUNNING",
+            "type": "string"
+          },
+          "storage": {
+            "$ref": "#/components/schemas/Storage"
+          },
+          "version": {
+            "example": "1.0",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "Storage": {
+        "properties": {
+          "class": {
+            "type": "string"
+          },
+          "size": {
+            "example": 10,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "StorageRange": {
+        "properties": {
+          "max": {
+            "example": 1000,
+            "type": "integer"
+          },
+          "min": {
+            "example": 10,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      },
+      "UpdateInstanceResponse": {
+        "properties": {
+          "item": {
+            "$ref": "#/components/schemas/Instance"
+          }
+        },
+        "type": "object"
+      },
+      "User": {
+        "properties": {
+          "database": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer"
+          },
+          "roles": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "uri": {
+            "type": "string"
+          },
+          "username": {
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "BackupSchedule": {
+        "properties": {
+          "backupSchedule": {
+            "type": "string"
+          },
+          "dailySnapshotRetentionDays": {
+            "type": "integer"
+          },
+          "monthlySnapshotRetentionMonths": {
+            "type": "integer"
+          },
+          "pointInTimeWindowHours": {
+            "type": "integer"
+          },
+          "snapshotRetentionDays": {
+            "type": "integer"
+          },
+          "weeklySnapshotRetentionWeeks": {
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "contact": {
+      "email": "support@stackit.cloud",
+      "name": "STACKIT MongoDB Service Support",
+      "url": "https://www.stackit.de/en/contact"
+    },
+    "description": "This is the documentation for the STACKIT MongoDB Flex Service API",
+    "termsOfService": "https://www.stackit.de/en/general-terms-and-conditions/",
+    "title": "STACKIT MongoDB Service API",
+    "version": "1.0.0"
+  },
+  "openapi": "3.0.1",
+  "paths": {
+    "/v1/projects/{projectId}": {
+      "delete": {
+        "description": "removes all instances inside project",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "202": {
+            "description": "Accepted"
+          },
+          "409": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "500": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Delete project",
+        "operationId": "DisableService"
+      }
+    },
+    "/v1/projects/{projectId}/flavors": {
+      "get": {
+        "description": "returns all possible flavors",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListFlavorsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Flavors",
+        "operationId": "ListFlavors"
+      }
+    },
+    "/v1/projects/{projectId}/instances": {
+      "get": {
+        "description": "list all instances for a projectID",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance tag",
+            "explode": true,
+            "in": "query",
+            "name": "tag",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListInstancesResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "List Instances",
+        "operationId": "ListInstances"
+      },
+      "post": {
+        "description": "Create and deploys an instance\u003cbr/\u003e Note that the time format for the backupSchedule is in UTC",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInstancePayload"
+              }
+            }
+          },
+          "description": "payload",
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateInstanceResponse"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Create instance",
+        "operationId": "CreateInstance"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}": {
+      "delete": {
+        "description": "removes an instance",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Delete instance",
+        "operationId": "DeleteInstance"
+      },
+      "get": {
+        "description": "gets information of an instance",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/dev.azure.com_schwarzit_schwarzit.stackit-mongodb_stackit-mongodb-api.git_handlers_instances.GetInstanceResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Get instance",
+        "operationId": "GetInstance"
+      },
+      "patch": {
+        "description": "Updates a deployment plan\u003cbr/\u003e Note that the time format for the backupSchedule is in UTC",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialUpdateInstancePayload"
+              }
+            }
+          },
+          "description": "payload",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateInstanceResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateInstanceResponse"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Patch endpoint",
+        "operationId": "PartialUpdateInstance"
+      },
+      "put": {
+        "description": "Updates a deployment plan\u003cbr/\u003e Note that the time format for the backupSchedule is in UTC",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInstancePayload"
+              }
+            }
+          },
+          "description": "payload",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateInstanceResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateInstanceResponse"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Put endpoint",
+        "operationId": "UpdateInstance"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/backups": {
+      "get": {
+        "description": "List backups of an instance",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListBackupsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "List backup",
+        "operationId": "ListBackups"
+      },
+      "put": {
+        "description": "Updates a backup schedule\u003cbr/\u003e Note that the time format is in UTC",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBackupSchedulePayload"
+              }
+            }
+          },
+          "description": "payload",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackupSchedule"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Update schedule",
+        "operationId": "UpdateBackupSchedule"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/backups/{backupId}": {
+      "get": {
+        "description": "Get details about a specific backup",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "backup id",
+            "explode": false,
+            "in": "path",
+            "name": "backupId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBackupResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Get backup",
+        "operationId": "GetBackup"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/clone": {
+      "post": {
+        "description": "Clone an instance via PIT restore\u003cbr/\u003e Note that the Timestamp is a RFC3339 standard and uses by default UTC time format\u003cbr/\u003e\nAs an example a valid timestamp look like \"2023-04-20T15:05:15Z\"",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CloneInstancePayload"
+              }
+            }
+          },
+          "description": "payload",
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CloneInstanceResponse"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Clone instance",
+        "operationId": "CloneInstance"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/metrics/{metric}": {
+      "get": {
+        "description": "returns metrics for an instance",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "metric type",
+            "explode": false,
+            "in": "path",
+            "name": "metric",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "granularity",
+            "explode": true,
+            "in": "query",
+            "name": "granularity",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "period",
+            "explode": true,
+            "in": "query",
+            "name": "period",
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "period start",
+            "explode": true,
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          },
+          {
+            "description": "period end",
+            "explode": true,
+            "in": "query",
+            "name": "end",
+            "schema": {
+              "type": "string"
+            },
+            "style": "form"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListMetricsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Metrics",
+        "operationId": "ListMetrics"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/restores": {
+      "get": {
+        "description": "List restore jobs of an instance",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListRestoreJobsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "List restore jobs",
+        "operationId": "ListRestoreJobs"
+      },
+      "post": {
+        "description": "Restore an instance based on snapshot",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RestoreInstancePayload"
+              }
+            }
+          },
+          "description": "payload",
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RestoreInstanceResponse"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Restore instance",
+        "operationId": "RestoreInstance"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/users": {
+      "get": {
+        "description": "list all users for a mongodb instance",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListUsersResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "List Users",
+        "operationId": "ListUsers"
+      },
+      "post": {
+        "description": "create a new user for a mongodb instance",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserPayload"
+              }
+            }
+          },
+          "description": "payload",
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateUserResponse"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Create User",
+        "operationId": "CreateUser"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/users/{userId}": {
+      "delete": {
+        "description": "delete mongodb user",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "user id",
+            "explode": false,
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Delete User",
+        "operationId": "DeleteUser"
+      },
+      "get": {
+        "description": "get detailed information of a user of a mongodb instance",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "user id",
+            "explode": false,
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUserResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Get User",
+        "operationId": "GetUser"
+      },
+      "patch": {
+        "description": "updates user for a mongodb instance",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "user id",
+            "explode": false,
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PartialUpdateUserPayload"
+              }
+            }
+          },
+          "description": "payload",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Update User",
+        "operationId": "PartialUpdateUser"
+      },
+      "put": {
+        "description": "updates user for a mongodb instance",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "user id",
+            "explode": false,
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserPayload"
+              }
+            }
+          },
+          "description": "payload",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Conflict"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Update User",
+        "operationId": "UpdateUser"
+      }
+    },
+    "/v1/projects/{projectId}/instances/{instanceId}/users/{userId}/reset": {
+      "post": {
+        "description": "resets mongodb user's password",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "instance id",
+            "explode": false,
+            "in": "path",
+            "name": "instanceId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "user id",
+            "explode": false,
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            },
+            "description": "Accepted"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Reset User",
+        "operationId": "ResetUser"
+      }
+    },
+    "/v1/projects/{projectId}/storages/{flavor}": {
+      "get": {
+        "description": "returns the storage for a certain flavor",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          },
+          {
+            "description": "flavor id",
+            "explode": false,
+            "in": "path",
+            "name": "flavor",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListStoragesResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          },
+          "404": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Not Found"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Get storage",
+        "operationId": "ListStorages"
+      }
+    },
+    "/v1/projects/{projectId}/versions": {
+      "get": {
+        "description": "returns all available versions for creating endpoint",
+        "parameters": [
+          {
+            "description": "project id",
+            "explode": false,
+            "in": "path",
+            "name": "projectId",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListVersionsResponse"
+                }
+              }
+            },
+            "description": "OK"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "description": "Bad Request"
+          }
+        },
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "summary": "Get versions",
+        "operationId": "ListVersions"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://mongodb-flex-service.api.{region}stackit.cloud",
+      "variables": {
+        "region": {
+          "default": "eu01.",
+          "enum": [
+            "eu01."
+          ]
+        }
+      }
+    }
+  ]
+}
