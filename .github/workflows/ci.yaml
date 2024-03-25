@@ -3,7 +3,7 @@ name: CI Workflow
 on: [pull_request, workflow_dispatch]
 
 env:
-  GO_VERSION_BUILD: "1.21"
+  GO_VERSION_BUILD: "1.22"
   JAVA_VERSION: "11"
 
 jobs:
@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        go-version: ["1.18", "1.19", "1.20", "1.21"]
+        go-version: ["1.18", "1.19", "1.20", "1.21", "1.22"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install SSH Key
@@ -38,7 +38,7 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
       - name: Lint
-        if: ${{ matrix.go-version == '1.19' || matrix.go-version == '1.20' || matrix.go-version == '1.21' }}
+        if: ${{ matrix.go-version == '1.19' || matrix.go-version == '1.20' || matrix.go-version == '1.21' || matrix.go-version == '1.22'}}
         working-directory: ./sdk-repo-updated
         run: make lint skip-non-generated-files=true
       - name: Test
