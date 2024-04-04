@@ -8,7 +8,7 @@ COMMIT_EMAIL="noreply@stackit.de"
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated" # Comes from generate-sdk.sh
 REPO_BRANCH="main"
 
-if [ $# -ne 5 ]; then
+if [ $# -lt 4 ]; then
     echo "Not enough arguments supplied. Required: 'branch-name' 'commit-message' 'pr-title' 'pr-body' 'repo-url'"
     exit 1
 fi
