@@ -10,7 +10,7 @@ project-tools:
 
 # GENERATE
 download-oas:
-	@$(SCRIPTS_BASE)/download-oas.sh
+	@$(SCRIPTS_BASE)/download-oas.sh $(OAS_REPO_NAME) $(OAS_REPO)
 generate-sdk:
-	@$(SCRIPTS_BASE)/generate-sdk/generate-sdk.sh
+	@$(SCRIPTS_BASE)/generate-sdk/generate-sdk.sh $(GIT_HOST) $(GIT_USER_ID) $(GIT_REPO_ID) $(TEMPLATE_DIR) $(SDK_REPO_URL)
 

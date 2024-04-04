@@ -2,8 +2,19 @@
 set -eo pipefail
 
 ROOT_DIR=$(git rev-parse --show-toplevel)
-OAS_REPO_NAME="stackit-api-specifications"
-OAS_REPO="https://github.com/stackitcloud/${OAS_REPO_NAME}.git"
+
+OAS_REPO_NAME=$1
+OAS_REPO=$2
+
+if [[ -z ${OAS_REPO_NAME} ]]; then
+    echo "Repo name is empty, default public OAS repo name will be used."
+    OAS_REPO_NAME="stackit-api-specifications"
+fi
+
+if [[ ! ${OAS_REPO} || -d ${OAS_REPO} ]]; then
+    echo "Repo argument is empty, default public OAS repo will be used."
+    OAS_REPO="https://github.com/stackitcloud/${OAS_REPO_NAME}.git"
+fi
 
 # Create temp directory to clone OAS repo
 work_dir=$(mktemp -d)

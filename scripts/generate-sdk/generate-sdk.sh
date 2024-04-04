@@ -3,11 +3,16 @@
 # Pre-requisites: Java, goimports, Go
 set -eo pipefail
 
+GIT_HOST=$1
+GIT_USER_ID=$2
+GIT_REPO_ID=$3
+TEMPLATE_DIR=$4
+SDK_REPO_URL=$5
+
 ROOT_DIR=$(git rev-parse --show-toplevel)
 GENERATOR_PATH="${ROOT_DIR}/scripts/bin"
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
-SDK_REPO_URL="https://github.com/stackitcloud/stackit-sdk-go.git"
 SDK_GO_VERSION="1.18"
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
 SCRIPTS_FOLDER="${SDK_REPO_LOCAL_PATH}/scripts"
@@ -15,6 +20,31 @@ SCRIPTS_FOLDER="${SDK_REPO_LOCAL_PATH}/scripts"
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
 GENERATOR_VERSION="v6.6.0"
 GENERATOR_VERSION_NUMBER="${GENERATOR_VERSION:1}"
+
+if [[ -z ${GIT_HOST} ]]; then
+    echo "Git host is empty, default will be used."
+    GIT_HOST="github.com"
+fi
+
+if [[ -z ${GIT_USER_ID} ]]; then
+    echo "Git user id is empty, default will be used."
+    GIT_USER_ID="stackitcloud"
+fi
+
+if [[ -z ${GIT_REPO_ID} ]]; then
+    echo "Git repo id is empty, default will be used."
+    GIT_REPO_ID="stackit-sdk-go"
+fi
+
+if [[ ! ${TEMPLATE_DIR} || -d ${TEMPLATE_DIR} ]]; then
+    echo "Template dir is empty, default will be used."
+    TEMPLATE_DIR="${ROOT_DIR}/templates/"
+fi
+
+if [[ -z ${SDK_REPO_URL} ]]; then
+    echo "SDK repo URL is empty, default will be used."
+    SDK_REPO_URL="https://github.com/stackitcloud/stackit-sdk-go.git"
+fi
 
 # Backup of the current state of the SDK services/
 sdk_services_backup_dir=$(mktemp -d)
@@ -123,10 +153,11 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
         --input-spec ${service_json} \
         --output ${SDK_REPO_LOCAL_PATH}/services/${service} \
         --package-name ${service} \
-        --template-dir ${ROOT_DIR}/templates/ \
+        --template-dir ${TEMPLATE_DIR} \
         --enable-post-process-file \
-        --git-user-id stackitcloud \
-        --git-repo-id stackit-sdk-go \
+        --git-host ${GIT_HOST} \
+        --git-user-id ${GIT_USER_ID} \
+        --git-repo-id ${GIT_REPO_ID} \
         --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles \
         --additional-properties=isGoSubmodule=true
     rm ${SDK_REPO_LOCAL_PATH}/services/${service}/.openapi-generator-ignore

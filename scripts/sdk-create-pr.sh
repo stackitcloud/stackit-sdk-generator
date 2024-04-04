@@ -6,17 +6,22 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 COMMIT_NAME="SDK Generator Bot"
 COMMIT_EMAIL="noreply@stackit.de"
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated" # Comes from generate-sdk.sh
-REPO_URL_SSH="git@github.com:stackitcloud/stackit-sdk-go.git"
 REPO_BRANCH="main"
 
-if [ $# -ne 4 ]; then
-    echo "Not enough arguments supplied. Required: 'branch-name' 'commit-message' 'pr-title' 'pr-body'"
+if [ $# -lt 4 ]; then
+    echo "Not enough arguments supplied. Required: 'branch-name' 'commit-message' 'pr-title' 'pr-body' 'repo-url'"
     exit 1
 fi
 
 if [ ! -d ${SDK_REPO_LOCAL_PATH} ]; then
     echo "sdk to commit not found in root. Please run make generate-sdk"
     exit 1
+fi
+
+if [[ -z $5 ]]; then
+    REPO_URL_SSH="git@github.com:stackitcloud/stackit-sdk-go.git"
+else
+    REPO_URL_SSH=$5
 fi
 
 # Create temp directory to work on
