@@ -6,7 +6,7 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 OAS_REPO_NAME=$1
 OAS_REPO=$2
 
-if [[ ! -z ${OAS_REPO_NAME} ]]; then
+if [[ -z ${OAS_REPO_NAME} ]]; then
     echo "Repo name is empty, default public OAS repo name will be used."
     OAS_REPO_NAME="stackit-api-specifications"
 fi

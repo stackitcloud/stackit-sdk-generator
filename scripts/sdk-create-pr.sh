@@ -18,7 +18,7 @@ if [ ! -d ${SDK_REPO_LOCAL_PATH} ]; then
     exit 1
 fi
 
-if [[ ! -z $5 ]]; then
+if [[ -z $5 ]]; then
     REPO_URL_SSH="git@github.com:stackitcloud/stackit-sdk-go.git"
 else
     REPO_URL_SSH=$5

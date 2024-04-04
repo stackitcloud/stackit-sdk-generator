@@ -13,7 +13,7 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 GENERATOR_PATH="${ROOT_DIR}/scripts/bin"
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
-GIT_HOST_DEFAULT = "https://github.com"
+GIT_HOST_DEFAULT="https://github.com"
 SDK_GO_VERSION="1.18"
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
 SCRIPTS_FOLDER="${SDK_REPO_LOCAL_PATH}/scripts"
@@ -22,17 +22,17 @@ SCRIPTS_FOLDER="${SDK_REPO_LOCAL_PATH}/scripts"
 GENERATOR_VERSION="v6.6.0"
 GENERATOR_VERSION_NUMBER="${GENERATOR_VERSION:1}"
 
-if [[ ! -z ${GIT_HOST} ]]; then
+if [[ -z ${GIT_HOST} ]]; then
     echo "Git host is empty, default will be used."
-    GIT_HOST = ${GIT_HOST_DEFAULT}
+    GIT_HOST=${GIT_HOST_DEFAULT}
 fi
 
-if [[ ! -z ${GIT_USER_ID} ]]; then
+if [[ -z ${GIT_USER_ID} ]]; then
     echo "Git user id is empty, default will be used."
     GIT_USER_ID="stackitcloud"
 fi
 
-if [[ ! -z ${GIT_REPO_ID} ]]; then
+if [[ -z ${GIT_REPO_ID} ]]; then
     echo "Git repo id is empty, default will be used."
     GIT_REPO_ID="stackit-sdk-go"
 fi
@@ -42,9 +42,9 @@ if [[ ! ${TEMPLATE_DIR} || -d ${TEMPLATE_DIR} ]]; then
     TEMPLATE_DIR="${ROOT_DIR}/templates/"
 fi
 
-if [[ ! -z ${SDK_REPO_URL} ]]; then
+if [[ -z ${SDK_REPO_URL} ]]; then
     echo "SDK repo URL is empty, default will be used."
-    SDK_REPO_URL = "${GIT_HOST_DEFAULT}/stackitcloud/stackit-sdk-go.git"
+    SDK_REPO_URL="${GIT_HOST_DEFAULT}/stackitcloud/stackit-sdk-go.git"
 fi
 
 # Backup of the current state of the SDK services/
