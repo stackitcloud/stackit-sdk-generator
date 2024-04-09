@@ -74,7 +74,9 @@ func NewAPIClient(opts ...config.ConfigurationOption) (*APIClient, error) {
 		return nil, fmt.Errorf("setting up authentication: %w", err)
 	}
 
-	cfg.HTTPClient.Transport = authRoundTripper
+	roundTripper := config.ChainMiddleware(authRoundTripper, cfg.Middleware...)
+
+	cfg.HTTPClient.Transport = roundTripper
 
 	c := &APIClient{}
 	c.cfg = cfg
