@@ -5,7 +5,7 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 
 OAS_REPO_NAME=$1
 OAS_REPO=$2
-SKIP_ALPHA=$3
+ALLOW_ALPHA=$3
 
 if [[ -z ${OAS_REPO_NAME} ]]; then
     echo "Repo name is empty, default public OAS repo name will be used."
@@ -52,7 +52,7 @@ for service_dir in ${work_dir}/${OAS_REPO_NAME}/services/*; do
             version=${version#v}
             # Check if version is alpha
             if [[ ${version} == *alpha* ]]; then
-                if [[ ${SKIP_ALPHA} == "true" ]]; then
+                if [[ ${ALLOW_ALPHA} != "true" ]]; then
                     continue
                 fi
                 # Remove 'alpha' suffix
@@ -75,6 +75,7 @@ for service_dir in ${work_dir}/${OAS_REPO_NAME}/services/*; do
     done
 
     if [[ -z ${max_version_dir} ]]; then
+        echo "No elegible OAS found for ${service_dir}"
         continue
     fi
     mv -f ${max_version_dir}/*.json ${ROOT_DIR}/oas
