@@ -5,6 +5,7 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 
 OAS_REPO_NAME=$1
 OAS_REPO=$2
+ALLOW_ALPHA=$3
 
 if [[ -z ${OAS_REPO_NAME} ]]; then
     echo "Repo name is empty, default public OAS repo name will be used."
@@ -37,29 +38,45 @@ git clone ${OAS_REPO}
 for service_dir in ${work_dir}/${OAS_REPO_NAME}/services/*; do
     max_version_dir=""
     max_version=-1
-    max_version_is_beta=false
+
+    # Prioritize GA over Beta over Alpha versions
+    # GA priority = 3, Beta priority = 2, Alpha priority = 1
+    max_version_priority=1
 
     for dir in ${service_dir}/*; do
         version=$(basename "$dir")
-        current_version_is_beta=false
+        current_version_priority=3
         # Check if directory name starts with 'v'
         if [[ ${version} == v* ]]; then
             # Remove the 'v' prefix
             version=${version#v}
+            # Check if version is alpha
+            if [[ ${version} == *alpha* ]]; then
+                if [[ ${ALLOW_ALPHA} != "true" ]]; then
+                    continue
+                fi
+                # Remove 'alpha' suffix
+                version=${version%alpha*}
+                current_version_priority=1
+            fi
             # Check if version is beta
             if [[ ${version} == *beta* ]]; then
                 # Remove 'beta' suffix
                 version=${version%beta*}
-                current_version_is_beta=true
+                current_version_priority=2
             fi
-            # Compare versions and prioritize non-beta versions
-            if [[ $((version)) -gt ${max_version} || ($((version)) -eq ${max_version} && ${current_version_is_beta} == false) ]]; then
+            # Compare versions, prioritizing GA over Beta over Alpha versions
+            if [[ $((version)) -gt ${max_version} || ($((version)) -eq ${max_version} && ${current_version_priority} -gt ${max_version_priority}) ]]; then
                 max_version=$((version))
                 max_version_dir=${dir}
-                max_version_is_beta=${current_version_is_beta}
+                max_version_priority=${current_version_priority}
             fi
         fi
     done
 
+    if [[ -z ${max_version_dir} ]]; then
+        echo "No elegible OAS found for ${service_dir}"
+        continue
+    fi
     mv -f ${max_version_dir}/*.json ${ROOT_DIR}/oas
 done
