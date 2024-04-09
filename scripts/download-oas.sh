@@ -5,6 +5,7 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 
 OAS_REPO_NAME=$1
 OAS_REPO=$2
+SKIP_ALPHA=$3
 
 if [[ -z ${OAS_REPO_NAME} ]]; then
     echo "Repo name is empty, default public OAS repo name will be used."
@@ -51,6 +52,9 @@ for service_dir in ${work_dir}/${OAS_REPO_NAME}/services/*; do
             version=${version#v}
             # Check if version is alpha
             if [[ ${version} == *alpha* ]]; then
+                if [[ ${SKIP_ALPHA} == "true" ]]; then
+                    continue
+                fi
                 # Remove 'alpha' suffix
                 version=${version%alpha*}
                 current_version_priority=1
@@ -70,5 +74,8 @@ for service_dir in ${work_dir}/${OAS_REPO_NAME}/services/*; do
         fi
     done
 
+    if [[ -z ${max_version_dir} ]]; then
+        continue
+    fi
     mv -f ${max_version_dir}/*.json ${ROOT_DIR}/oas
 done
