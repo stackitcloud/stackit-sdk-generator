@@ -6,8 +6,7 @@ set -eo pipefail
 GIT_HOST=$1
 GIT_USER_ID=$2
 GIT_REPO_ID=$3
-TEMPLATE_DIR=$4
-SDK_REPO_URL=$5
+SDK_REPO_URL=$4
 
 ROOT_DIR=$(git rev-parse --show-toplevel)
 GENERATOR_PATH="${ROOT_DIR}/scripts/bin"
@@ -15,6 +14,8 @@ GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
 SDK_GO_VERSION="1.18"
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
+SERVICES_FOLDER="${SDK_REPO_LOCAL_PATH}/services"
+EXAMPLES_FOLDER="${SDK_REPO_LOCAL_PATH}/examples"
 SCRIPTS_FOLDER="${SDK_REPO_LOCAL_PATH}/scripts"
 
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
@@ -34,11 +35,6 @@ fi
 if [[ -z ${GIT_REPO_ID} ]]; then
     echo "Git repo id is empty, default will be used."
     GIT_REPO_ID="stackit-sdk-go"
-fi
-
-if [[ ! ${TEMPLATE_DIR} || -d ${TEMPLATE_DIR} ]]; then
-    echo "Template dir is empty, default will be used."
-    TEMPLATE_DIR="${ROOT_DIR}/templates/"
 fi
 
 if [[ -z ${SDK_REPO_URL} ]]; then
@@ -106,8 +102,8 @@ cd ${SDK_REPO_LOCAL_PATH}
 make project-tools
 
 # Save and remove SDK services/
-cp -a "${SDK_REPO_LOCAL_PATH}/services/." ${sdk_services_backup_dir}
-rm -rf ${SDK_REPO_LOCAL_PATH}/services
+cp -a "${SERVICES_FOLDER}/." ${sdk_services_backup_dir}
+rm -rf ${SERVICES_FOLDER}
 rm ${SDK_REPO_LOCAL_PATH}/go.work
 if [ -f "${SDK_REPO_LOCAL_PATH}/go.work.sum" ]; then
     rm ${SDK_REPO_LOCAL_PATH}/go.work.sum
@@ -117,8 +113,10 @@ fi
 trap cleanup EXIT
 
 echo "go ${SDK_GO_VERSION}" >${SDK_REPO_LOCAL_PATH}/go.work
-cd ${SDK_REPO_LOCAL_PATH}/core
-go work use .
+if [ -d ${SDK_REPO_LOCAL_PATH}/core ]; then
+    cd ${SDK_REPO_LOCAL_PATH}/core
+    go work use .
+fi
 for service_json in ${ROOT_DIR}/oas/*.json; do
     service="${service_json##*/}"
     service="${service%.json}"
@@ -146,22 +144,22 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
     cd ${ROOT_DIR}
 
     GO_POST_PROCESS_FILE="gofmt -w" \
-        mkdir -p ${SDK_REPO_LOCAL_PATH}/services/${service}/
-    cp ${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore ${SDK_REPO_LOCAL_PATH}/services/${service}/
+        mkdir -p ${SERVICES_FOLDER}/${service}/
+    cp ${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore ${SERVICES_FOLDER}/${service}/
     java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${jar_path} generate \
         --generator-name go \
         --input-spec ${service_json} \
-        --output ${SDK_REPO_LOCAL_PATH}/services/${service} \
+        --output ${SERVICES_FOLDER}/${service} \
         --package-name ${service} \
-        --template-dir ${TEMPLATE_DIR} \
+        --template-dir ${ROOT_DIR}/templates/ \
         --enable-post-process-file \
         --git-host ${GIT_HOST} \
         --git-user-id ${GIT_USER_ID} \
         --git-repo-id ${GIT_REPO_ID} \
         --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles \
         --additional-properties=isGoSubmodule=true
-    rm ${SDK_REPO_LOCAL_PATH}/services/${service}/.openapi-generator-ignore
-    rm ${SDK_REPO_LOCAL_PATH}/services/${service}/.openapi-generator/FILES
+    rm ${SERVICES_FOLDER}/${service}/.openapi-generator-ignore
+    rm ${SERVICES_FOLDER}/${service}/.openapi-generator/FILES
 
     # If there's a comment at the start of go.mod, copy it
     go_mod_backup_path="${sdk_services_backup_dir}/${service}/go.mod"
@@ -170,55 +168,59 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
         is_comment_pattern="^\/\/"
         if [[ ${go_mod_backup_first_line} =~ ${is_comment_pattern} ]]; then
             echo "Found comment at the top of ${service}/go.mod"
-            go_mod_path="${SDK_REPO_LOCAL_PATH}/services/${service}/go.mod"
+            go_mod_path="${SERVICES_FOLDER}/${service}/go.mod"
             echo -e "${go_mod_backup_first_line}\n$(cat ${go_mod_path})" >${go_mod_path}
         fi
     fi
 
     # Move tests to the service folder
-    cp ${SDK_REPO_LOCAL_PATH}/services/${service}/test/* ${SDK_REPO_LOCAL_PATH}/services/${service}
-    rm -r ${SDK_REPO_LOCAL_PATH}/services/${service}/test/
+    cp ${SERVICES_FOLDER}/${service}/test/* ${SERVICES_FOLDER}/${service}
+    rm -r ${SERVICES_FOLDER}/${service}/test/
 
     # If the service has a wait package files, move them inside the service folder
     if [ -d ${sdk_services_backup_dir}/${service}/wait ]; then
         echo "Found ${service}/wait package"
-        cp -r ${sdk_services_backup_dir}/${service}/wait ${SDK_REPO_LOCAL_PATH}/services/${service}/wait
+        cp -r ${sdk_services_backup_dir}/${service}/wait ${SERVICES_FOLDER}/${service}/wait
     fi
 
     # If the service has a CHANGELOG file, move it inside the service folder
     if [ -f ${sdk_services_backup_dir}/${service}/CHANGELOG.md ]; then
         echo "Found ${service} CHANGELOG file"
-        cp -r ${sdk_services_backup_dir}/${service}/CHANGELOG.md ${SDK_REPO_LOCAL_PATH}/services/${service}/CHANGELOG.md
+        cp -r ${sdk_services_backup_dir}/${service}/CHANGELOG.md ${SERVICES_FOLDER}/${service}/CHANGELOG.md
     fi
 
     # If the service has a LICENSE file, move it inside the service folder
     if [ -f ${sdk_services_backup_dir}/${service}/LICENSE.md ]; then
         echo "Found ${service} LICENSE file"
-        cp -r ${sdk_services_backup_dir}/${service}/LICENSE.md ${SDK_REPO_LOCAL_PATH}/services/${service}/LICENSE.md
+        cp -r ${sdk_services_backup_dir}/${service}/LICENSE.md ${SERVICES_FOLDER}/${service}/LICENSE.md
     fi
 
     # If the service has a NOTICE file, move it inside the service folder
     if [ -f ${sdk_services_backup_dir}/${service}/NOTICE.txt ]; then
         echo "Found ${service} NOTICE file"
-        cp -r ${sdk_services_backup_dir}/${service}/NOTICE.txt ${SDK_REPO_LOCAL_PATH}/services/${service}/NOTICE.txt
+        cp -r ${sdk_services_backup_dir}/${service}/NOTICE.txt ${SERVICES_FOLDER}/${service}/NOTICE.txt
     fi
 
-    cd ${SDK_REPO_LOCAL_PATH}/services/${service}
+    cd ${SERVICES_FOLDER}/${service}
     go work use .
     go mod tidy
 done
 
 # Add examples to workspace
-for example_dir in ${SDK_REPO_LOCAL_PATH}/examples/*; do
-    cd ${example_dir}
-    go work use .
-done
+if [ -d ${EXAMPLES_FOLDER} ]; then
+    for example_dir in ${EXAMPLES_FOLDER}/*; do
+        cd ${example_dir}
+        go work use .
+    done
+fi
 
 # Add scripts to workspace
-cd ${SCRIPTS_FOLDER}
-go work use .
+if [ -d ${SCRIPTS_FOLDER} ]; then
+    cd ${SCRIPTS_FOLDER}
+    go work use .
+fi
 
 # Cleanup after SDK generation
 cd ${SDK_REPO_LOCAL_PATH}
-goimports -w ${SDK_REPO_LOCAL_PATH}/services/
+goimports -w ${SERVICES_FOLDER}/
 make sync-tidy
