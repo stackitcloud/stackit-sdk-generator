@@ -6,8 +6,7 @@ set -eo pipefail
 GIT_HOST=$1
 GIT_USER_ID=$2
 GIT_REPO_ID=$3
-TEMPLATE_DIR=$4
-SDK_REPO_URL=$5
+SDK_REPO_URL=$4
 
 ROOT_DIR=$(git rev-parse --show-toplevel)
 GENERATOR_PATH="${ROOT_DIR}/scripts/bin"
@@ -34,11 +33,6 @@ fi
 if [[ -z ${GIT_REPO_ID} ]]; then
     echo "Git repo id is empty, default will be used."
     GIT_REPO_ID="stackit-sdk-go"
-fi
-
-if [[ ! ${TEMPLATE_DIR} || -d ${TEMPLATE_DIR} ]]; then
-    echo "Template dir is empty, default will be used."
-    TEMPLATE_DIR="${ROOT_DIR}/templates/"
 fi
 
 if [[ -z ${SDK_REPO_URL} ]]; then
@@ -155,7 +149,6 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
         --input-spec ${service_json} \
         --output ${SDK_REPO_LOCAL_PATH}/services/${service} \
         --package-name ${service} \
-        --template-dir ${TEMPLATE_DIR} \
         --enable-post-process-file \
         --git-host ${GIT_HOST} \
         --git-user-id ${GIT_USER_ID} \
