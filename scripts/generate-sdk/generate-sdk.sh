@@ -14,6 +14,7 @@ GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
 SDK_GO_VERSION="1.18"
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
+EXAMPLES_FOLDER="${SDK_REPO_LOCAL_PATH}/examples"
 SCRIPTS_FOLDER="${SDK_REPO_LOCAL_PATH}/scripts"
 
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
@@ -205,16 +206,18 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
 done
 
 # Add examples to workspace
-if [ -d ${SDK_REPO_LOCAL_PATH}/examples ]; then
-    for example_dir in ${SDK_REPO_LOCAL_PATH}/examples/*; do
+if [ -d ${EXAMPLES_FOLDER} ]; then
+    for example_dir in ${EXAMPLES_FOLDER}/*; do
         cd ${example_dir}
         go work use .
     done
 fi
 
 # Add scripts to workspace
-cd ${SCRIPTS_FOLDER}
-go work use .
+if [ -d ${SCRIPTS_FOLDER} ]; then
+    cd ${SCRIPTS_FOLDER}
+    go work use .
+fi
 
 # Cleanup after SDK generation
 cd ${SDK_REPO_LOCAL_PATH}
