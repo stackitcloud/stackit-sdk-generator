@@ -14,6 +14,7 @@ GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
 SDK_GO_VERSION="1.18"
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
+SERVICES_FOLDER="${SDK_REPO_LOCAL_PATH}/examples"
 EXAMPLES_FOLDER="${SDK_REPO_LOCAL_PATH}/examples"
 SCRIPTS_FOLDER="${SDK_REPO_LOCAL_PATH}/scripts"
 
@@ -101,8 +102,8 @@ cd ${SDK_REPO_LOCAL_PATH}
 make project-tools
 
 # Save and remove SDK services/
-cp -a "${SDK_REPO_LOCAL_PATH}/services/." ${sdk_services_backup_dir}
-rm -rf ${SDK_REPO_LOCAL_PATH}/services
+cp -a "${SERVICES_FOLDER}/." ${sdk_services_backup_dir}
+rm -rf ${SERVICES_FOLDER}
 rm ${SDK_REPO_LOCAL_PATH}/go.work
 if [ -f "${SDK_REPO_LOCAL_PATH}/go.work.sum" ]; then
     rm ${SDK_REPO_LOCAL_PATH}/go.work.sum
@@ -143,12 +144,12 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
     cd ${ROOT_DIR}
 
     GO_POST_PROCESS_FILE="gofmt -w" \
-        mkdir -p ${SDK_REPO_LOCAL_PATH}/services/${service}/
-    cp ${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore ${SDK_REPO_LOCAL_PATH}/services/${service}/
+        mkdir -p ${SERVICES_FOLDER}/${service}/
+    cp ${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore ${SERVICES_FOLDER}/${service}/
     java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${jar_path} generate \
         --generator-name go \
         --input-spec ${service_json} \
-        --output ${SDK_REPO_LOCAL_PATH}/services/${service} \
+        --output ${SERVICES_FOLDER}/${service} \
         --package-name ${service} \
         --template-dir ${ROOT_DIR}/templates/ \
         --enable-post-process-file \
@@ -157,8 +158,8 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
         --git-repo-id ${GIT_REPO_ID} \
         --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles \
         --additional-properties=isGoSubmodule=true
-    rm ${SDK_REPO_LOCAL_PATH}/services/${service}/.openapi-generator-ignore
-    rm ${SDK_REPO_LOCAL_PATH}/services/${service}/.openapi-generator/FILES
+    rm ${SERVICES_FOLDER}/${service}/.openapi-generator-ignore
+    rm ${SERVICES_FOLDER}/${service}/.openapi-generator/FILES
 
     # If there's a comment at the start of go.mod, copy it
     go_mod_backup_path="${sdk_services_backup_dir}/${service}/go.mod"
@@ -167,40 +168,40 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
         is_comment_pattern="^\/\/"
         if [[ ${go_mod_backup_first_line} =~ ${is_comment_pattern} ]]; then
             echo "Found comment at the top of ${service}/go.mod"
-            go_mod_path="${SDK_REPO_LOCAL_PATH}/services/${service}/go.mod"
+            go_mod_path="${SERVICES_FOLDER}/${service}/go.mod"
             echo -e "${go_mod_backup_first_line}\n$(cat ${go_mod_path})" >${go_mod_path}
         fi
     fi
 
     # Move tests to the service folder
-    cp ${SDK_REPO_LOCAL_PATH}/services/${service}/test/* ${SDK_REPO_LOCAL_PATH}/services/${service}
-    rm -r ${SDK_REPO_LOCAL_PATH}/services/${service}/test/
+    cp ${SERVICES_FOLDER}/${service}/test/* ${SERVICES_FOLDER}/${service}
+    rm -r ${SERVICES_FOLDER}/${service}/test/
 
     # If the service has a wait package files, move them inside the service folder
     if [ -d ${sdk_services_backup_dir}/${service}/wait ]; then
         echo "Found ${service}/wait package"
-        cp -r ${sdk_services_backup_dir}/${service}/wait ${SDK_REPO_LOCAL_PATH}/services/${service}/wait
+        cp -r ${sdk_services_backup_dir}/${service}/wait ${SERVICES_FOLDER}/${service}/wait
     fi
 
     # If the service has a CHANGELOG file, move it inside the service folder
     if [ -f ${sdk_services_backup_dir}/${service}/CHANGELOG.md ]; then
         echo "Found ${service} CHANGELOG file"
-        cp -r ${sdk_services_backup_dir}/${service}/CHANGELOG.md ${SDK_REPO_LOCAL_PATH}/services/${service}/CHANGELOG.md
+        cp -r ${sdk_services_backup_dir}/${service}/CHANGELOG.md ${SERVICES_FOLDER}/${service}/CHANGELOG.md
     fi
 
     # If the service has a LICENSE file, move it inside the service folder
     if [ -f ${sdk_services_backup_dir}/${service}/LICENSE.md ]; then
         echo "Found ${service} LICENSE file"
-        cp -r ${sdk_services_backup_dir}/${service}/LICENSE.md ${SDK_REPO_LOCAL_PATH}/services/${service}/LICENSE.md
+        cp -r ${sdk_services_backup_dir}/${service}/LICENSE.md ${SERVICES_FOLDER}/${service}/LICENSE.md
     fi
 
     # If the service has a NOTICE file, move it inside the service folder
     if [ -f ${sdk_services_backup_dir}/${service}/NOTICE.txt ]; then
         echo "Found ${service} NOTICE file"
-        cp -r ${sdk_services_backup_dir}/${service}/NOTICE.txt ${SDK_REPO_LOCAL_PATH}/services/${service}/NOTICE.txt
+        cp -r ${sdk_services_backup_dir}/${service}/NOTICE.txt ${SERVICES_FOLDER}/${service}/NOTICE.txt
     fi
 
-    cd ${SDK_REPO_LOCAL_PATH}/services/${service}
+    cd ${SERVICES_FOLDER}/${service}
     go work use .
     go mod tidy
 done
@@ -221,5 +222,5 @@ fi
 
 # Cleanup after SDK generation
 cd ${SDK_REPO_LOCAL_PATH}
-goimports -w ${SDK_REPO_LOCAL_PATH}/services/
+goimports -w ${SERVICES_FOLDER}/
 make sync-tidy
