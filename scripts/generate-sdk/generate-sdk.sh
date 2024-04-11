@@ -14,7 +14,7 @@ GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
 SDK_GO_VERSION="1.18"
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
-SERVICES_FOLDER="${SDK_REPO_LOCAL_PATH}/examples"
+SERVICES_FOLDER="${SDK_REPO_LOCAL_PATH}/services"
 EXAMPLES_FOLDER="${SDK_REPO_LOCAL_PATH}/examples"
 SCRIPTS_FOLDER="${SDK_REPO_LOCAL_PATH}/scripts"
 
