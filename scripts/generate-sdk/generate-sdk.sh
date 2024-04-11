@@ -149,6 +149,7 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
         --input-spec ${service_json} \
         --output ${SDK_REPO_LOCAL_PATH}/services/${service} \
         --package-name ${service} \
+        --template-dir ${ROOT_DIR}/templates/ \
         --enable-post-process-file \
         --git-host ${GIT_HOST} \
         --git-user-id ${GIT_USER_ID} \
