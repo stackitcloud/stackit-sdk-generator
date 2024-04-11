@@ -204,10 +204,12 @@ for service_json in ${ROOT_DIR}/oas/*.json; do
 done
 
 # Add examples to workspace
-for example_dir in ${SDK_REPO_LOCAL_PATH}/examples/*; do
-    cd ${example_dir}
-    go work use .
-done
+if [ -d ${SDK_REPO_LOCAL_PATH}/examples ]; then
+    for example_dir in ${SDK_REPO_LOCAL_PATH}/examples/*; do
+        cd ${example_dir}
+        go work use .
+    done
+fi
 
 # Add scripts to workspace
 cd ${SCRIPTS_FOLDER}
