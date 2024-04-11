@@ -117,8 +117,10 @@ fi
 trap cleanup EXIT
 
 echo "go ${SDK_GO_VERSION}" >${SDK_REPO_LOCAL_PATH}/go.work
-cd ${SDK_REPO_LOCAL_PATH}/core
-go work use .
+if [ -d ${SDK_REPO_LOCAL_PATH}/core ]; then
+    cd ${SDK_REPO_LOCAL_PATH}/core
+    go work use .
+fi
 for service_json in ${ROOT_DIR}/oas/*.json; do
     service="${service_json##*/}"
     service="${service%.json}"
