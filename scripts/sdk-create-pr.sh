@@ -6,7 +6,11 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 COMMIT_NAME="SDK Generator Bot"
 COMMIT_EMAIL="noreply@stackit.de"
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated" # Comes from generate-sdk.sh
-REPO_BRANCH="main"
+
+REPO_BRANCH=$1
+COMMIT_MESSAGE=$2
+PR_TITLE=$3
+PR_BODY=$4
 
 if [ $# -lt 4 ]; then
     echo "Not enough arguments supplied. Required: 'branch-name' 'commit-message' 'pr-title' 'pr-body' 'repo-url'"
@@ -54,11 +58,15 @@ rm -rf ./*
 cp -a ${work_dir}/sdk_to_push/. ./
 
 # Create PR with new SDK if there are changes
-git switch -c "$1"
+if [[ "$REPO_BRANCH" != "main" ]]; then
+    git switch -c "$REPO_BRANCH"
+fi
 git add -A
-if git commit -m "$2"; then # Commit will fail if it doesn't contain any changes
-    git push origin "$1"
-    gh pr create --title "$3" --body "$4" --head "$1" --base "main"
+if git commit -m "$COMMIT_MESSAGE"; then # Commit will fail if it doesn't contain any changes
+    git push origin "$REPO_BRANCH"
+    if [[ "$REPO_BRANCH" != "main" ]]; then
+        gh pr create --title "$PR_TITLE" --body "$PR_BODY" --head "$REPO_BRANCH" --base "main"
+    fi
 else
     echo "SDK is unchanged, nothing to commit."
 fi
