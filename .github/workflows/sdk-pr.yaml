@@ -38,4 +38,4 @@ jobs:
           GH_REPO: 'stackitcloud/stackit-sdk-go'
           GH_TOKEN: ${{ secrets.SDK_PR_TOKEN }}
         run: |
-          scripts/sdk-create-pr.sh "generator-bot-${{ github.run_id }}" "Generated from GitHub run ${{ github.run_id }} (${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          scripts/sdk-create-pr.sh "generator-bot-${{ github.run_id }}" "Generated from GitHub run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"

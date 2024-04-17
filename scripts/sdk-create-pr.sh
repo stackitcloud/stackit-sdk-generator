@@ -11,7 +11,7 @@ BRANCH_PREFIX=$1
 PR_BODY=$2
 
 if [ $# -lt 2 ]; then
-    echo "Not enough arguments supplied. Required: 'branch-prefix' 'pr-body' 'repo-url'"
+    echo "Not enough arguments supplied. Required: 'branch-prefix' 'pr-body'"
     exit 1
 fi
 
@@ -80,7 +80,10 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
         
         git add services/${service}/
         if [ ! -d "${work_dir}/sdk_backup/services/${service}/" ]; then # Check if it is a newly added SDK module
-            go work use -r . # this removes the use directory if the argument directory doesn’t exist, preventing errors if there is more than one new module in the SDK generation
+            # go work use -r adds a use directive to the go.work file for dir, if it exists, and removes the use directory if the argument directory doesn’t exist
+            # the -r flag examines subdirectories of dir recursively
+            # this prevents errors if there is more than one new module in the SDK generation
+            go work use -r . 
             git add go.work
         fi
         
