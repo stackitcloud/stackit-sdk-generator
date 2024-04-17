@@ -72,11 +72,15 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
     # Check for changes in the specific folder compared to main
     service_changes=$(git status --porcelain "services/$service")
 
-    if [[ -n "$service_changes" ]]; then 
-        echo "Creating PR for $service"
-        git switch main # This is needed to create a new branch for the service without including the previously committed files
-        branch="$BRANCH_PREFIX/$service"
-        git switch -c "$branch"
+    if [[ -n "$service_changes" ]]; then
+        echo "Committing changes for $service" 
+        if [[ "$BRANCH_PREFIX" != "main" ]]; then
+            git switch main # This is needed to create a new branch for the service without including the previously committed files
+            branch="$BRANCH_PREFIX/$service"
+            git switch -c "$branch"
+        else
+            branch=$BRANCH_PREFIX
+        fi            
         
         git add services/${service}/
         if [ ! -d "${work_dir}/sdk_backup/services/${service}/" ]; then # Check if it is a newly added SDK module
@@ -89,6 +93,8 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
         
         git commit -m "Generate $service"
         git push origin "$branch"
-        gh pr create --title "Generator: Update SDK /services/$service" --body "$PR_BODY" --head "$branch" --base "main"
+        if [[ "$branch" != "main" ]]; then
+            gh pr create --title "Generator: Update SDK /services/$service" --body "$PR_BODY" --head "$branch" --base "main"
+        fi   
     fi
 done
