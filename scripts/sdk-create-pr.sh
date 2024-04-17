@@ -7,13 +7,18 @@ COMMIT_NAME="SDK Generator Bot"
 COMMIT_EMAIL="noreply@stackit.de"
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated" # Comes from generate-sdk.sh
 
-REPO_BRANCH=$1
-COMMIT_MESSAGE=$2
-PR_TITLE=$3
-PR_BODY=$4
+BRANCH_PREFIX=$1
+PR_BODY=$2
 
-if [ $# -lt 4 ]; then
-    echo "Not enough arguments supplied. Required: 'branch-name' 'commit-message' 'pr-title' 'pr-body' 'repo-url'"
+if [ $# -lt 2 ]; then
+    echo "Not enough arguments supplied. Required: 'branch-prefix' 'pr-body'"
+    exit 1
+fi
+
+if type -p go >/dev/null; then
+    :
+else
+    echo "Go not installed, unable to proceed."
     exit 1
 fi
 
@@ -22,7 +27,7 @@ if [ ! -d ${SDK_REPO_LOCAL_PATH} ]; then
     exit 1
 fi
 
-if [[ -z $5 ]]; then
+if [[ -z $3 ]]; then
     REPO_URL_SSH="git@github.com:stackitcloud/stackit-sdk-go.git"
 else
     REPO_URL_SSH=$5
@@ -39,6 +44,7 @@ fi
 trap "rm -rf ${work_dir}" EXIT
 
 mkdir ${work_dir}/git_repo    # Where the git repo will be created
+mkdir ${work_dir}/sdk_backup # Backup of the SDK to check for new modules
 mkdir ${work_dir}/sdk_to_push # Copy of SDK to push
 
 # Prepare SDK to push
@@ -51,22 +57,44 @@ git clone ${REPO_URL_SSH} ./
 git config user.name "${COMMIT_NAME}"
 git config user.email "${COMMIT_EMAIL}"
 
-# Replace old SDK with new one
-# Removal of pulled data is necessary because the old version may have files
-# that were deleted in the new version
-rm -rf ./*
-cp -a ${work_dir}/sdk_to_push/. ./
+cp -a . ${work_dir}/sdk_backup
 
-# Create PR with new SDK if there are changes
-if [[ "$REPO_BRANCH" != "main" ]]; then
-    git switch -c "$REPO_BRANCH"
-fi
-git add -A
-if git commit -m "$COMMIT_MESSAGE"; then # Commit will fail if it doesn't contain any changes
-    git push origin "$REPO_BRANCH"
-    if [[ "$REPO_BRANCH" != "main" ]]; then
-        gh pr create --title "$PR_TITLE" --body "$PR_BODY" --head "$REPO_BRANCH" --base "main"
+# Create PR for each new SDK module if there are changes
+for service_path in ${work_dir}/sdk_to_push/services/*; do
+    service="${service_path##*/}"
+
+    # Replace old SDK with new one
+    # Removal of pulled data is necessary because the old version may have files
+    # that were deleted in the new version
+    rm -rf ./services/$service/*
+    cp -a ${work_dir}/sdk_to_push/services/$service/. ./services/$service 
+
+    # Check for changes in the specific folder compared to main
+    service_changes=$(git status --porcelain "services/$service")
+
+    if [[ -n "$service_changes" ]]; then
+        echo "Committing changes for $service" 
+        if [[ "$BRANCH_PREFIX" != "main" ]]; then
+            git switch main # This is needed to create a new branch for the service without including the previously committed files
+            branch="$BRANCH_PREFIX/$service"
+            git switch -c "$branch"
+        else
+            branch=$BRANCH_PREFIX
+        fi            
+        
+        git add services/${service}/
+        if [ ! -d "${work_dir}/sdk_backup/services/${service}/" ]; then # Check if it is a newly added SDK module
+            # go work use -r adds a use directive to the go.work file for dir, if it exists, and removes the use directory if the argument directory doesn’t exist
+            # the -r flag examines subdirectories of dir recursively
+            # this prevents errors if there is more than one new module in the SDK generation
+            go work use -r . 
+            git add go.work
+        fi
+        
+        git commit -m "Generate $service"
+        git push origin "$branch"
+        if [[ "$branch" != "main" ]]; then
+            gh pr create --title "Generator: Update SDK /services/$service" --body "$PR_BODY" --head "$branch" --base "main"
+        fi   
     fi
-else
-    echo "SDK is unchanged, nothing to commit."
-fi
+done
