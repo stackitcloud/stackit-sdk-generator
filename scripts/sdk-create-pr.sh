@@ -8,10 +8,10 @@ COMMIT_EMAIL="noreply@stackit.de"
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated" # Comes from generate-sdk.sh
 
 BRANCH_PREFIX=$1
-PR_BODY=$2
+COMMIT_INFO=$2
 
 if [ $# -lt 2 ]; then
-    echo "Not enough arguments supplied. Required: 'branch-prefix' 'pr-body'"
+    echo "Not enough arguments supplied. Required: 'branch-prefix' 'commit-info'"
     exit 1
 fi
 
@@ -30,7 +30,7 @@ fi
 if [[ -z $3 ]]; then
     REPO_URL_SSH="git@github.com:stackitcloud/stackit-sdk-go.git"
 else
-    REPO_URL_SSH=$5
+    REPO_URL_SSH=$3
 fi
 
 # Create temp directory to work on
@@ -91,10 +91,13 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
             git add go.work
         fi
         
-        git commit -m "Generate $service"
-        git push origin "$branch"
         if [[ "$branch" != "main" ]]; then
-            gh pr create --title "Generator: Update SDK /services/$service" --body "$PR_BODY" --head "$branch" --base "main"
+            git commit -m "Generate $service"
+            git push origin "$branch"
+            gh pr create --title "Generator: Update SDK /services/$service" --body "$COMMIT_INFO" --head "$branch" --base "main"
+        else
+            git commit -m "$COMMIT_INFO"
+            git push origin "$branch"
         fi   
     fi
 done
