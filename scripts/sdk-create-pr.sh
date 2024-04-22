@@ -96,7 +96,7 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
             git push origin "$branch"
             gh pr create --title "Generator: Update SDK /services/$service" --body "$COMMIT_INFO" --head "$branch" --base "main"
         else
-            git commit -m "$COMMIT_INFO"
+            git commit -m "Generate $service: $COMMIT_INFO"
             git push origin "$branch"
         fi   
     fi
