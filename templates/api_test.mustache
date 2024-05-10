@@ -87,7 +87,7 @@ func Test_{{packageName}}_{{classname}}Service(t *testing.T) {
 		{{#returnType}}resp, {{/returnType}}reqErr := apiClient.{{operationId}}(context.Background(){{#pathParams}}, {{paramName}}{{/pathParams}}){{#allParams}}{{^isPathParam}}{{#required}}.{{vendorExtensions.x-export-param-name}}({{paramName}}){{/required}}{{/isPathParam}}{{/allParams}}.Execute()
 
 		if reqErr != nil {
-			t.Fatalf("error in call: %v", err)
+			t.Fatalf("error in call: %v", reqErr)
 		}
 		{{#returnType}}
 		if resp == nil {
