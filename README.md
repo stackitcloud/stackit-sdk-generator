@@ -1,4 +1,10 @@
-# Overview
+<br>
+<p align="center">
+  <img src=".github/images/stackit-logo.png" alt="STACKIT logo" width="50%"/>
+</p>
+<br>
+
+## Overview
 
 This repository implements the automatic generation of client libraries to access STACKIT APIs. It is based on the [OpenAPI Generator](https://openapi-generator.tech/). The process' input are the REST API specs in the [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) format (OAS), which are stored in [STACKIT API specifications](https://github.com/stackitcloud/stackit-api-specifications).
 
