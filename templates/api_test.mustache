@@ -28,16 +28,24 @@ func Test_{{packageName}}_{{classname}}Service(t *testing.T) {
 {{#operation}}
 	t.Run("Test {{classname}}Service {{{nickname}}}", func(t *testing.T) {
 		path := "{{{path}}}"{{#pathParams}}
-		{{paramName}}Value := {{#isString}}"{{paramName}}"{{/isString}}{{^isString}}{{defaultValue}}{{/isString}}
+		{{paramName}}Value := {{#isString}}"{{paramName}}"{{/isString}}{{#isInteger}}int32(12345){{/isInteger}}{{^isString}}{{^isInteger}}{{defaultValue}}{{/isInteger}}{{/isString}}
 		path = strings.Replace(path, "{"+"{{baseName}}"+"}", url.PathEscape(ParameterValueToString({{paramName}}Value, "{{paramName}}")), -1){{/pathParams}}
 
 		test{{classname}}ServeMux := http.NewServeMux()
 		test{{classname}}ServeMux.HandleFunc(path, func(w http.ResponseWriter, req *http.Request) {
+			{{! Only binary data sets a ReturnFormat}}
+			{{#returnFormat}}
+			w.Header().Add("Content-Type", "application/octet-stream")
+			binaryData := []byte{0x42, 0x69} // Example binary data
+			w.Write(binaryData)
+			{{/returnFormat}}
+			{{^returnFormat}}
 			{{#returnType}}
 			data := {{{.}}}{}
 			w.Header().Add("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(data)
 			{{/returnType}}
+			{{/returnFormat}}
 		})
 		testServer := httptest.NewServer(test{{classname}}ServeMux)
 		defer testServer.Close()
@@ -71,7 +79,7 @@ func Test_{{packageName}}_{{classname}}Service(t *testing.T) {
 		{{#allParams}}
 		{{#required}}
 		{{#isPathParam}}
-		{{paramName}} := {{#isString}}"{{paramName}}"{{/isString}}{{^isString}}{{defaultValue}}{{/isString}}
+		{{paramName}} := {{#isString}}"{{paramName}}"{{/isString}}{{#isInteger}}int32(12345){{/isInteger}}{{^isString}}{{^isInteger}}{{defaultValue}}{{/isInteger}}{{/isString}}
 		{{/isPathParam}}
 		{{^isPathParam}}
 		{{#isPrimitiveType}}
