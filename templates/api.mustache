@@ -23,24 +23,23 @@ type {{classname}} interface {
 	{{operationId}} {{{summary}}}{{^summary}}Method for {{operationId}}{{/summary}}
 	{{#notes}}
 
-	{{{unescapedNotes}}}
+	{{#isDeprecated}}Deprecated: {{/isDeprecated}}{{{unescapedNotes}}}
 	{{/notes}}
 
 	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().{{#pathParams}}
 	@param {{paramName}}{{#description}} {{{.}}}{{/description}}{{/pathParams}}
 	@return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
-	{{#isDeprecated}}
-
-	Deprecated
-	{{/isDeprecated}}
 	*/
 	{{{nickname}}}(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
 
-	// {{nickname}}Execute executes the request{{#returnType}}
-	//  @return {{{.}}}{{/returnType}}
+	/*
+	{{nickname}}Execute executes the request{{#returnType}}
+	@return {{{.}}}{{/returnType}}
+	
 	{{#isDeprecated}}
-	// Deprecated
+	Deprecated: {{{unescapedNotes}}}
 	{{/isDeprecated}}
+	*/
 	{{nickname}}Execute(r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request) ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}}*http.Response, error)
 	{{/operation}}
 }
@@ -391,19 +390,15 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
 }
 
 /*
-{{operationId}} {{{summary}}}{{^summary}}Method for {{operationId}}{{/summary}}
+{{operationId}}: {{{summary}}}{{^summary}}Method for {{operationId}}{{/summary}}
 {{#notes}}
 
-{{{unescapedNotes}}}
+{{#isDeprecated}}Deprecated: {{/isDeprecated}}{{{unescapedNotes}}}
 {{/notes}}
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().{{#pathParams}}
  @param {{paramName}}{{#description}} {{{.}}}{{/description}}{{/pathParams}}
  @return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
-{{#isDeprecated}}
-
-Deprecated
-{{/isDeprecated}}
 */
 func (a *APIClient) {{{nickname}}}(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request {
 	return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request{
@@ -415,6 +410,11 @@ func (a *APIClient) {{{nickname}}}(ctx context.Context{{#pathParams}}, {{paramNa
 	}
 }
 
+{{#isDeprecated}}
+/*
+Deprecated: {{{unescapedNotes}}}
+*/
+{{/isDeprecated}}
 func (a *APIClient) {{{nickname}}}Execute(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}} error){
 	r := {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request{
 		apiService: a.defaultApi,
