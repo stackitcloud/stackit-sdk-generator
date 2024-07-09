@@ -13,7 +13,12 @@ type {{classname}} struct {
 {{^-first}}
 {{/-first}}
 {{#description}}
-	// {{{.}}}
+	// {{#deprecated}} Deprecated: {{/deprecated}}{{{.}}}
+{{/description}}
+{{^description}}
+{{#deprecated}}
+	// Deprecated: Check the GitHub changelog for alternatives
+{{/deprecated}}
 {{/description}}
 {{#isShort}}
 	// Can be cast to int32 without loss of precision.
@@ -21,9 +26,6 @@ type {{classname}} struct {
 {{#isFloat}}
 	// Can be cast to float32 without loss of precision.
 {{/isFloat}}
-{{#deprecated}}
-	// Deprecated
-{{/deprecated}}
 {{#required}}
     // REQUIRED
 {{/required}}
