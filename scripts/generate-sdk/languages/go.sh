@@ -88,15 +88,15 @@ generate_go_sdk() {
     }
     cp -a "${SERVICES_FOLDER}/." ${sdk_services_backup_dir}
 
+    # Cleanup after we are done
+    trap cleanup EXIT
+
     # Remove old contents of services dir (services/)
     rm -rf ${SERVICES_FOLDER}
     rm ${SDK_REPO_LOCAL_PATH}/go.work
     if [ -f "${SDK_REPO_LOCAL_PATH}/go.work.sum" ]; then
         rm ${SDK_REPO_LOCAL_PATH}/go.work.sum
     fi
-
-    # Cleanup after we are done
-    trap cleanup EXIT
 
     echo "go ${SDK_GO_VERSION}" >${SDK_REPO_LOCAL_PATH}/go.work
     if [ -d ${SDK_REPO_LOCAL_PATH}/core ]; then
@@ -141,7 +141,7 @@ generate_go_sdk() {
             --input-spec ${service_json} \
             --output ${SERVICES_FOLDER}/${service} \
             --package-name ${service} \
-            --template-dir ${ROOT_DIR}/templates/ \
+            --template-dir ${ROOT_DIR}/templates/go/ \
             --enable-post-process-file \
             --git-host ${GIT_HOST} \
             --git-user-id ${GIT_USER_ID} \
