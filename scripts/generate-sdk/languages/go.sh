@@ -135,9 +135,9 @@ generate_go_sdk() {
             mkdir -p ${SERVICES_FOLDER}/${service}/
         cp ${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore ${SERVICES_FOLDER}/${service}/
 
-        # Run the generator
+        # Run the generator for Go
         java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${jar_path} generate \
-            --generator-name ${LANGUAGE} \
+            --generator-name go \
             --input-spec ${service_json} \
             --output ${SERVICES_FOLDER}/${service} \
             --package-name ${service} \
