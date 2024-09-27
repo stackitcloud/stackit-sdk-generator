@@ -30,9 +30,13 @@ type {{classname}} struct {
 	// Can be cast to float32 without loss of precision.
 {{/isFloat}}
 {{#required}}
+{{^isReadOnly}}
+{{^isWriteOnly}}
     // REQUIRED
+{{/isWriteOnly}}
+{{/isReadOnly}}
 {{/required}}
-	{{name}} *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
+	{{name}} *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}} `json:"{{baseName}}{{#required}}{{#isReadOnly}},omitempty{{/isReadOnly}}{{/required}}{{#required}}{{#isWriteOnly}},omitempty{{/isWriteOnly}}{{/required}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
 {{#isAdditionalPropertiesTrue}}
 	AdditionalProperties map[string]interface{}
 {{/isAdditionalPropertiesTrue}}

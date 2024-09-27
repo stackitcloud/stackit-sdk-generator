@@ -56,7 +56,6 @@ for service_dir in ${work_dir}/${OAS_REPO_NAME}/services/*; do
                 # To support initial integrations of the IaaS API in an Alpha state, we will temporarily use it to generate an IaaS Alpha SDK module
                 # This check can be removed once the IaaS API moves all endpoints to Beta
                 if [[ ${service} == "iaas" ]]; then 
-                    echo "found alpha iaas" 
                     mv -f ${dir}/*.json ${ROOT_DIR}/oas/iaasalpha.json 
                 fi
                 if [[ ${ALLOW_ALPHA} != "true" ]]; then
