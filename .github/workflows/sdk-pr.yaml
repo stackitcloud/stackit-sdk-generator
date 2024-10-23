@@ -31,11 +31,19 @@ jobs:
         uses: ./.github/actions/build
         with:
           go-version: ${{ env.GO_VERSION }}
-      - name: Generate SDK
-        uses: ./.github/actions/generate-sdk
-      - name: Push SDK
+      - name: Generate Go SDK
+        uses: ./.github/actions/generate-sdk/go
+      - name: Push Go SDK
         env: 
           GH_REPO: 'stackitcloud/stackit-sdk-go'
           GH_TOKEN: ${{ secrets.SDK_PR_TOKEN }}
         run: |
           scripts/sdk-create-pr.sh "generator-bot-${{ github.run_id }}" "Generated from GitHub run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+      - name: Generate Python SDK
+        uses: ./.github/actions/generate-sdk/python
+      - name: Push Python SDK
+        env: 
+          GH_REPO: 'stackitcloud/stackit-sdk-python'
+          GH_TOKEN: ${{ secrets.SDK_PR_TOKEN }}
+        run: |
+          scripts/sdk-create-pr.sh "generator-bot-${{ github.run_id }}" "Generated from GitHub run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" "git@github.com:stackitcloud/stackit-sdk-python.git" "python"

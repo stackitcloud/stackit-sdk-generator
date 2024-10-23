@@ -13,6 +13,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, macos-latest]
         go-version: ["1.18", "1.19", "1.20", "1.21", "1.22"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Install SSH Key
@@ -31,16 +32,28 @@ jobs:
         uses: ./.github/actions/build
         with:
           go-version: ${{ env.GO_VERSION_BUILD }}
-      - name: Generate SDK
-        uses: ./.github/actions/generate-sdk
+      - name: Generate Go SDK
+        uses: ./.github/actions/generate-sdk/go
       - name: Install Go ${{ matrix.go-version }}
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
-      - name: Lint
+      - name: Lint Go SDK
         if: ${{ matrix.go-version == '1.19' || matrix.go-version == '1.20' || matrix.go-version == '1.21' || matrix.go-version == '1.22'}}
         working-directory: ./sdk-repo-updated
         run: make lint skip-non-generated-files=true
-      - name: Test
+      - name: Test Go SDK
         working-directory: ./sdk-repo-updated
         run: make test skip-non-generated-files=true
+      - name: Generate Python SDK
+        uses: ./.github/actions/generate-sdk/python
+      - name: Install Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Lint Python SDK        
+        working-directory: ./sdk-repo-updated
+        run: make lint 
+      - name: Test Python SDK
+        working-directory: ./sdk-repo-updated
+        run: make test

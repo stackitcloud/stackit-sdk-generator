@@ -1,0 +1,15 @@
+name: Generate SDK
+description: "Generates the Python SDK"
+inputs:
+  python-version:
+    description: "Python version to install"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Download OAS
+      shell: bash
+      run: make download-oas
+    - name: Generate SDK
+      shell: bash
+      run: make generate-sdk LANGUAGE=python

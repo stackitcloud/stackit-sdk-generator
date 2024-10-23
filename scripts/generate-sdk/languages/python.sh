@@ -4,7 +4,7 @@
 set -eo pipefail
 
 ROOT_DIR=$(git rev-parse --show-toplevel)
-SDK_REPO_LOCAL_PATH="${ROOT_DIR}/python-sdk-repo-updated"
+SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
 
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
 
@@ -113,6 +113,8 @@ generate_python_sdk() {
         rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
         rm -r "${SERVICES_FOLDER}/${service}/.openapi-generator/"
         rm "${SERVICES_FOLDER}/${service}/stackit/__init__.py"
+        rm "${SERVICES_FOLDER}/${service}/.github/workflows/python.yml"
+        
         
         # If the service has a wait package files, move them inside the service folder
         if [ -d ${sdk_services_backup_dir}/${service}/wait ]; then
