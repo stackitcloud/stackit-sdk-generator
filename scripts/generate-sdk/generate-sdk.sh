@@ -15,8 +15,6 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 GENERATOR_PATH="${ROOT_DIR}/scripts/bin"
 LANGUAGE_GENERATORS_FOLDER_PATH="${ROOT_DIR}/scripts/generate-sdk/languages/"
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
-GENERATOR_VERSION="v6.6.0"
-GENERATOR_VERSION_NUMBER="${GENERATOR_VERSION:1}"
 
 # Check parameters and set defaults if not provided
 if [[ -z ${GIT_HOST} ]]; then
@@ -46,6 +44,21 @@ if [ ! -d ${ROOT_DIR}/oas ]; then
     echo "\"oas\" folder not found in root. Please add it manually or run \"make download-oas\"."
     exit 1
 fi
+# Choose generator version depending on the language
+# Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
+case "${LANGUAGE}" in
+go)
+    GENERATOR_VERSION="v6.6.0" # There are issues with GO SDK generation in version v7
+    ;;
+python)
+    GENERATOR_VERSION="v7.7.0"
+    ;;
+*)
+    echo "SDK language not supported."
+    exit 1
+    ;;
+esac
+GENERATOR_VERSION_NUMBER="${GENERATOR_VERSION:1}"
 
 # Download OpenAPI generator if not already downloaded
 jar_path="${GENERATOR_PATH}/openapi-generator-cli.jar"
@@ -66,6 +79,13 @@ go)
     source ${LANGUAGE_GENERATORS_FOLDER_PATH}/${LANGUAGE}.sh
     # Usage: generate_go_sdk GENERATOR_PATH GIT_HOST GIT_USER_ID [GIT_REPO_ID] [SDK_REPO_URL]
     generate_go_sdk ${jar_path} ${GIT_HOST} ${GIT_USER_ID} ${GIT_REPO_ID} ${SDK_REPO_URL}
+    ;;
+python)
+    echo -e "\nGenerating the Python SDK...\n"
+
+    source ${LANGUAGE_GENERATORS_FOLDER_PATH}/${LANGUAGE}.sh
+    # Usage: generate_python_sdk GENERATOR_PATH GIT_HOST GIT_USER_ID [GIT_REPO_ID] [SDK_REPO_URL]
+    generate_python_sdk ${jar_path} ${GIT_HOST} ${GIT_USER_ID} ${GIT_REPO_ID} ${SDK_REPO_URL}
     ;;
 *)
     echo "SDK language not supported."
