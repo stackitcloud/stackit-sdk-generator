@@ -74,14 +74,10 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Checkout core
-        uses: actions/checkout@v4
-        with: 
-          repository: "stackitcloud/stackit-sdk-python-core.git"
-          path: 'python-core'
-      - name: Install core
-        working-directory: 'python-core'
-        run: make install-dev
+      - name: Install core        
+        run: |
+          git clone https://github.com/stackitcloud/stackit-sdk-python-core.git core
+          cd core;make install-dev;
       - name: Lint        
         working-directory: ./sdk-repo-updated
         run: make lint 
