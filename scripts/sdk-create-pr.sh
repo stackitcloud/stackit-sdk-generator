@@ -33,6 +33,13 @@ else
     REPO_URL_SSH=$3
 fi
 
+if [[ -z $4 ]]; then
+    echo "LANGUAGE not specified, default will be used."
+    LANGUAGE="go"
+else
+    LANGUAGE=$4
+fi
+
 # Create temp directory to work on
 work_dir=$(mktemp -d)
 if [[ ! ${work_dir} || -d {work_dir} ]]; then
@@ -83,7 +90,7 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
         fi            
         
         git add services/${service}/
-        if [ ! -d "${work_dir}/sdk_backup/services/${service}/" ]; then # Check if it is a newly added SDK module
+        if [ "${LANGUAGE}" == "go" ] && [ ! -d "${work_dir}/sdk_backup/services/${service}/" ]; then # Check if it is a newly added SDK module
             # go work use -r adds a use directive to the go.work file for dir, if it exists, and removes the use directory if the argument directory doesn’t exist
             # the -r flag examines subdirectories of dir recursively
             # this prevents errors if there is more than one new module in the SDK generation

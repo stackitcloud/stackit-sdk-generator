@@ -7,8 +7,8 @@ env:
   JAVA_VERSION: "11"
 
 jobs:
-  main:
-    name: CI
+  main-go:
+    name: CI [Go]
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -32,7 +32,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION_BUILD }}
       - name: Generate SDK
-        uses: ./.github/actions/generate-sdk
+        uses: ./.github/actions/generate-sdk/go
       - name: Install Go ${{ matrix.go-version }}
         uses: actions/setup-go@v5
         with:
@@ -44,3 +44,43 @@ jobs:
       - name: Test
         working-directory: ./sdk-repo-updated
         run: make test skip-non-generated-files=true
+  main-python:
+    name: CI [Python]
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ vars.SSH_KNOWN_HOSTS }}
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: ${{ env.JAVA_VERSION }}
+      - name: Checkout
+        uses: actions/checkout@v4     
+      - name: Build
+        uses: ./.github/actions/build
+        with:
+          go-version: ${{ env.GO_VERSION_BUILD }}         
+      - name: Generate SDK
+        uses: ./.github/actions/generate-sdk/python
+      - name: Install Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install core        
+        run: |
+          git clone https://github.com/stackitcloud/stackit-sdk-python-core.git core
+          cd core;make install-dev;
+      - name: Lint        
+        working-directory: ./sdk-repo-updated
+        run: make lint 
+      - name: Test
+        working-directory: ./sdk-repo-updated
+        run: make test
