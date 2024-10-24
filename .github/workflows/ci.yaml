@@ -8,7 +8,7 @@ env:
 
 jobs:
   main-go:
-    name: CI [Go]
+    name: [Go] CI 
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -45,7 +45,7 @@ jobs:
         working-directory: ./sdk-repo-updated
         run: make test skip-non-generated-files=true
   main-python:
-    name: CI [Python]
+    name: [Python] CI 
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
