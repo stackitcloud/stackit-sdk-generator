@@ -107,7 +107,6 @@ generate_python_sdk() {
             --git-repo-id ${GIT_REPO_ID} \
             --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=false,supportingFiles \
             --additional-properties=pythonPackageName="stackit-${service},removeEnumValuePrefix=false" >/dev/null
-        ##--enable-post-process-file \
 
         # Remove unnecessary files
         rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
