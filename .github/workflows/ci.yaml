@@ -77,7 +77,7 @@ jobs:
       - name: Checkout core
         uses: actions/checkout@v4
         with: 
-          repository: "https://github.com/stackitcloud/stackit-sdk-python-core.git"
+          repository: "stackitcloud/stackit-sdk-python-core.git"
           path: 'python-core'
       - name: Install core
         working-directory: 'python-core'
