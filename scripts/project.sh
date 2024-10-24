@@ -17,6 +17,7 @@ elif [ "$action" = "tools" ]; then
     cd ${ROOT_DIR}
 
     go install golang.org/x/tools/cmd/goimports@latest
+    pip install black==24.8.0 isort~=5.13.2 autoimport~=1.6.1
 else
     echo "Invalid action: '$action', please use $0 help for help"
 fi
