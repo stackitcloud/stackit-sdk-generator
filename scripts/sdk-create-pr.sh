@@ -37,7 +37,7 @@ if [[ -z $4 ]]; then
     echo "LANGUAGE not specified, default will be used."
     LANGUAGE="go"
 else
-    LANGUAGE="python"
+    LANGUAGE=$4
 fi
 
 # Create temp directory to work on
