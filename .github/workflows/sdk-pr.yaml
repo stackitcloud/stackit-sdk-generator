@@ -12,7 +12,7 @@ env:
 
 jobs:
   main-go:
-    name: Update SDK Repo
+    name: [Go] Update SDK Repo
     runs-on: ubuntu-latest
     steps:
       - name: Install SSH Key
@@ -40,7 +40,7 @@ jobs:
         run: |
           scripts/sdk-create-pr.sh "generator-bot-${{ github.run_id }}" "Generated from GitHub run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"      
   main-python:
-    name: Update SDK Repo
+    name: [Python] Update SDK Repo
     runs-on: ubuntu-latest
     steps:
       - name: Install SSH Key
