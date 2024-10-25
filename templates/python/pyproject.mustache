@@ -43,7 +43,7 @@ Homepage = "https://github.com/{{{gitUserId}}}/{{{gitRepoId}}}"
 Issues = "https://github.com/{{{gitUserId}}}/{{{gitRepoId}}}/issues"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["setuptools", "poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
@@ -95,9 +95,9 @@ per-file-ignores = """
   ./tests/*: S101,
     # F841: some variables get generated but may not be used, depending on the api-spec
     # E501: long descriptions/string values might lead to lines that are too long    
-  ./stackit/*/models/*: F841,E501
+  ./src/stackit/*/models/*: F841,E501
     # F841: some variables get generated but may not be used, depending on the api-spec
     # E501: long descriptions/string values might lead to lines that are too long
     # B028: stacklevel for deprecation warning is irrelevant
-  ./stackit/*/api/default_api.py: F841,B028,E501
+  ./src/stackit/*/api/default_api.py: F841,B028,E501
 """
