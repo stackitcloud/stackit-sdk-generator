@@ -133,7 +133,6 @@ class {{classname}}({{#parent}}{{{.}}}{{/parent}}{{^parent}}BaseModel{{/parent}}
             error_messages.append(str(e))
         {{/isPrimitiveType}}
         {{^isPrimitiveType}}
-        # {{vendorExtensions.x-py-name}}: {{{vendorExtensions.x-py-typing}}}
         try:
             instance.actual_instance = {{{dataType}}}.from_json(json_str)
             return instance
