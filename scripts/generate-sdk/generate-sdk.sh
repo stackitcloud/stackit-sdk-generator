@@ -51,7 +51,7 @@ go)
     GENERATOR_VERSION="v6.6.0" # There are issues with GO SDK generation in version v7
     ;;
 python)
-    GENERATOR_VERSION="v7.7.0"
+    GENERATOR_VERSION="v7.9.0"
     ;;
 *)
     echo "SDK language not supported."
