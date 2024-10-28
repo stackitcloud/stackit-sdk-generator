@@ -83,10 +83,7 @@ class {{classname}}({{#parent}}{{{.}}}{{/parent}}{{^parent}}BaseModel{{/parent}}
         {{/isPrimitiveType}}
         {{/isContainer}}
         {{/composedSchemas.oneOf}}
-        if match > 1:
-            # more than 1 match
-            raise ValueError("Multiple matches found when setting `actual_instance` in {{{classname}}} with oneOf schemas: {{#oneOf}}{{{.}}}{{^-last}}, {{/-last}}{{/oneOf}}. Details: " + ", ".join(error_messages))
-        elif match == 0:
+        if match == 0:
             # no match
             raise ValueError("No match found when setting `actual_instance` in {{{classname}}} with oneOf schemas: {{#oneOf}}{{{.}}}{{^-last}}, {{/-last}}{{/oneOf}}. Details: " + ", ".join(error_messages))
         else:
