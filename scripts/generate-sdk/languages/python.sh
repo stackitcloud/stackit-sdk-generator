@@ -114,11 +114,14 @@ generate_python_sdk() {
         rm "${SERVICES_FOLDER}/${service}/stackit/__init__.py"
         rm "${SERVICES_FOLDER}/${service}/.github/workflows/python.yml"
         
+        # Create source layout
+        mkdir "${SERVICES_FOLDER}/${service}/src"
+        mv "${SERVICES_FOLDER}/${service}/stackit/" "${SERVICES_FOLDER}/${service}/src/"
         
         # If the service has a wait package files, move them inside the service folder
-        if [ -d ${sdk_services_backup_dir}/${service}/wait ]; then
+        if [ -d ${sdk_services_backup_dir}/${service}/src/wait ]; then
             echo "Found ${service} \"wait\" package"
-            cp -r ${sdk_services_backup_dir}/${service}/wait ${SERVICES_FOLDER}/${service}/wait
+            cp -r ${sdk_services_backup_dir}/${service}/src/wait ${SERVICES_FOLDER}/${service}/src/wait
         fi
 
         # If the service has a CHANGELOG file, move it inside the service folder
