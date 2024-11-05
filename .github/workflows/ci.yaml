@@ -79,7 +79,10 @@ jobs:
           pip install poetry
           poetry config virtualenvs.create false
           git clone https://github.com/stackitcloud/stackit-sdk-python-core.git core
-          cd core;make install-dev;
+          cd core;make install;
+      - name: Install sdk
+        working-directory: ./sdk-repo-updated
+        run: make install-dev  
       - name: Lint        
         working-directory: ./sdk-repo-updated
         run: make lint 
