@@ -105,7 +105,7 @@ generate_python_sdk() {
             --git-host ${GIT_HOST} \
             --git-user-id ${GIT_USER_ID} \
             --git-repo-id ${GIT_REPO_ID} \
-            --global-property apis,models,modelTests=false,modelDocs=true,apiDocs=true,apiTests=false,supportingFiles \
+            --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=false,supportingFiles \
             --additional-properties=pythonPackageName="stackit-${service},removeEnumValuePrefix=false" >/dev/null
 
         # Remove unnecessary files
