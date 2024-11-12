@@ -93,7 +93,7 @@ generate_python_sdk() {
         cd ${ROOT_DIR}
 
         mkdir -p "${SERVICES_FOLDER}/${service}/"
-        cp "${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/"
+        cp "${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore-python" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
 
         # Run the generator
         java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${jar_path} generate \

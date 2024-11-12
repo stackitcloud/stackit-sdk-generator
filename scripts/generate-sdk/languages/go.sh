@@ -133,7 +133,7 @@ generate_go_sdk() {
 
         GO_POST_PROCESS_FILE="gofmt -w" \
             mkdir -p ${SERVICES_FOLDER}/${service}/
-        cp ${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore ${SERVICES_FOLDER}/${service}/
+        cp ${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore-go ${SERVICES_FOLDER}/${service}/.openapi-generator-ignore
 
         # Run the generator for Go
         java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${jar_path} generate \
