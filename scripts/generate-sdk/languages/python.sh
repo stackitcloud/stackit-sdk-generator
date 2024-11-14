@@ -58,7 +58,7 @@ generate_python_sdk() {
 
     # Install SDK project tools
     cd ${ROOT_DIR}
-    make project-tools
+    make project-tools LANGUAGE=python
 
     # Backup of the current state of the SDK services dir (services/)
     sdk_services_backup_dir=$(mktemp -d)

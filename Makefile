@@ -6,7 +6,7 @@ project-help:
 	@$(SCRIPTS_BASE)/project.sh help
 
 project-tools:
-	@$(SCRIPTS_BASE)/project.sh tools
+	@$(SCRIPTS_BASE)/project.sh tools "$(LANGUAGE)"
 
 # GENERATE
 download-oas:
