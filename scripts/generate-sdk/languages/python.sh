@@ -24,12 +24,12 @@ generate_python_sdk() {
 
     # Check required parameters
     if [[ -z ${GIT_HOST} ]]; then
-        echo "GIT_HOST not specified."
+        echo "! GIT_HOST not specified."
         exit 1
     fi
 
     if [[ -z ${GIT_USER_ID} ]]; then
-        echo "GIT_USER_ID id not specified."
+        echo "! GIT_USER_ID id not specified."
         exit 1
     fi
 
@@ -46,7 +46,7 @@ generate_python_sdk() {
 
     # Prepare folders
     if [[ ! -d $SERVICES_FOLDER ]]; then
-      mkdir -p "$SERVICES_FOLDER"
+        mkdir -p "$SERVICES_FOLDER"
     fi
 
     # Clone SDK repo
@@ -63,7 +63,7 @@ generate_python_sdk() {
     # Backup of the current state of the SDK services dir (services/)
     sdk_services_backup_dir=$(mktemp -d)
     if [[ ! ${sdk_services_backup_dir} || -d {sdk_services_backup_dir} ]]; then
-        echo "Unable to create temporary directory"
+        echo "! Unable to create temporary directory"
         exit 1
     fi
     cleanup() {
@@ -75,7 +75,7 @@ generate_python_sdk() {
     trap cleanup EXIT
 
     # Remove old contents of services dir (services/)
-    rm -rf ${SERVICES_FOLDER}    
+    rm -rf ${SERVICES_FOLDER}
 
     # Generate SDK for each service
     for service_json in ${ROOT_DIR}/oas/*.json; do
@@ -89,7 +89,7 @@ generate_python_sdk() {
         service=$(echo "${service}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
         service=$(echo "${service}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
 
-        echo "Generating \"${service}\" service..."
+        echo ">> Generating \"${service}\" service..."
         cd ${ROOT_DIR}
 
         mkdir -p "${SERVICES_FOLDER}/${service}/"
@@ -113,11 +113,11 @@ generate_python_sdk() {
         rm -r "${SERVICES_FOLDER}/${service}/.openapi-generator/"
         rm "${SERVICES_FOLDER}/${service}/stackit/__init__.py"
         rm "${SERVICES_FOLDER}/${service}/.github/workflows/python.yml"
-        
+
         # Create source layout
         mkdir "${SERVICES_FOLDER}/${service}/src"
         mv "${SERVICES_FOLDER}/${service}/stackit/" "${SERVICES_FOLDER}/${service}/src/"
-        
+
         # If the service has a wait package files, move them inside the service folder
         if [ -d ${sdk_services_backup_dir}/${service}/src/wait ]; then
             echo "Found ${service} \"wait\" package"
@@ -165,6 +165,6 @@ generate_python_sdk() {
         isort .
         autoimport --ignore-init-modules .
         black .
-        
+
     done
 }

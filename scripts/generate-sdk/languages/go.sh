@@ -62,7 +62,7 @@ generate_go_sdk() {
     if type -p go >/dev/null; then
         :
     else
-        echo "Go not installed, unable to proceed."
+        echo "! Go not installed, unable to proceed."
         exit 1
     fi
 
@@ -80,7 +80,7 @@ generate_go_sdk() {
     # Backup of the current state of the SDK services dir (services/)
     sdk_services_backup_dir=$(mktemp -d)
     if [[ ! ${sdk_services_backup_dir} || -d {sdk_services_backup_dir} ]]; then
-        echo "Unable to create temporary directory"
+        echo "! Unable to create temporary directory"
         exit 1
     fi
     cleanup() {
@@ -128,7 +128,7 @@ generate_go_sdk() {
             exit 1
         fi
 
-        echo -e "\nGenerating \"${service}\" service..."
+        echo -e "\n>> Generating \"${service}\" service..."
         cd ${ROOT_DIR}
 
         GO_POST_PROCESS_FILE="gofmt -w" \
@@ -215,5 +215,4 @@ generate_go_sdk() {
     cd ${SDK_REPO_LOCAL_PATH}
     goimports -w ${SERVICES_FOLDER}/
     make sync-tidy
-
 }

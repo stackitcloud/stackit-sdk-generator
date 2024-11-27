@@ -20,7 +20,7 @@ fi
 # Create temp directory to clone OAS repo
 work_dir=$(mktemp -d)
 if [[ ! ${work_dir} || -d {work_dir} ]]; then
-    echo "Unable to create temporary directory"
+    echo "! Unable to create temporary directory"
     exit 1
 fi
 trap "rm -rf ${work_dir}" EXIT # Delete temp directory on exit
@@ -33,7 +33,7 @@ fi
 # Move oas to root level
 mkdir ${ROOT_DIR}/oas
 cd ${work_dir}
-git clone ${OAS_REPO}
+git clone ${OAS_REPO} --quiet
 
 for service_dir in ${work_dir}/${OAS_REPO_NAME}/services/*; do
     max_version_dir=""
@@ -55,8 +55,8 @@ for service_dir in ${work_dir}/${OAS_REPO_NAME}/services/*; do
             if [[ ${version} == *alpha* ]]; then
                 # To support initial integrations of the IaaS API in an Alpha state, we will temporarily use it to generate an IaaS Alpha SDK module
                 # This check can be removed once the IaaS API moves all endpoints to Beta
-                if [[ ${service} == "iaas" ]]; then 
-                    mv -f ${dir}/*.json ${ROOT_DIR}/oas/iaasalpha.json 
+                if [[ ${service} == "iaas" ]]; then
+                    mv -f ${dir}/*.json ${ROOT_DIR}/oas/iaasalpha.json
                 fi
                 if [[ ${ALLOW_ALPHA} != "true" ]]; then
                     continue
