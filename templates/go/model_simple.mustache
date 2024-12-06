@@ -229,7 +229,7 @@ func (o *{{classname}}) Get{{name}}Ok() (*{{#isNumber}}float64{{/isNumber}}{{#is
 	}
 {{#isNullable}}
 {{#vendorExtensions.x-golang-is-container}}
-	return {{^isArray}}{{^isFreeFormObject}}&{{/isFreeFormObject}}{{/isArray}}o.{{name}}, true
+	return {{^isArray}}{{^isFreeFormObject}}{{^isAnyType}}&{{/isAnyType}}{{/isFreeFormObject}}{{/isArray}}o.{{name}}, true
 {{/vendorExtensions.x-golang-is-container}}
 {{^vendorExtensions.x-golang-is-container}}
 	return o.{{name}}.Get(), o.{{name}}.IsSet()
