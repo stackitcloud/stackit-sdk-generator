@@ -245,7 +245,7 @@ func (o *{{classname}}) Get{{name}}Ok() (*{{#isNumber}}float64{{/isNumber}}{{#is
 
 // Has{{name}} returns a boolean if a field has been set.
 func (o *{{classname}}) Has{{name}}() bool {
-	if o != nil && !IsNil(o.{{name}}) && !IsNil(o.{{name}}) {{#isNullable}}{{^vendorExtensions.x-golang-is-container}}&& o.{{name}}.IsSet(){{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
+	if o != nil && !IsNil(o.{{name}}){{#isNullable}}{{^vendorExtensions.x-golang-is-container}} && o.{{name}}.IsSet(){{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
 		return true
 	}
 
