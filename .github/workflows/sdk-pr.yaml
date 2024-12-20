@@ -63,7 +63,8 @@ jobs:
         env:
           GH_REPO: "stackitcloud/stackit-sdk-python"
           GH_TOKEN: ${{ secrets.SDK_PR_TOKEN }}
-        run: |          
+        run: |
+          set -e
           python -m venv .venv
           . .venv/bin/activate
           python -m pip install --upgrade pip
