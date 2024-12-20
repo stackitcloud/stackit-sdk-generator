@@ -6,6 +6,7 @@ runs:
     - name: Install project tools and dependencies
       shell: bash
       run: |
-        pip install poetry
-        poetry config virtualenvs.create false
+        python -m venv .venv
+        . .venv/bin/activate
+        python -m pip install --upgrade pip
         make project-tools LANGUAGE=python
