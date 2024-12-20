@@ -65,30 +65,30 @@ jar_path="${GENERATOR_PATH}/openapi-generator-cli.jar"
 if [ -e ${jar_path} ] && [ $(java -jar ${jar_path} version) == ${GENERATOR_VERSION_NUMBER} ]; then
     :
 else
-    echo "Downloading OpenAPI generator (version ${GENERATOR_VERSION}) to ${GENERATOR_PATH}..."
+    echo "Downloading OpenAPI generator (version ${GENERATOR_VERSION})..."
     mkdir -p ${GENERATOR_PATH}
-    wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/${GENERATOR_VERSION_NUMBER}/openapi-generator-cli-${GENERATOR_VERSION_NUMBER}.jar -O ${jar_path}
+    wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/${GENERATOR_VERSION_NUMBER}/openapi-generator-cli-${GENERATOR_VERSION_NUMBER}.jar -O ${jar_path} --quiet
     echo "Download done."
 fi
 
 # Generate SDK for the specified language
 case "${LANGUAGE}" in
 go)
-    echo -e "\nGenerating the Go SDK...\n"
+    echo -e "\n>> Generating the Go SDK..."
 
     source ${LANGUAGE_GENERATORS_FOLDER_PATH}/${LANGUAGE}.sh
     # Usage: generate_go_sdk GENERATOR_PATH GIT_HOST GIT_USER_ID [GIT_REPO_ID] [SDK_REPO_URL]
     generate_go_sdk ${jar_path} ${GIT_HOST} ${GIT_USER_ID} ${GIT_REPO_ID} ${SDK_REPO_URL}
     ;;
 python)
-    echo -e "\nGenerating the Python SDK...\n"
+    echo -e "\n>> Generating the Python SDK..."
 
     source ${LANGUAGE_GENERATORS_FOLDER_PATH}/${LANGUAGE}.sh
     # Usage: generate_python_sdk GENERATOR_PATH GIT_HOST GIT_USER_ID [GIT_REPO_ID] [SDK_REPO_URL]
     generate_python_sdk ${jar_path} ${GIT_HOST} ${GIT_USER_ID} ${GIT_REPO_ID} ${SDK_REPO_URL}
     ;;
 *)
-    echo "SDK language not supported."
+    echo "! SDK language not supported."
     exit 1
     ;;
 esac
