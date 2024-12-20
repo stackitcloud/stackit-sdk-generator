@@ -76,11 +76,17 @@ jobs:
         working-directory: ./sdk-repo-updated
         run: |
           pip install poetry
-          poetry config virtualenvs.create false          
+          poetry config virtualenvs.create false
+          python -m venv .venv
+          . .venv/bin/activate
           make install-dev
       - name: Lint
         working-directory: ./sdk-repo-updated
-        run: make lint
+        run: |
+          . .venv/bin/activate
+          make lint
       - name: Test
         working-directory: ./sdk-repo-updated
-        run: make test
+        run: |
+          . .venv/bin/activate
+          make test
