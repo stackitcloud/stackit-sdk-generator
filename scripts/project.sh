@@ -25,7 +25,9 @@ elif [ "$action" = "tools" ]; then
     if [ "${LANGUAGE}" == "go" ]; then
         go install golang.org/x/tools/cmd/goimports@latest
     elif [ "${LANGUAGE}" == "python" ]; then
-        pip install black==24.8.0 isort~=5.13.2 autoimport~=1.6.1
+        pip install black==24.8.0 isort~=5.13.2 autoimport~=1.6.1 flake8
+        pip install poetry
+        poetry config virtualenvs.create false
     else
         echo "! Invalid language: $($LANGUAGE), please use $0 help for help"
     fi
