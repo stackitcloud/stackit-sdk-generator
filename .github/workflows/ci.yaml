@@ -77,8 +77,9 @@ jobs:
         run: |
           pip install poetry
           poetry config virtualenvs.create false
-          python -m venv .venv
+          python -m venv .venv          
           . .venv/bin/activate
+          python -m pip install --upgrade pip
           make install-dev
       - name: Lint
         working-directory: ./sdk-repo-updated
