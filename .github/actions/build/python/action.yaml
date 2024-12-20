@@ -5,4 +5,7 @@ runs:
   steps:
     - name: Install project tools and dependencies
       shell: bash
-      run: make project-tools LANGUAGE=python
+      run: |
+        pip install poetry
+        poetry config virtualenvs.create false
+        make project-tools LANGUAGE=python
