@@ -83,22 +83,6 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
     if [[ -n "$service_changes" ]]; then
         echo -e "\n>> Detected changes in $service service"
 
-        # If lint or test fails for a service, we skip it and continue to the next one
-        make lint skip-non-generated-files=true service=$service || {
-            echo "! Linting failed for $service. THE UPDATE OF THIS SERVICE WILL BE SKIPPED."
-            continue
-        }
-        # Our unit test template fails because it doesn't support fields with validations,
-        # such as the UUID component used by IaaS. We introduce this hardcoded skip until we fix it
-        if [ "${service}" = "iaas" ] || [ "${service}" = "iaasalpha" ]; then
-            echo ">> Skipping tests of $service service"
-        else
-            make test skip-non-generated-files=true service=$service || {
-                echo "! Testing failed for $service. THE UPDATE OF THIS SERVICE WILL BE SKIPPED."
-                continue
-            }
-        fi
-
         if [[ "$BRANCH_PREFIX" != "main" ]]; then
             git switch main # This is needed to create a new branch for the service without including the previously committed files
             branch="$BRANCH_PREFIX/$service"
@@ -114,6 +98,22 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
             # this prevents errors if there is more than one new module in the SDK generation
             go work use -r .
             git add go.work
+        fi
+
+        # If lint or test fails for a service, we skip it and continue to the next one
+        make lint skip-non-generated-files=true service=$service || {
+            echo "! Linting failed for $service. THE UPDATE OF THIS SERVICE WILL BE SKIPPED."
+            continue
+        }
+        # Our unit test template fails because it doesn't support fields with validations,
+        # such as the UUID component used by IaaS. We introduce this hardcoded skip until we fix it
+        if [ "${service}" = "iaas" ] || [ "${service}" = "iaasalpha" ]; then
+            echo ">> Skipping tests of $service service"
+        else
+            make test skip-non-generated-files=true service=$service || {
+                echo "! Testing failed for $service. THE UPDATE OF THIS SERVICE WILL BE SKIPPED."
+                continue
+            }
         fi
 
         if [[ "$branch" != "main" ]]; then
