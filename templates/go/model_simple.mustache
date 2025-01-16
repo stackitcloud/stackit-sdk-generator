@@ -130,7 +130,7 @@ func (o *{{classname}}) Get{{name}}() *{{#isNumber}}float64{{/isNumber}}{{#isFlo
 	return o.{{name}}
 {{/vendorExtensions.x-golang-is-container}}
 {{^vendorExtensions.x-golang-is-container}}
-	return *o.{{name}}.Get()
+	return o.{{name}}.Get()
 {{/vendorExtensions.x-golang-is-container}}
 {{/isNullable}}
 {{^isNullable}}
@@ -181,7 +181,7 @@ func (o *{{classname}}) Set{{name}}(v *{{#isNumber}}float64{{/isNumber}}{{#isFlo
 	if IsNil(o.{{name}}) {
 		o.{{name}} = new({{dataType}})
 	}
-	o.{{name}}.Set(&v)
+	o.{{name}}.Set(v)
 {{/vendorExtensions.x-golang-is-container}}
 {{/isNullable}}
 {{^isNullable}}
