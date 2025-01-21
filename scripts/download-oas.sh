@@ -6,6 +6,7 @@ ROOT_DIR=$(git rev-parse --show-toplevel)
 OAS_REPO_NAME=$1
 OAS_REPO=$2
 ALLOW_ALPHA=$3
+OAS_API_VERSION=$4
 
 if [[ -z ${OAS_REPO_NAME} ]]; then
     echo "Repo name is empty, default public OAS repo name will be used."
@@ -15,6 +16,11 @@ fi
 if [[ ! ${OAS_REPO} || -d ${OAS_REPO} ]]; then
     echo "Repo argument is empty, default public OAS repo will be used."
     OAS_REPO="https://github.com/stackitcloud/${OAS_REPO_NAME}.git"
+fi
+
+if [[ -z ${OAS_API_VERSION} ]]; then
+    echo "No API version passed, main branch will be used"
+    OAS_API_VERSION="main"
 fi
 
 # Create temp directory to clone OAS repo
@@ -34,6 +40,11 @@ fi
 mkdir ${ROOT_DIR}/oas
 cd ${work_dir}
 git clone ${OAS_REPO} --quiet
+
+echo "Using api version ${OAS_API_VERSION}"
+cd ${OAS_REPO_NAME}
+git checkout --quiet ${OAS_API_VERSION}
+cd -
 
 for service_dir in ${work_dir}/${OAS_REPO_NAME}/services/*; do
     max_version_dir=""
