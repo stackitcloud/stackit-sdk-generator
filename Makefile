@@ -1,6 +1,6 @@
 ROOT_DIR              ?= $(shell git rev-parse --show-toplevel)
 SCRIPTS_BASE          ?= $(ROOT_DIR)/scripts
-API_VERSION           ?= $(shell cat api_version|grep -v '^#'|head -n 1)
+API_VERSION           ?= $(shell cat api_version|grep -v '^\#'|head -n 1)
 SDK_BRANCH            ?= main
 
 # SETUP AND TOOL INITIALIZATION TASKS
