@@ -27,6 +27,7 @@ generate_go_sdk() {
     # Optional parameters
     local GIT_REPO_ID=$4
     local SDK_REPO_URL=$5
+    local SDK_BRANCH=$6
 
     # Check required parameters
     if [[ -z ${GIT_HOST} ]]; then
@@ -75,6 +76,7 @@ generate_go_sdk() {
 
     # Install SDK project tools
     cd ${SDK_REPO_LOCAL_PATH}
+    git checkout ${SDK_BRANCH}
     make project-tools
 
     # Backup of the current state of the SDK services dir (services/)

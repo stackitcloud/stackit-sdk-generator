@@ -9,6 +9,7 @@ GIT_USER_ID=$2
 GIT_REPO_ID=$3
 SDK_REPO_URL=$4
 LANGUAGE=$5
+SDK_BRANCH=$6
 
 # Global variables
 ROOT_DIR=$(git rev-parse --show-toplevel)
@@ -30,6 +31,11 @@ fi
 if [[ -z ${LANGUAGE} ]]; then
     echo "LANGUAGE not specified, default will be used."
     LANGUAGE="go"
+fi
+
+if [[ -z ${SDK_BRANCH}  ]]; then
+    echo "SDK_BRANCH not specified, main branch will be used."
+    SDK_BRANCH=main
 fi
 
 # Check dependencies
@@ -78,7 +84,7 @@ go)
 
     source ${LANGUAGE_GENERATORS_FOLDER_PATH}/${LANGUAGE}.sh
     # Usage: generate_go_sdk GENERATOR_PATH GIT_HOST GIT_USER_ID [GIT_REPO_ID] [SDK_REPO_URL]
-    generate_go_sdk ${jar_path} ${GIT_HOST} ${GIT_USER_ID} ${GIT_REPO_ID} ${SDK_REPO_URL}
+    generate_go_sdk "${jar_path}" "${GIT_HOST}" "${GIT_USER_ID}" "${GIT_REPO_ID}" "${SDK_REPO_URL}" "${SDK_BRANCH}"
     ;;
 python)
     echo -e "\n>> Generating the Python SDK..."
