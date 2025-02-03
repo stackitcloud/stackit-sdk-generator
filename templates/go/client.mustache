@@ -60,10 +60,15 @@ func NewAPIClient(opts ...config.ConfigurationOption) (*APIClient, error) {
 		}
 	}
 
+	{{#regional_api}}
+	// using new regional api, so no region is set here
+	{{/regional_api}}
+	{{^regional_api}}
 	err := config.ConfigureRegion(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("configuring region: %w", err)
 	}
+	{{/regional_api}}
 
 	if cfg.HTTPClient == nil {
 		cfg.HTTPClient = &http.Client{}

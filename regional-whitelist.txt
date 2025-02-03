@@ -1,0 +1,3 @@
+# Transitional file to force generation of the new regional api for selected services
+# It will be removed when all services have been migrated to the new regional api
+objectstorage

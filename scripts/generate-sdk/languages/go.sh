@@ -136,6 +136,11 @@ generate_go_sdk() {
         GO_POST_PROCESS_FILE="gofmt -w" \
             mkdir -p ${SERVICES_FOLDER}/${service}/
         cp ${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore-go ${SERVICES_FOLDER}/${service}/.openapi-generator-ignore
+        regional_api=
+        if grep -E "^$service$" ${ROOT_DIR}/regional-whitelist.txt; then
+            echo "Generating new regional api"
+            regional_api="regional_api"
+        fi
 
         # Run the generator for Go
         java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${jar_path} generate \
@@ -149,7 +154,7 @@ generate_go_sdk() {
             --git-user-id ${GIT_USER_ID} \
             --git-repo-id ${GIT_REPO_ID} \
             --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles \
-            --additional-properties=isGoSubmodule=true,enumClassPrefix=true
+            --additional-properties=isGoSubmodule=true,enumClassPrefix=true,foo=bar,$regional_api
         # Remove unnecessary files
         rm ${SERVICES_FOLDER}/${service}/.openapi-generator-ignore
         rm ${SERVICES_FOLDER}/${service}/.openapi-generator/FILES
