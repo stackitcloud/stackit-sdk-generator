@@ -130,6 +130,11 @@ generate_go_sdk() {
             exit 1
         fi
 
+        if grep -E "^$service$" ${ROOT_DIR}/blacklist.txt; then
+            echo "Skipping blacklisted service ${service}"
+            continue
+        fi
+
         echo -e "\n>> Generating \"${service}\" service..."
         cd ${ROOT_DIR}
 
