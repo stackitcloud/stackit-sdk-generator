@@ -123,7 +123,7 @@ func (src {{classname}}) MarshalJSON() ([]byte, error) {
 	}
 
 {{/oneOf}}
-	return nil, nil // no data in oneOf schemas
+	return []byte("{}"), nil // no data in oneOf schemas => empty JSON object
 }
 
 // Get the actual instance
