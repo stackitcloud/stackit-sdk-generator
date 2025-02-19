@@ -41,7 +41,7 @@ func Test_{{packageName}}_{{classname}}Service(t *testing.T) {
 			{{/returnFormat}}
 			{{^returnFormat}}
 			{{#returnType}}
-			data := {{{.}}}{}
+			var data {{returnType}}
 			w.Header().Add("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(data)
 			{{/returnType}}
@@ -98,7 +98,7 @@ func Test_{{packageName}}_{{classname}}Service(t *testing.T) {
 			t.Fatalf("error in call: %v", reqErr)
 		}
 		{{#returnType}}
-		if resp == nil {
+		if IsNil(resp) {
 			t.Fatalf("response not present")
 		}
 		{{/returnType}}

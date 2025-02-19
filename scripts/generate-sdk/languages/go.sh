@@ -158,7 +158,7 @@ generate_go_sdk() {
             --git-host ${GIT_HOST} \
             --git-user-id ${GIT_USER_ID} \
             --git-repo-id ${GIT_REPO_ID} \
-            --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles \
+            --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles,debugModels=true \
             --additional-properties=isGoSubmodule=true,enumClassPrefix=true,$regional_api
         # Remove unnecessary files
         rm ${SERVICES_FOLDER}/${service}/.openapi-generator-ignore
