@@ -8,7 +8,7 @@ SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
 
 OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
 
-SDK_GO_VERSION="1.18"
+SDK_GO_VERSION="1.21"
 
 SERVICES_FOLDER="${SDK_REPO_LOCAL_PATH}/services"
 EXAMPLES_FOLDER="${SDK_REPO_LOCAL_PATH}/examples"
@@ -16,7 +16,7 @@ SCRIPTS_FOLDER="${SDK_REPO_LOCAL_PATH}/scripts"
 
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 
-SDK_GO_VERSION="1.18"
+SDK_GO_VERSION="1.21"
 
 generate_go_sdk() {
     # Required parameters

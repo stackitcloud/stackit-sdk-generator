@@ -8,7 +8,7 @@ Currently only generation of Go libraries are supported. The output is stored in
 
 If you want to modify script or templates and you can run code locally.
 
-Requires `Go 1.20` or higher.
+Requires `Go 1.21` or higher.
 
 1. Set up the project and tools by running
    ```
