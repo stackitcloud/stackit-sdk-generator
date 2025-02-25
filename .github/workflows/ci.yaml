@@ -105,7 +105,7 @@ jobs:
       - name: Install sdk
         working-directory: ./sdk-repo-updated
         run: |
-          pip install poetry
+          pip install poetry==1.8.5
           poetry config virtualenvs.create false
           python -m venv .venv          
           . .venv/bin/activate
