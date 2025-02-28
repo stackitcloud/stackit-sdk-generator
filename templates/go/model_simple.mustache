@@ -1,6 +1,101 @@
 // checks if the {{classname}} type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &{{classname}}{}
 
+{{#vars}}
+// {{baseName}}
+/*
+	{{{.}}}
+*/
+{{#isArray}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[{{dataType}}]
+type {{classname}}{{nameInCamelCase}}ArgType = {{dataType}}
+{{/isArray}}
+
+{{#isModel}}
+{{#isNullable}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NullableValue[{{dataType}}]
+type {{classname}}{{nameInCamelCase}}ArgType = {{dataType}}
+{{/isNullable}}
+{{^isNullable}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[{{dataType}}]
+type {{classname}}{{nameInCamelCase}}ArgType = {{dataType}}
+{{/isNullable}}
+{{/isModel}}
+{{#isMap}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[{{dataType}}]
+type {{classname}}{{nameInCamelCase}}ArgType = {{dataType}}
+{{/isMap}}
+
+
+{{^isContainer}}
+{{#isNullable}}
+{{#isNumber}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NullableValue[float64]
+type {{classname}}{{nameInCamelCase}}ArgType = *float64
+{{/isNumber}}
+{{#isShort}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NullableValue[int16]
+type {{classname}}{{nameInCamelCase}}ArgType = *int16
+{{/isShort}}
+{{#isInteger}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NullableValue[int32]
+type {{classname}}{{nameInCamelCase}}ArgType = *int32
+{{/isInteger}}
+{{#isLong}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NullableValue[int64]
+type {{classname}}{{nameInCamelCase}}ArgType = *int64
+{{/isLong}}
+{{#isDateTime}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NullableTime
+type {{classname}}{{nameInCamelCase}}ArgType = *time.Time
+{{/isDateTime}}
+{{#isEnumRef}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NullableString
+type {{classname}}{{nameInCamelCase}}ArgType = *string
+{{/isEnumRef}}
+{{/isNullable}}
+
+{{^isNullable}}
+{{#isNumber}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[float64]
+type {{classname}}{{nameInCamelCase}}ArgType = float64
+{{/isNumber}}
+{{^isNumber}}
+{{#isShort}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[int16]
+type {{classname}}{{nameInCamelCase}}AttributeType = int16
+{{/isShort}}
+{{#isInteger}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[int32]
+type {{classname}}{{nameInCamelCase}}ArgType = int32
+{{/isInteger}}
+{{#isLong}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[int64]
+type {{classname}}{{nameInCamelCase}}ArgType = int64
+{{/isLong}}
+{{/isNumber}}
+{{#isDateTime}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[time.Time]
+type {{classname}}{{nameInCamelCase}}ArgType = time.Time
+{{/isDateTime}}
+{{#isEnumRef}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[{{datatype}}]
+type {{classname}}{{nameInCamelCase}}ArgType = {{datatype}}
+{{/isEnumRef}}
+{{#isPrimitiveType}}
+{{^isNumeric}}
+{{^isEnumRef}}
+type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[{{dataType}}]
+type {{classname}}{{nameInCamelCase}}ArgType = {{dataType}}
+{{/isEnumRef}}
+{{/isNumeric}}
+{{/isPrimitiveType}}
+{{/isNullable}}
+
+{{/isContainer}}
+
+{{/vars}}
+
 // {{classname}} {{{description}}}{{^description}}struct for {{{classname}}}{{/description}}
 type {{classname}} struct {
 {{#parent}}
@@ -37,11 +132,11 @@ type {{classname}} struct {
 {{/isWriteOnly}}
 {{/isReadOnly}}
 {{/required}}
-	{{name}} *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}} `json:"{{baseName}}{{#required}}{{#isReadOnly}},omitempty{{/isReadOnly}}{{/required}}{{#required}}{{#isWriteOnly}},omitempty{{/isWriteOnly}}{{/required}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
+	{{nameInCamelCase}} {{classname}}{{nameInCamelCase}}AttributeType
+{{/vars}}
 {{#isAdditionalPropertiesTrue}}
 	AdditionalProperties map[string]interface{}
 {{/isAdditionalPropertiesTrue}}
-{{/vars}}
 }
 
 
@@ -59,27 +154,11 @@ type _{{{classname}}} {{{classname}}}
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func New{{classname}}({{#requiredVars}}{{nameInCamelCase}} *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}}{{^-last}}, {{/-last}}{{/requiredVars}}) *{{classname}} {
+func New{{classname}}({{#requiredVars}}{{nameInCamelCase}} {{classname}}{{nameInCamelCase}}ArgType{{^-last}}, {{/-last}}{{/requiredVars}}) *{{classname}} {
 	this := {{classname}}{}
 {{#allVars}}
 {{#required}}
-	this.{{name}} = {{nameInCamelCase}}
-{{/required}}
-{{^required}}
-{{#defaultValue}}
-{{^vendorExtensions.x-golang-is-container}}
-{{^isReadOnly}}
-{{#isNullable}}
-	var {{nameInCamelCase}} {{{datatypeWithEnum}}} = {{{.}}}
-	this.{{name}} = *New{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}}(&{{nameInCamelCase}})
-{{/isNullable}}
-{{^isNullable}}
-	var {{nameInCamelCase}} {{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}} = {{{.}}}
-	this.{{name}} = &{{nameInCamelCase}}
-{{/isNullable}}
-{{/isReadOnly}}
-{{/vendorExtensions.x-golang-is-container}}
-{{/defaultValue}}
+	this.{{nameInCamelCase}}.Set({{nameInCamelCase}})
 {{/required}}
 {{/allVars}}
 	return &this
@@ -94,13 +173,12 @@ func New{{classname}}WithDefaults() *{{classname}} {
 {{#defaultValue}}
 {{^vendorExtensions.x-golang-is-container}}
 {{^isReadOnly}}
-{{#isNullable}}
 {{!we use datatypeWithEnum here, since it will represent the non-nullable name of the datatype, e.g. int64 for NullableInt64}}
-	var {{nameInCamelCase}} {{{datatypeWithEnum}}} = {{{.}}}
-	this.{{name}} = *New{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}}(&{{nameInCamelCase}})
+	var {{nameInCamelCase}} {{#isInteger}}int64{{/isInteger}}{{#isNumber}}float64{{/isNumber}}{{^isNumber}}{{^isInteger}}{{dataType}}{{/isInteger}}{{/isNumber}} = {{{.}}}
+{{#isNullable}}
+	this.{{name}} = *New{{dataType}}(&{{nameInCamelCase}})
 {{/isNullable}}
 {{^isNullable}}
-	var {{nameInCamelCase}} {{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}} = {{{.}}}
 	this.{{name}} = &{{nameInCamelCase}}
 {{/isNullable}}
 {{/isReadOnly}}
@@ -119,23 +197,9 @@ func New{{classname}}WithDefaults() *{{classname}} {
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}() *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}} {
-	if o == nil|| IsNil(o.{{name}}) {{#isNullable}}{{^vendorExtensions.x-golang-is-container}} || o.{{name}}.Get() == nil{{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
-		var ret *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}
-		return ret
-	}
-
-{{#isNullable}}
-{{#vendorExtensions.x-golang-is-container}}
-	return o.{{name}}
-{{/vendorExtensions.x-golang-is-container}}
-{{^vendorExtensions.x-golang-is-container}}
-	return o.{{name}}.Get()
-{{/vendorExtensions.x-golang-is-container}}
-{{/isNullable}}
-{{^isNullable}}
-	return o.{{name}}
-{{/isNullable}}
+func (o *{{classname}}) Get{{name}}() (ret {{classname}}{{nameInCamelCase}}ArgType) {
+	ret,_ = o.Get{{name}}Ok()
+	return ret
 }
 
 // Get{{name}}Ok returns a tuple with the {{name}} field value
@@ -146,47 +210,16 @@ func (o *{{classname}}) Get{{name}}() *{{#isNumber}}float64{{/isNumber}}{{#isFlo
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}Ok() (*{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}, bool) {
-	if o == nil{{#isNullable}}{{#vendorExtensions.x-golang-is-container}} || IsNil(o.{{name}}){{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
-{{^isFreeFormObject}}
-		return nil, false
-	{{/isFreeFormObject}}
-	{{#isFreeFormObject}}
-		return &{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}{}, false
-	{{/isFreeFormObject}}
-	}
-{{#isNullable}}
-{{#vendorExtensions.x-golang-is-container}}
-	return {{^isArray}}{{^isFreeFormObject}}&{{/isFreeFormObject}}{{/isArray}}o.{{name}}, true
-{{/vendorExtensions.x-golang-is-container}}
-{{^vendorExtensions.x-golang-is-container}}
-	return o.{{name}}.Get(), o.{{name}}.IsSet()
-{{/vendorExtensions.x-golang-is-container}}
-{{/isNullable}}
-{{^isNullable}}
-	return o.{{name}}, true
-{{/isNullable}}
+func (o *{{classname}}) Get{{name}}Ok() (ret {{classname}}{{nameInCamelCase}}ArgType, ok bool) {
+	return o.{{nameInCamelCase}}.Get(),o.{{nameInCamelCase}}.IsSet()
 }
 
 // Set{{name}} sets field value
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Set{{name}}(v *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}) {
-{{#isNullable}}
-{{#vendorExtensions.x-golang-is-container}}
-	o.{{name}} = v
-{{/vendorExtensions.x-golang-is-container}}
-{{^vendorExtensions.x-golang-is-container}}
-	if IsNil(o.{{name}}) {
-		o.{{name}} = new({{dataType}})
-	}
-	o.{{name}}.Set(v)
-{{/vendorExtensions.x-golang-is-container}}
-{{/isNullable}}
-{{^isNullable}}
-	o.{{name}} = v
-{{/isNullable}}
+func (o *{{classname}}) Set{{name}}(v {{classname}}{{nameInCamelCase}}ArgType) {
+	o.{{nameInCamelCase}}.Set(v)
 }
 
 {{/required}}
@@ -195,22 +228,9 @@ func (o *{{classname}}) Set{{name}}(v *{{#isNumber}}float64{{/isNumber}}{{#isFlo
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}() *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}} {
-	if o == nil || IsNil(o.{{name}}) {{#isNullable}}{{^vendorExtensions.x-golang-is-container}} || IsNil(o.{{name}}.Get()){{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
-		var ret *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}
-		return ret
-	}
-{{#isNullable}}
-{{#vendorExtensions.x-golang-is-container}}
-	return o.{{name}}
-{{/vendorExtensions.x-golang-is-container}}
-{{^vendorExtensions.x-golang-is-container}}
-	return o.{{name}}.Get()
-{{/vendorExtensions.x-golang-is-container}}
-{{/isNullable}}
-{{^isNullable}}
-	return o.{{name}}
-{{/isNullable}}
+func (o *{{classname}}) Get{{name}}() (res {{classname}}{{nameInCamelCase}}ArgType) {
+	res,_ = o.Get{{name}}Ok()
+	return
 }
 
 // Get{{name}}Ok returns a tuple with the {{name}} field value if set, nil otherwise
@@ -221,73 +241,34 @@ func (o *{{classname}}) Get{{name}}() *{{#isNumber}}float64{{/isNumber}}{{#isFlo
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}Ok() (*{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}, bool) {
-	if o == nil || IsNil(o.{{name}}) {
-	{{^isFreeFormObject}}
-		return nil, false
-	{{/isFreeFormObject}}
-	{{#isFreeFormObject}}
-		return &{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}{}, false
-	{{/isFreeFormObject}}
-	}
-{{#isNullable}}
-{{#vendorExtensions.x-golang-is-container}}
-	return {{^isArray}}{{^isFreeFormObject}}{{^isAnyType}}&{{/isAnyType}}{{/isFreeFormObject}}{{/isArray}}o.{{name}}, true
-{{/vendorExtensions.x-golang-is-container}}
-{{^vendorExtensions.x-golang-is-container}}
-	return o.{{name}}.Get(), o.{{name}}.IsSet()
-{{/vendorExtensions.x-golang-is-container}}
-{{/isNullable}}
-{{^isNullable}}
-	return o.{{name}}, true
-{{/isNullable}}
+func (o *{{classname}}) Get{{name}}Ok() ({{classname}}{{nameInCamelCase}}ArgType, bool) {
+	return o.{{nameInCamelCase}}.Get(),o.{{nameInCamelCase}}.IsSet()
 }
 
 // Has{{name}} returns a boolean if a field has been set.
 func (o *{{classname}}) Has{{name}}() bool {
-	if o != nil && !IsNil(o.{{name}}){{#isNullable}}{{^vendorExtensions.x-golang-is-container}} && o.{{name}}.IsSet(){{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
-		return true
-	}
-
-	return false
+	return o.{{nameInCamelCase}}.IsSet()
 }
 
 // Set{{name}} gets a reference to the given {{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}} and assigns it to the {{name}} field.
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Set{{name}}(v *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}) {
-{{#isNullable}}
-{{#vendorExtensions.x-golang-is-container}}
-	o.{{name}} = v
-{{/vendorExtensions.x-golang-is-container}}
-{{^vendorExtensions.x-golang-is-container}}
-	if IsNil(o.{{name}}) {
-		o.{{name}} = new({{dataType}})
-	}
-	o.{{name}}.Set(v)
-{{/vendorExtensions.x-golang-is-container}}
-{{/isNullable}}
-{{^isNullable}}
-	o.{{name}} = v
-{{/isNullable}}
+func (o *{{classname}}) Set{{name}}(v {{classname}}{{nameInCamelCase}}ArgType) {
+	o.{{nameInCamelCase}}.Set(v)
 }
+
+
 {{#isNullable}}
 {{^vendorExtensions.x-golang-is-container}}
 // Set{{name}}Nil sets the value for {{name}} to be an explicit nil
 func (o *{{classname}}) Set{{name}}Nil() {
-	if IsNil(o.{{name}}) {
-		o.{{name}} = new({{dataType}})
-	}
-	o.{{name}}.Set(nil)
+	o.{{nameInCamelCase}}.Set(nil)
 }
 
 // Unset{{name}} ensures that no value is present for {{name}}, not even an explicit nil
 func (o *{{classname}}) Unset{{name}}() {
-	if IsNil(o.{{name}}) {
-		o.{{name}} = new({{dataType}})
-	}
-	o.{{name}}.Unset()
+	o.{{nameInCamelCase}}.Unset()
 }
 {{/vendorExtensions.x-golang-is-container}}
 {{/isNullable}}
@@ -327,35 +308,10 @@ func (o {{classname}}) ToMap() (map[string]interface{}, error) {
 	{{/parent}}
 	{{#vars}}
 	{{! if argument is nullable, only serialize it if it is set}}
-	{{#isNullable}}
-	{{#vendorExtensions.x-golang-is-container}}
-	{{! support for container fields is not ideal at this point because of lack of Nullable* types}}
-	if o.{{name}} != nil {
-		toSerialize["{{{baseName}}}"] = o.{{name}}
-	}
-	{{/vendorExtensions.x-golang-is-container}}
-	{{^vendorExtensions.x-golang-is-container}}
-	{{#required}}
-	toSerialize["{{{baseName}}}"] = o.{{name}}.Get()
-	{{/required}}
-	{{^required}}
-	if o.{{name}}.IsSet() {
-		toSerialize["{{{baseName}}}"] = o.{{name}}.Get()
-	}
-	{{/required}}
-	{{/vendorExtensions.x-golang-is-container}}
-	{{/isNullable}}
 	{{! if argument is not nullable, don't set it if it is nil}}
-	{{^isNullable}}
-	{{#required}}
-	toSerialize["{{{baseName}}}"] = o.{{name}}
-	{{/required}}
-	{{^required}}
-	if !IsNil(o.{{name}}) {
-		toSerialize["{{{baseName}}}"] = o.{{name}}
+	if o.{{nameInCamelCase}}.IsSet() {
+		toSerialize["{{{nameInCamelCase}}}"] = o.{{nameInCamelCase}}.Get()
 	}
-	{{/required}}
-	{{/isNullable}}
 	{{/vars}}
 	{{#isAdditionalPropertiesTrue}}
 
@@ -382,7 +338,7 @@ func (o *{{{classname}}}) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 {{#requiredVars}}
-		"{{baseName}}",
+		"{{nameInCamelCase}}",
 {{/requiredVars}}
 	}
 
