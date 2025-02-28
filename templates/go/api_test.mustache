@@ -98,8 +98,7 @@ func Test_{{packageName}}_{{classname}}Service(t *testing.T) {
 			t.Fatalf("error in call: %v", reqErr)
 		}
 		{{#returnType}}
-		var zero {{returnType}}
-		if resp == zero {
+		if IsNil(resp) {
 			t.Fatalf("response not present")
 		}
 		{{/returnType}}
