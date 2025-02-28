@@ -9,9 +9,9 @@
     ],
     "enabledManagers": [
         "github-actions",
-        "regex"
+        "custom.regex"
     ],
-    "regexManagers": [
+    "customManagers": [
         {
             "customType": "regex",
             "fileMatch": [
