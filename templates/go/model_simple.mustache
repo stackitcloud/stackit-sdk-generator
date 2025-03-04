@@ -7,86 +7,92 @@ var _ MappedNullable = &{{classname}}{}
 	{{{.}}}
 */
 {{#isArray}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[{{dataType}}]
-type {{classname}}{{nameInCamelCase}}ArgType = {{dataType}}
+{{#isNullable}}
+type {{classname}}{{name}}AttributeType = NullableValue[{{dataType}}]
+type {{classname}}{{name}}ArgType = {{dataType}}
+{{/isNullable}}
+{{^isNullable}}
+type {{classname}}{{name}}AttributeType = *{{dataType}}
+type {{classname}}{{name}}ArgType = {{dataType}}
+{{/isNullable}}
 {{/isArray}}
 
 {{#isModel}}
 {{#isNullable}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NullableValue[{{dataType}}]
-type {{classname}}{{nameInCamelCase}}ArgType = {{dataType}}
+type {{classname}}{{name}}AttributeType = NullableValue[{{dataType}}]
+type {{classname}}{{name}}ArgType = {{dataType}}
 {{/isNullable}}
 {{^isNullable}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[{{dataType}}]
-type {{classname}}{{nameInCamelCase}}ArgType = {{dataType}}
+type {{classname}}{{name}}AttributeType = *{{dataType}}
+type {{classname}}{{name}}ArgType = {{dataType}}
 {{/isNullable}}
 {{/isModel}}
 {{#isMap}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[{{dataType}}]
-type {{classname}}{{nameInCamelCase}}ArgType = {{dataType}}
+type {{classname}}{{name}}AttributeType = {{dataType}}
+type {{classname}}{{name}}ArgType = {{dataType}}
 {{/isMap}}
 
 
 {{^isContainer}}
 {{#isNullable}}
 {{#isNumber}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NullableValue[float64]
-type {{classname}}{{nameInCamelCase}}ArgType = *float64
+type {{classname}}{{name}}AttributeType = NullableValue[float64]
+type {{classname}}{{name}}ArgType = *float64
 {{/isNumber}}
 {{#isShort}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NullableValue[int16]
-type {{classname}}{{nameInCamelCase}}ArgType = *int16
+type {{classname}}{{name}}AttributeType = NullableValue[int16]
+type {{classname}}{{name}}ArgType = *int16
 {{/isShort}}
 {{#isInteger}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NullableValue[int32]
-type {{classname}}{{nameInCamelCase}}ArgType = *int32
+type {{classname}}{{name}}AttributeType = NullableValue[int32]
+type {{classname}}{{name}}ArgType = *int32
 {{/isInteger}}
 {{#isLong}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NullableValue[int64]
-type {{classname}}{{nameInCamelCase}}ArgType = *int64
+type {{classname}}{{name}}AttributeType = NullableValue[int64]
+type {{classname}}{{name}}ArgType = *int64
 {{/isLong}}
 {{#isDateTime}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NullableTime
-type {{classname}}{{nameInCamelCase}}ArgType = *time.Time
+type {{classname}}{{name}}AttributeType = NullableTime
+type {{classname}}{{name}}ArgType = *time.Time
 {{/isDateTime}}
 {{#isEnumRef}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NullableString
-type {{classname}}{{nameInCamelCase}}ArgType = *string
+type {{classname}}{{name}}AttributeType = NullableString
+type {{classname}}{{name}}ArgType = *string
 {{/isEnumRef}}
 {{/isNullable}}
 
 {{^isNullable}}
 {{#isNumber}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[float64]
-type {{classname}}{{nameInCamelCase}}ArgType = float64
+type {{classname}}{{name}}AttributeType = *float64
+type {{classname}}{{name}}ArgType = float64
 {{/isNumber}}
 {{^isNumber}}
 {{#isShort}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[int16]
-type {{classname}}{{nameInCamelCase}}AttributeType = int16
+type {{classname}}{{name}}AttributeType = *int16
+type {{classname}}{{name}}ArgType = int16
 {{/isShort}}
 {{#isInteger}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[int32]
-type {{classname}}{{nameInCamelCase}}ArgType = int32
+type {{classname}}{{name}}AttributeType = *int32
+type {{classname}}{{name}}ArgType = int32
 {{/isInteger}}
 {{#isLong}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[int64]
-type {{classname}}{{nameInCamelCase}}ArgType = int64
+type {{classname}}{{name}}AttributeType = *int64
+type {{classname}}{{name}}ArgType = int64
 {{/isLong}}
 {{/isNumber}}
 {{#isDateTime}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[time.Time]
-type {{classname}}{{nameInCamelCase}}ArgType = time.Time
+type {{classname}}{{name}}AttributeType = *time.Time
+type {{classname}}{{name}}ArgType = time.Time
 {{/isDateTime}}
 {{#isEnumRef}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[{{datatype}}]
-type {{classname}}{{nameInCamelCase}}ArgType = {{datatype}}
+type {{classname}}{{name}}AttributeType = *{{datatype}}
+type {{classname}}{{name}}ArgType = {{datatype}}
 {{/isEnumRef}}
 {{#isPrimitiveType}}
 {{^isNumeric}}
 {{^isEnumRef}}
-type {{classname}}{{nameInCamelCase}}AttributeType = NotNullableValue[{{dataType}}]
-type {{classname}}{{nameInCamelCase}}ArgType = {{dataType}}
+type {{classname}}{{name}}AttributeType = *{{dataType}}
+type {{classname}}{{name}}ArgType = {{dataType}}
 {{/isEnumRef}}
 {{/isNumeric}}
 {{/isPrimitiveType}}
@@ -132,7 +138,7 @@ type {{classname}} struct {
 {{/isWriteOnly}}
 {{/isReadOnly}}
 {{/required}}
-	{{nameInCamelCase}} {{classname}}{{nameInCamelCase}}AttributeType
+	{{name}} {{classname}}{{name}}AttributeType
 {{/vars}}
 {{#isAdditionalPropertiesTrue}}
 	AdditionalProperties map[string]interface{}
@@ -141,7 +147,10 @@ type {{classname}} struct {
 
 
 {{#isAdditionalPropertiesTrue}}
-type _{{{classname}}} {{{classname}}}
+' +9.
++3+
+3.
+typ.0e _{{{classname}}} {{{classname}}}
 
 {{/isAdditionalPropertiesTrue}}
 {{^isAdditionalPropertiesTrue}}
@@ -154,11 +163,16 @@ type _{{{classname}}} {{{classname}}}
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func New{{classname}}({{#requiredVars}}{{nameInCamelCase}} {{classname}}{{nameInCamelCase}}ArgType{{^-last}}, {{/-last}}{{/requiredVars}}) *{{classname}} {
+func New{{classname}}({{#requiredVars}}{{nameInCamelCase}} {{classname}}{{name}}ArgType{{^-last}}, {{/-last}}{{/requiredVars}}) *{{classname}} {
 	this := {{classname}}{}
 {{#allVars}}
 {{#required}}
-	this.{{nameInCamelCase}}.Set({{nameInCamelCase}})
+	{{#isNullable}}
+	this.{{name}}.Set({{nameInCamelCase}})
+	{{/isNullable}}
+	{{^isNullable}}
+	this.{{name}} = &{{nameInCamelCase}}
+	{{/isNullable}}
 {{/required}}
 {{/allVars}}
 	return &this
@@ -197,7 +211,7 @@ func New{{classname}}WithDefaults() *{{classname}} {
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}() (ret {{classname}}{{nameInCamelCase}}ArgType) {
+func (o *{{classname}}) Get{{name}}() (ret {{classname}}{{name}}ArgType) {
 	ret,_ = o.Get{{name}}Ok()
 	return ret
 }
@@ -210,16 +224,29 @@ func (o *{{classname}}) Get{{name}}() (ret {{classname}}{{nameInCamelCase}}ArgTy
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}Ok() (ret {{classname}}{{nameInCamelCase}}ArgType, ok bool) {
-	return o.{{nameInCamelCase}}.Get(),o.{{nameInCamelCase}}.IsSet()
+func (o *{{classname}}) Get{{name}}Ok() (ret {{classname}}{{name}}ArgType, ok bool) {
+	{{#isNullable}}
+	return o.{{name}}.Get(),o.{{name}}.IsSet()
+	{{/isNullable}}
+	{{^isNullable}}
+	if IsNil(o.{{name}}) {
+		return ret,false
+	}
+	return *o.{{name}},true
+	{{/isNullable}}
 }
 
 // Set{{name}} sets field value
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Set{{name}}(v {{classname}}{{nameInCamelCase}}ArgType) {
-	o.{{nameInCamelCase}}.Set(v)
+func (o *{{classname}}) Set{{name}}(v {{classname}}{{name}}ArgType) {
+	{{#isNullable}}
+	o.{{name}}.Set(v)
+	{{/isNullable}}
+	{{^isNullable}}
+	o.{{name}} = &v
+	{{/isNullable}}
 }
 
 {{/required}}
@@ -228,7 +255,7 @@ func (o *{{classname}}) Set{{name}}(v {{classname}}{{nameInCamelCase}}ArgType) {
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}() (res {{classname}}{{nameInCamelCase}}ArgType) {
+func (o *{{classname}}) Get{{name}}() (res {{classname}}{{name}}ArgType) {
 	res,_ = o.Get{{name}}Ok()
 	return
 }
@@ -241,21 +268,36 @@ func (o *{{classname}}) Get{{name}}() (res {{classname}}{{nameInCamelCase}}ArgTy
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}Ok() ({{classname}}{{nameInCamelCase}}ArgType, bool) {
-	return o.{{nameInCamelCase}}.Get(),o.{{nameInCamelCase}}.IsSet()
+func (o *{{classname}}) Get{{name}}Ok() (ret {{classname}}{{name}}ArgType, ok bool) {
+	{{#isNullable}}
+	return o.{{name}}.Get(),o.{{name}}.IsSet()
+	{{/isNullable}}
+	{{^isNullable}}
+	if IsNil(o.{{name}}) {
+		return ret,false
+	}
+	return *o.{{name}},true
+	{{/isNullable}}
+
 }
 
 // Has{{name}} returns a boolean if a field has been set.
 func (o *{{classname}}) Has{{name}}() bool {
-	return o.{{nameInCamelCase}}.IsSet()
+	_,ok:=o.Get{{name}}Ok()
+	return ok
 }
 
 // Set{{name}} gets a reference to the given {{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}} and assigns it to the {{name}} field.
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Set{{name}}(v {{classname}}{{nameInCamelCase}}ArgType) {
-	o.{{nameInCamelCase}}.Set(v)
+func (o *{{classname}}) Set{{name}}(v {{classname}}{{name}}ArgType) {
+	{{#isNullable}}
+	o.{{name}}.Set(v)
+	{{/isNullable}}
+	{{^isNullable}}
+	o.{{name}} = &v
+	{{/isNullable}}
 }
 
 
@@ -263,12 +305,12 @@ func (o *{{classname}}) Set{{name}}(v {{classname}}{{nameInCamelCase}}ArgType) {
 {{^vendorExtensions.x-golang-is-container}}
 // Set{{name}}Nil sets the value for {{name}} to be an explicit nil
 func (o *{{classname}}) Set{{name}}Nil() {
-	o.{{nameInCamelCase}}.Set(nil)
+	o.{{name}}.Set(nil)
 }
 
 // Unset{{name}} ensures that no value is present for {{name}}, not even an explicit nil
 func (o *{{classname}}) Unset{{name}}() {
-	o.{{nameInCamelCase}}.Unset()
+	o.{{name}}.Unset()
 }
 {{/vendorExtensions.x-golang-is-container}}
 {{/isNullable}}
