@@ -362,25 +362,3 @@ func IsNil(i interface{}) bool {
 type MappedNullable interface {
 	ToMap() (map[string]interface{}, error)
 }
-
-
-
-// -----------------------------------------------------------------------------
-// --- NotNullableValue
-// -----------------------------------------------------------------------------
-type NotNullableValue[T any] struct {
-	value T
-}
-
-func (v NotNullableValue[T]) Get() T {
-	return v.value
-}
-
-func (v NotNullableValue[T]) Set(a T) {
-	v.value = a
-}
-
-func (v NotNullableValue[T]) IsSet() bool {
-	return true
-}
-
