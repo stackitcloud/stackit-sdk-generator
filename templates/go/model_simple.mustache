@@ -8,6 +8,7 @@ var _ MappedNullable = &{{classname}}{}
 */
 {{^isEnum}}
 {{#isNumber}}
+// isNumber
 type {{classname}}{{name}}AttributeType = *float64
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}float64
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}float64
@@ -27,8 +28,51 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 	*arg={{^isNullable}}&{{/isNullable}}val
 }
 {{/isNumber}}
+{{#isFloat}}
+// isFloat
+type {{classname}}{{name}}AttributeType = *float64
+type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}float64
+type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}float64
+func get{{classname}}{{name}}AttributeTypeOk(arg {{classname}}{{name}}AttributeType) (ret {{classname}}{{name}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeType, val {{classname}}{{name}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isFloat}}
+{{#isDouble}}
+// isDouble
+type {{classname}}{{name}}AttributeType = *float64
+type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}float64
+type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}float64
+func get{{classname}}{{name}}AttributeTypeOk(arg {{classname}}{{name}}AttributeType) (ret {{classname}}{{name}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeType, val {{classname}}{{name}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isDouble}}
 {{#isShort}}
 {{^isInteger}}
+// isShort
 type {{classname}}{{name}}AttributeType = *int64
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}int64
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}int64
@@ -50,6 +94,7 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 {{/isInteger}}
 {{/isShort}}
 {{#isInteger}}
+// isInteger
 type {{classname}}{{name}}AttributeType = *int64
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}int64
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}int64
@@ -70,6 +115,7 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 }
 {{/isInteger}}
 {{#isLong}}
+// isLong
 type {{classname}}{{name}}AttributeType = *int64
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}int64
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}int64
@@ -90,8 +136,10 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 }
 {{/isLong}}
 {{#isString}}
+{{^isArray}}
 {{#isNullable}}
-type {{classname}}{{name}}AttributeType = *{{dataType}}
+// isNullableString
+type {{classname}}{{name}}AttributeType = *NullableString
 func get{{classname}}{{name}}AttributeTypeOk(arg {{classname}}{{name}}AttributeType) (ret {{classname}}{{name}}RetType, ok bool) {
 	if arg == nil {
 		{{#isNullable}}
@@ -113,6 +161,7 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 }
 {{/isNullable}}
 {{^isNullable}}
+// isNotNullableString
 type {{classname}}{{name}}AttributeType = *string
 func get{{classname}}{{name}}AttributeTypeOk(arg {{classname}}{{name}}AttributeType) (ret {{classname}}{{name}}RetType, ok bool) {
 	if arg == nil {
@@ -132,10 +181,33 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 {{/isNullable}}
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}string
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}string
+{{/isArray}}
 {{/isString}}
+{{#isAnyType}}
+// isAny
+type {{classname}}{{name}}AttributeType = any
+type {{classname}}{{name}}ArgType = any
+type {{classname}}{{name}}RetType = any
+func get{{classname}}{{name}}AttributeTypeOk(arg {{classname}}{{name}}AttributeType) (ret {{classname}}{{name}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeType, val {{classname}}{{name}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isAnyType}}
 {{/isEnum}}
 
 {{#isDateTime}}
+// isDateTime
 type {{classname}}{{name}}AttributeType = *time.Time
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}time.Time
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}time.Time
@@ -155,7 +227,29 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 	*arg={{^isNullable}}&{{/isNullable}}val
 }
 {{/isDateTime}}
+{{#isDate}}
+// isDate
+type {{classname}}{{name}}AttributeType = *time.Time
+type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}time.Time
+type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}time.Time
+func get{{classname}}{{name}}AttributeTypeOk(arg {{classname}}{{name}}AttributeType) (ret {{classname}}{{name}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeType, val {{classname}}{{name}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isDate}}
 {{#isEnumRef}}
+// isEnumRef
 type {{classname}}{{name}}AttributeType = *{{^isNumeric}}{{dataType}}{{/isNumeric}}{{#isNumeric}}int64{{/isNumeric}}
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}{{^isNumeric}}{{dataType}}{{/isNumeric}}{{#isNumeric}}int64{{/isNumeric}}
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}{{^isNumeric}}{{dataType}}{{/isNumeric}}{{#isNumeric}}int64{{/isNumeric}}
@@ -176,6 +270,7 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 }
 {{/isEnumRef}}
 {{#isModel}}
+// isModel
 type {{classname}}{{name}}AttributeType = *{{dataType}}
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
@@ -227,6 +322,7 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 {{/isModel}}
 {{/isPrimitiveType}}
 {{#isArray}}
+// isArray
 type {{classname}}{{name}}AttributeType = *{{dataType}}
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
@@ -249,7 +345,7 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 
 
 {{#isFreeFormObject}}
-// freeform
+// isFreeform
 type {{classname}}{{name}}AttributeType = *{{dataType}}
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
@@ -272,7 +368,7 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 {{#isContainer}}
 {{^isFreeFormObject}}
 {{^isArray}}
-// container
+// isContainer
 type {{classname}}{{name}}AttributeType = *{{dataType}}
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
@@ -295,6 +391,7 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 {{/isFreeFormObject}}
 {{/isContainer}}
 {{#isByteArray}}
+// isByteArray
 type {{classname}}{{name}}AttributeType = *[]byte
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}[]byte
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}[]byte
@@ -315,6 +412,7 @@ func set{{classname}}{{name}}AttributeType(arg *{{classname}}{{name}}AttributeTy
 }
 {{/isByteArray}}
 {{#isBoolean}}
+// isBoolean
 type {{classname}}{{name}}AttributeType = *bool
 type {{classname}}{{name}}ArgType = {{#isNullable}}*{{/isNullable}}bool
 type {{classname}}{{name}}RetType = {{#isNullable}}*{{/isNullable}}bool
@@ -551,8 +649,8 @@ func (o {{classname}}) ToMap() (map[string]interface{}, error) {
 	{{#vars}}
 	{{! if argument is nullable, only serialize it if it is set}}
 	{{! if argument is not nullable, don't set it if it is nil}}
-	if !IsNil(o.{{name}}) {
-		toSerialize["{{{name}}}"] = {{#isNullable}}*{{/isNullable}}o.{{name}}
+	if val,ok:=get{{classname}}{{name}}AttributeTypeOk(o.{{name}});ok {
+		toSerialize["{{{name}}}"] = val
 	}
 	{{/vars}}
 	{{#isAdditionalPropertiesTrue}}
