@@ -41,7 +41,12 @@ func Test_{{packageName}}_{{classname}}Service(t *testing.T) {
 			{{/returnFormat}}
 			{{^returnFormat}}
 			{{#returnType}}
+			{{#returnTypeIsPrimitive}}
+			var data {{{.}}}
+			{{/returnTypeIsPrimitive}}
+			{{^returnTypeIsPrimitive}}
 			data := {{{.}}}{}
+			{{/returnTypeIsPrimitive}}
 			w.Header().Add("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(data)
 			{{/returnType}}
