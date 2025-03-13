@@ -20,7 +20,7 @@ fi
 
 if [[ -z ${OAS_API_VERSIONS} ]]; then
     echo "No API version passed, using ${ROOTDIR}/api-versions.json"
-    OAS_API_VERSIONS="${ROOTDIR}/api-versions.json"
+    OAS_API_VERSIONS="${ROOT_DIR}/api-versions.json"
 fi
 
 # Create temp directory to clone OAS repo
@@ -55,7 +55,7 @@ EOF
         echo "Using ${apiVersion} for ${service}"
     fi
     cd ${work_dir}/${OAS_REPO_NAME} > /dev/null
-    git checkout -q $apiVersion
+    git checkout -q $apiVersion || (echo "version ${apiVersion} does not exist, using main instead" && git checkout -q main)
     cd - > /dev/null
 
     # Prioritize GA over Beta over Alpha versions
