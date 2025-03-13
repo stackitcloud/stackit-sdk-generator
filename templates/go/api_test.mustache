@@ -41,12 +41,18 @@ func Test_{{packageName}}_{{classname}}Service(t *testing.T) {
 			{{/returnFormat}}
 			{{^returnFormat}}
 			{{#returnType}}
-			{{#returnTypeIsPrimitive}}
-			var data {{{.}}}
-			{{/returnTypeIsPrimitive}}
-			{{^returnTypeIsPrimitive}}
+			{{#returnProperty.isPrimitiveType}}
+			{{! according to the model, freeform objects might be primitive...}}
+			{{#returnProperty.isFreeFormObject}}
 			data := {{{.}}}{}
-			{{/returnTypeIsPrimitive}}
+			{{/returnProperty.isFreeFormObject}}
+			{{^returnProperty.isFreeFormObject}}
+			var data {{{.}}}
+			{{/returnProperty.isFreeFormObject}}
+			{{/returnProperty.isPrimitiveType}}
+			{{^returnProperty.isPrimitiveType}}
+			data := {{{.}}}{}
+			{{/returnProperty.isPrimitiveType}}
 			w.Header().Add("Content-Type", "application/json")
 			json.NewEncoder(w).Encode(data)
 			{{/returnType}}
