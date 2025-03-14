@@ -4,3 +4,4 @@ objectstorage
 sqlserverflex
 postgresflex
 serviceenablement
+loadbalancer
