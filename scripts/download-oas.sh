@@ -19,8 +19,8 @@ if [[ ! ${OAS_REPO} || -d ${OAS_REPO} ]]; then
 fi
 
 if [[ -z ${OAS_API_VERSIONS} ]]; then
-    echo "No API version passed, using ${ROOTDIR}/api-versions.json"
-    OAS_API_VERSIONS="${ROOT_DIR}/api-versions.json"
+    echo "No API version passed, using ${ROOTDIR}/api-versions-lock.json"
+    OAS_API_VERSIONS="${ROOT_DIR}/api-versions-lock.json"
 fi
 
 # Create temp directory to clone OAS repo
