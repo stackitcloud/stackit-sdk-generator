@@ -15,8 +15,8 @@ jobs:
       - name: Check commit date
         run: |
           set -eo pipefail
-          
-          THRESHOLD="10 days ago"
+
+          THRESHOLD="10 minutes ago"
 
           if jq -e 'map_values(select(. != "main")) != {}' api-versions-lock.json; then
               thresholdDate=$(date -Iminutes -d "${THRESHOLD}")
@@ -25,7 +25,7 @@ jobs:
                   echo "latest commit of api-versions-lock.json is older than ${THRESHOLD}"
                   exit 1
               fi
-              echo "api-versions-lock.json contains locked versions but is recent is enough"
+              echo "api-versions-lock.json contains locked versions but is recent enough"
           else
               echo "no locked versions in api-versions-lock.json"
           fi
