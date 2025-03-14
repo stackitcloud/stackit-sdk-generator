@@ -1,3 +1,5 @@
+![locked versions uptodate](https://github.com/stackitcloud/stackit-sdk-generator/actions/workflows/check-api-versions.yaml/badge.svg)
+
 # Overview
 
 This repository implements the automatic generation of client libraries to access STACKIT APIs. It is based on the [OpenAPI Generator](https://openapi-generator.tech/). The process' input are the REST API specs in the [OpenAPI Specification](https://github.com/OAI/OpenAPI-Specification) format (OAS), which are stored in [STACKIT API specifications](https://github.com/stackitcloud/stackit-api-specifications).
