@@ -1,4 +1,4 @@
-![locked versions uptodate](https://github.com/stackitcloud/stackit-sdk-generator/actions/workflows/check-api-versions.yaml/badge.svg)
+[![Check API version lock](https://github.com/stackitcloud/stackit-sdk-generator/actions/workflows/check-api-versions.yaml/badge.svg)](https://github.com/stackitcloud/stackit-sdk-generator/actions/workflows/check-api-versions.yaml)
 
 # Overview
 
