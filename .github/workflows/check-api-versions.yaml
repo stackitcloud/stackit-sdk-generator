@@ -1,6 +1,12 @@
 name: Check API version lock
 
-on: [pull_request, workflow_dispatch]
+on:  
+    # run after PR merge  
+    push:  
+       branches: ["main"]  
+    # run every night at 01:00  
+    schedule:  
+        - cron: "0 1 * * *" 
 
 env:
   THRESHOLD: "10 days ago"
