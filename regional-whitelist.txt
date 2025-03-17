@@ -5,3 +5,9 @@ sqlserverflex
 postgresflex
 serviceenablement
 loadbalancer
+alb
+cdn
+serverbackup
+serverupdate
+certificates
+
