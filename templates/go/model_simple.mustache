@@ -1,6 +1,470 @@
 // checks if the {{classname}} type satisfies the MappedNullable interface at compile time
 var _ MappedNullable = &{{classname}}{}
 
+{{#vars}}
+
+/*
+	types and functions for {{baseName}} 
+	{{!.}}
+*/
+
+{{! The basic approach is as follows: To avoid checking the various datatypes, }}
+{{! exceptions and non-orthogonal model states we introduce go type-alias }}
+{{! These are compatible with their basic types (this maintains backwards)}}
+{{! compatibility with existing code). This allows to concentrate the  decision what }}
+{{! actual type the openapi represents in a single place. Reusing the generated}}
+{{! type in all other places avoids repetion of the non-trivial decision matrix}}
+{{! which type is to be used.}}
+{{! We define three basic types:}}
+{{! - FooAttributeType: The type used for the model-struct definitions, i.e. the struct attribute type}}
+{{! - FooArgType: The type used for parameter passing, i.e. in function calls}}
+{{! - FooRetType: The type used for function returns.}}
+{{! To simplify reading and writing values even further, type-safe}}
+{{! helper methods for getting and setting valuesare generated as well}}
+{{! (these are not rendered as methods, as the structs themselves may be nil)}}
+{{! (a pure function avoids possible nil-pointer exceptions)}}
+
+
+{{! address primitives types, excluding enums (they are handled explicitly below) }}
+{{^isEnum}}
+{{#isNumber}}
+// isNumber
+type {{classname}}{{getter}}AttributeType = *float64
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}float64
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}float64
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isNumber}}
+{{#isFloat}}
+// isFloat
+type {{classname}}{{getter}}AttributeType = *float64
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}float64
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}float64
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isFloat}}
+{{#isDouble}}
+// isDouble
+type {{classname}}{{getter}}AttributeType = *float64
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}float64
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}float64
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isDouble}}
+{{#isShort}}
+{{! isShort and isInteger may be true at the same time, so select one}}
+{{^isInteger}}
+// isShort
+type {{classname}}{{getter}}AttributeType = *int64
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}int64
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}int64
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isInteger}}
+{{/isShort}}
+{{#isInteger}}
+// isInteger
+type {{classname}}{{getter}}AttributeType = *int64
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}int64
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}int64
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isInteger}}
+{{#isLong}}
+// isLong
+type {{classname}}{{getter}}AttributeType = *int64
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}int64
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}int64
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isLong}}
+{{#isString}}
+{{! string-types are definitely used non-orthogonally, so we have to exclude some possibilities}}
+{{^isArray}}
+{{! skip arrays, they are addressed explicitly below}}
+{{#isNullable}}
+{{! nullable strings have a special type}}
+// isNullableString
+type {{classname}}{{getter}}AttributeType = *NullableString
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return arg.Get(),true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	if IsNil(*arg) {
+		*arg = NewNullableString(val)
+	} else {
+		(*arg).Set(val)
+	}
+}
+{{/isNullable}}
+{{^isNullable}}
+{{! non nullable strings are plain string pointers}}
+// isNotNullableString
+type {{classname}}{{getter}}AttributeType = *string
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isNullable}}
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}string
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}string
+{{/isArray}}
+{{/isString}}
+{{#isAnyType}}
+// isAny
+type {{classname}}{{getter}}AttributeType = any
+type {{classname}}{{getter}}ArgType = any
+type {{classname}}{{getter}}RetType = any
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isAnyType}}
+{{/isEnum}}
+
+{{#isDateTime}}
+{{! special handling for date-time}}
+// isDateTime
+type {{classname}}{{getter}}AttributeType = *time.Time
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}time.Time
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}time.Time
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isDateTime}}
+{{#isDate}}
+{{! special handling for date}}
+// isDate
+type {{classname}}{{getter}}AttributeType = *time.Time
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}time.Time
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}time.Time
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isDate}}
+{{#isEnumRef}}
+{{! special handling for enums}}
+// isEnumRef
+type {{classname}}{{getter}}AttributeType = *{{^isNumeric}}{{dataType}}{{/isNumeric}}{{#isNumeric}}int64{{/isNumeric}}
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{^isNumeric}}{{dataType}}{{/isNumeric}}{{#isNumeric}}int64{{/isNumeric}}
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{^isNumeric}}{{dataType}}{{/isNumeric}}{{#isNumeric}}int64{{/isNumeric}}
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isEnumRef}}
+{{#isModel}}
+{{! special handling for recursive datatypes}}
+// isModel
+type {{classname}}{{getter}}AttributeType = *{{dataType}}
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isModel}}
+{{^isPrimitiveType}}
+{{^isModel}}
+{{^isMap}}
+{{^isArray}}
+{{^isDateTime}}
+{{^isEnumRef}}
+// fallback
+{{! everything else will end up here}}
+type {{classname}}{{getter}}AttributeType = *{{dataType}}
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isEnumRef}}
+{{/isDateTime}}
+{{/isArray}}
+{{/isMap}}
+{{/isModel}}
+{{/isPrimitiveType}}
+{{#isArray}}
+// isArray
+type {{classname}}{{getter}}AttributeType = *{{dataType}}
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isArray}}
+
+
+{{#isFreeFormObject}}
+// isFreeform
+type {{classname}}{{getter}}AttributeType = *{{dataType}}
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isFreeFormObject}}
+{{#isContainer}}
+{{^isFreeFormObject}}
+{{^isArray}}
+// isContainer
+type {{classname}}{{getter}}AttributeType = *{{dataType}}
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isArray}}
+{{/isFreeFormObject}}
+{{/isContainer}}
+{{#isByteArray}}
+// isByteArray
+type {{classname}}{{getter}}AttributeType = *[]byte
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}[]byte
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}[]byte
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isByteArray}}
+{{#isBoolean}}
+// isBoolean
+type {{classname}}{{getter}}AttributeType = *bool
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}bool
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}bool
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isBoolean}}
+
+{{/vars}}
+
 // {{classname}} {{{description}}}{{^description}}struct for {{{classname}}}{{/description}}
 type {{classname}} struct {
 {{#parent}}
@@ -37,11 +501,11 @@ type {{classname}} struct {
 {{/isWriteOnly}}
 {{/isReadOnly}}
 {{/required}}
-	{{name}} *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}} `json:"{{baseName}}{{#required}}{{#isReadOnly}},omitempty{{/isReadOnly}}{{/required}}{{#required}}{{#isWriteOnly}},omitempty{{/isWriteOnly}}{{/required}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
+	{{name}} {{classname}}{{getter}}AttributeType `json:"{{baseName}}{{#required}}{{#isReadOnly}},omitempty{{/isReadOnly}}{{/required}}{{#required}}{{#isWriteOnly}},omitempty{{/isWriteOnly}}{{/required}}{{^required}},omitempty{{/required}}"{{#withXml}} xml:"{{baseName}}{{#isXmlAttribute}},attr{{/isXmlAttribute}}"{{/withXml}}{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
+{{/vars}}
 {{#isAdditionalPropertiesTrue}}
 	AdditionalProperties map[string]interface{}
 {{/isAdditionalPropertiesTrue}}
-{{/vars}}
 }
 
 
@@ -59,27 +523,11 @@ type _{{{classname}}} {{{classname}}}
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func New{{classname}}({{#requiredVars}}{{nameInCamelCase}} *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}}{{^-last}}, {{/-last}}{{/requiredVars}}) *{{classname}} {
+func New{{classname}}({{#requiredVars}}{{nameInCamelCase}} {{classname}}{{getter}}ArgType{{^-last}}, {{/-last}}{{/requiredVars}}) *{{classname}} {
 	this := {{classname}}{}
 {{#allVars}}
 {{#required}}
-	this.{{name}} = {{nameInCamelCase}}
-{{/required}}
-{{^required}}
-{{#defaultValue}}
-{{^vendorExtensions.x-golang-is-container}}
-{{^isReadOnly}}
-{{#isNullable}}
-	var {{nameInCamelCase}} {{{datatypeWithEnum}}} = {{{.}}}
-	this.{{name}} = *New{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}}(&{{nameInCamelCase}})
-{{/isNullable}}
-{{^isNullable}}
-	var {{nameInCamelCase}} {{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}} = {{{.}}}
-	this.{{name}} = &{{nameInCamelCase}}
-{{/isNullable}}
-{{/isReadOnly}}
-{{/vendorExtensions.x-golang-is-container}}
-{{/defaultValue}}
+	set{{classname}}{{getter}}AttributeType(&this.{{name}}, {{nameInCamelCase}})
 {{/required}}
 {{/allVars}}
 	return &this
@@ -94,13 +542,12 @@ func New{{classname}}WithDefaults() *{{classname}} {
 {{#defaultValue}}
 {{^vendorExtensions.x-golang-is-container}}
 {{^isReadOnly}}
-{{#isNullable}}
 {{!we use datatypeWithEnum here, since it will represent the non-nullable name of the datatype, e.g. int64 for NullableInt64}}
-	var {{nameInCamelCase}} {{{datatypeWithEnum}}} = {{{.}}}
-	this.{{name}} = *New{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}}(&{{nameInCamelCase}})
+	var {{nameInCamelCase}} {{#isInteger}}int64{{/isInteger}}{{#isNumber}}float64{{/isNumber}}{{^isNumber}}{{^isInteger}}{{dataType}}{{/isInteger}}{{/isNumber}} = {{{.}}}
+{{#isNullable}}
+	this.{{name}} = *New{{dataType}}(&{{nameInCamelCase}})
 {{/isNullable}}
 {{^isNullable}}
-	var {{nameInCamelCase}} {{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{{dataType}}}{{/isNumeric}} = {{{.}}}
 	this.{{name}} = &{{nameInCamelCase}}
 {{/isNullable}}
 {{/isReadOnly}}
@@ -119,23 +566,9 @@ func New{{classname}}WithDefaults() *{{classname}} {
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}() *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}} {
-	if o == nil|| IsNil(o.{{name}}) {{#isNullable}}{{^vendorExtensions.x-golang-is-container}} || o.{{name}}.Get() == nil{{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
-		var ret *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}
-		return ret
-	}
-
-{{#isNullable}}
-{{#vendorExtensions.x-golang-is-container}}
-	return o.{{name}}
-{{/vendorExtensions.x-golang-is-container}}
-{{^vendorExtensions.x-golang-is-container}}
-	return o.{{name}}.Get()
-{{/vendorExtensions.x-golang-is-container}}
-{{/isNullable}}
-{{^isNullable}}
-	return o.{{name}}
-{{/isNullable}}
+func (o *{{classname}}) Get{{name}}() (ret {{classname}}{{getter}}RetType) {
+	ret,_ = o.Get{{name}}Ok()
+	return ret
 }
 
 // Get{{name}}Ok returns a tuple with the {{name}} field value
@@ -146,47 +579,16 @@ func (o *{{classname}}) Get{{name}}() *{{#isNumber}}float64{{/isNumber}}{{#isFlo
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}Ok() (*{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}, bool) {
-	if o == nil{{#isNullable}}{{#vendorExtensions.x-golang-is-container}} || IsNil(o.{{name}}){{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
-{{^isFreeFormObject}}
-		return nil, false
-	{{/isFreeFormObject}}
-	{{#isFreeFormObject}}
-		return &{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}{}, false
-	{{/isFreeFormObject}}
-	}
-{{#isNullable}}
-{{#vendorExtensions.x-golang-is-container}}
-	return {{^isArray}}{{^isFreeFormObject}}&{{/isFreeFormObject}}{{/isArray}}o.{{name}}, true
-{{/vendorExtensions.x-golang-is-container}}
-{{^vendorExtensions.x-golang-is-container}}
-	return o.{{name}}.Get(), o.{{name}}.IsSet()
-{{/vendorExtensions.x-golang-is-container}}
-{{/isNullable}}
-{{^isNullable}}
-	return o.{{name}}, true
-{{/isNullable}}
+func (o *{{classname}}) Get{{name}}Ok() (ret {{classname}}{{getter}}RetType, ok bool) {
+	return get{{classname}}{{getter}}AttributeTypeOk(o.{{name}})
 }
 
 // Set{{name}} sets field value
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Set{{name}}(v *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}) {
-{{#isNullable}}
-{{#vendorExtensions.x-golang-is-container}}
-	o.{{name}} = v
-{{/vendorExtensions.x-golang-is-container}}
-{{^vendorExtensions.x-golang-is-container}}
-	if IsNil(o.{{name}}) {
-		o.{{name}} = new({{dataType}})
-	}
-	o.{{name}}.Set(v)
-{{/vendorExtensions.x-golang-is-container}}
-{{/isNullable}}
-{{^isNullable}}
-	o.{{name}} = v
-{{/isNullable}}
+func (o *{{classname}}) Set{{name}}(v {{classname}}{{getter}}RetType) {
+	set{{classname}}{{getter}}AttributeType(&o.{{name}},v)
 }
 
 {{/required}}
@@ -195,22 +597,9 @@ func (o *{{classname}}) Set{{name}}(v *{{#isNumber}}float64{{/isNumber}}{{#isFlo
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}() *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}} {
-	if o == nil || IsNil(o.{{name}}) {{#isNullable}}{{^vendorExtensions.x-golang-is-container}} || IsNil(o.{{name}}.Get()){{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
-		var ret *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}
-		return ret
-	}
-{{#isNullable}}
-{{#vendorExtensions.x-golang-is-container}}
-	return o.{{name}}
-{{/vendorExtensions.x-golang-is-container}}
-{{^vendorExtensions.x-golang-is-container}}
-	return o.{{name}}.Get()
-{{/vendorExtensions.x-golang-is-container}}
-{{/isNullable}}
-{{^isNullable}}
-	return o.{{name}}
-{{/isNullable}}
+func (o *{{classname}}) Get{{name}}() (res {{classname}}{{getter}}RetType) {
+	res,_ = o.Get{{name}}Ok()
+	return
 }
 
 // Get{{name}}Ok returns a tuple with the {{name}} field value if set, nil otherwise
@@ -221,73 +610,35 @@ func (o *{{classname}}) Get{{name}}() *{{#isNumber}}float64{{/isNumber}}{{#isFlo
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}Ok() (*{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}, bool) {
-	if o == nil || IsNil(o.{{name}}) {
-	{{^isFreeFormObject}}
-		return nil, false
-	{{/isFreeFormObject}}
-	{{#isFreeFormObject}}
-		return &{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}{}, false
-	{{/isFreeFormObject}}
-	}
-{{#isNullable}}
-{{#vendorExtensions.x-golang-is-container}}
-	return {{^isArray}}{{^isFreeFormObject}}{{^isAnyType}}&{{/isAnyType}}{{/isFreeFormObject}}{{/isArray}}o.{{name}}, true
-{{/vendorExtensions.x-golang-is-container}}
-{{^vendorExtensions.x-golang-is-container}}
-	return o.{{name}}.Get(), o.{{name}}.IsSet()
-{{/vendorExtensions.x-golang-is-container}}
-{{/isNullable}}
-{{^isNullable}}
-	return o.{{name}}, true
-{{/isNullable}}
+func (o *{{classname}}) Get{{name}}Ok() (ret {{classname}}{{getter}}RetType, ok bool) {
+	return get{{classname}}{{getter}}AttributeTypeOk(o.{{name}})
 }
 
 // Has{{name}} returns a boolean if a field has been set.
 func (o *{{classname}}) Has{{name}}() bool {
-	if o != nil && !IsNil(o.{{name}}){{#isNullable}}{{^vendorExtensions.x-golang-is-container}} && o.{{name}}.IsSet(){{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
-		return true
-	}
-
-	return false
+	_,ok:=o.Get{{name}}Ok()
+	return ok
 }
 
 // Set{{name}} gets a reference to the given {{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}} and assigns it to the {{name}} field.
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Set{{name}}(v *{{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}}) {
-{{#isNullable}}
-{{#vendorExtensions.x-golang-is-container}}
-	o.{{name}} = v
-{{/vendorExtensions.x-golang-is-container}}
-{{^vendorExtensions.x-golang-is-container}}
-	if IsNil(o.{{name}}) {
-		o.{{name}} = new({{dataType}})
-	}
-	o.{{name}}.Set(v)
-{{/vendorExtensions.x-golang-is-container}}
-{{/isNullable}}
-{{^isNullable}}
-	o.{{name}} = v
-{{/isNullable}}
+func (o *{{classname}}) Set{{name}}(v {{classname}}{{getter}}RetType) {
+	set{{classname}}{{getter}}AttributeType(&o.{{name}},v)
 }
+
+
 {{#isNullable}}
 {{^vendorExtensions.x-golang-is-container}}
 // Set{{name}}Nil sets the value for {{name}} to be an explicit nil
 func (o *{{classname}}) Set{{name}}Nil() {
-	if IsNil(o.{{name}}) {
-		o.{{name}} = new({{dataType}})
-	}
-	o.{{name}}.Set(nil)
+	o.{{name}} = nil
 }
 
 // Unset{{name}} ensures that no value is present for {{name}}, not even an explicit nil
 func (o *{{classname}}) Unset{{name}}() {
-	if IsNil(o.{{name}}) {
-		o.{{name}} = new({{dataType}})
-	}
-	o.{{name}}.Unset()
+	o.{{name}} = nil
 }
 {{/vendorExtensions.x-golang-is-container}}
 {{/isNullable}}
@@ -327,35 +678,10 @@ func (o {{classname}}) ToMap() (map[string]interface{}, error) {
 	{{/parent}}
 	{{#vars}}
 	{{! if argument is nullable, only serialize it if it is set}}
-	{{#isNullable}}
-	{{#vendorExtensions.x-golang-is-container}}
-	{{! support for container fields is not ideal at this point because of lack of Nullable* types}}
-	if o.{{name}} != nil {
-		toSerialize["{{{baseName}}}"] = o.{{name}}
-	}
-	{{/vendorExtensions.x-golang-is-container}}
-	{{^vendorExtensions.x-golang-is-container}}
-	{{#required}}
-	toSerialize["{{{baseName}}}"] = o.{{name}}.Get()
-	{{/required}}
-	{{^required}}
-	if o.{{name}}.IsSet() {
-		toSerialize["{{{baseName}}}"] = o.{{name}}.Get()
-	}
-	{{/required}}
-	{{/vendorExtensions.x-golang-is-container}}
-	{{/isNullable}}
 	{{! if argument is not nullable, don't set it if it is nil}}
-	{{^isNullable}}
-	{{#required}}
-	toSerialize["{{{baseName}}}"] = o.{{name}}
-	{{/required}}
-	{{^required}}
-	if !IsNil(o.{{name}}) {
-		toSerialize["{{{baseName}}}"] = o.{{name}}
+	if val,ok:=get{{classname}}{{getter}}AttributeTypeOk(o.{{name}});ok {
+		toSerialize["{{{name}}}"] = val
 	}
-	{{/required}}
-	{{/isNullable}}
 	{{/vars}}
 	{{#isAdditionalPropertiesTrue}}
 
@@ -382,7 +708,7 @@ func (o *{{{classname}}}) UnmarshalJSON(data []byte) (err error) {
 	// that every required field exists as a key in the generic map.
 	requiredProperties := []string{
 {{#requiredVars}}
-		"{{baseName}}",
+		"{{nameInCamelCase}}",
 {{/requiredVars}}
 	}
 

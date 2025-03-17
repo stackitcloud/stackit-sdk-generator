@@ -1,0 +1,37 @@
+name: Check API version lock
+
+on:  
+    # run after PR merge  
+    push:  
+       branches: ["main"]  
+    # run every night at 01:00  
+    schedule:  
+        - cron: "0 1 * * *" 
+
+env:
+  THRESHOLD: "10 days ago"
+
+jobs:
+  main-go:
+    name: "[Go] Update SDK Repo"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Check commit date
+        run: |
+          set -eo pipefail
+
+          THRESHOLD="10 minutes ago"
+
+          if jq -e 'map_values(select(. != "main")) != {}' api-versions-lock.json; then
+              thresholdDate=$(date -Iminutes -d "${THRESHOLD}")
+              commitDate=$(git -P log -n 1 --format="%aI" api-versions-lock.json)
+              if [[ "$commitDate" < "$thresholdDate" ]]; then
+                  echo "latest commit of api-versions-lock.json is older than ${THRESHOLD}"
+                  exit 1
+              fi
+              echo "api-versions-lock.json contains locked versions but is recent enough"
+          else
+              echo "no locked versions in api-versions-lock.json"
+          fi
