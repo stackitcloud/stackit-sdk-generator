@@ -27,7 +27,7 @@ pydantic = ">=2.9.2"
 python-dateutil = ">=2.9.0.post0"
 
 [tool.poetry.group.dev.dependencies]
-black = ">=24.8.0"
+black = "<25.0.0" # Upgrading to a newer version requires bigger changes in the python generator. The formatting style in black has changed.
 pytest = ">=8.3.3"
 flake8 = [
   { version= ">=5.0.3", python="<3.12"},
