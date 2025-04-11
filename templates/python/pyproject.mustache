@@ -95,14 +95,5 @@ inline-quotes = '"'
 docstring-quotes = '"""'
 multiline-quotes = '"""'
 ban-relative-imports = true
-per-file-ignores = """
-    # asserts are fine in tests, tests shouldn't be build optimized
-  ./tests/*: S101,
-    # F841: some variables get generated but may not be used, depending on the api-spec
-    # E501: long descriptions/string values might lead to lines that are too long    
-  ./src/stackit/*/models/*: F841,E501
-    # F841: some variables get generated but may not be used, depending on the api-spec
-    # E501: long descriptions/string values might lead to lines that are too long
-    # B028: stacklevel for deprecation warning is irrelevant
-  ./src/stackit/*/api/default_api.py: F841,B028,E501
-"""
+# Exclude generated code 
+extend-exclude = [ "src/stackit/*/models/*", "src/stackit/*/api/*", "src/stackit/*/*.py" ]
