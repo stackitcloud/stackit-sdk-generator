@@ -1,5 +1,7 @@
 # coding: utf-8
 
+import sys
+
 {{>partial_header}}
 class HostConfiguration:
     def __init__(self,
@@ -11,7 +13,7 @@ class HostConfiguration:
         print("WARNING: STACKIT will move to a new way of specifying regions, where the region is provided\n",
         "as a function argument instead of being set in the client configuration.\n"
         "Once all services have migrated, the methods to specify the region in the client configuration "
-        "will be removed.")
+        "will be removed.", file=sys.stderr)
         """Constructor
         """
         self._base_path = "{{{basePath}}}"
