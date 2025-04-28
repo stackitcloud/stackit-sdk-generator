@@ -10,4 +10,5 @@ cdn
 serverbackup
 serverupdate
 certificates
+kms
 
