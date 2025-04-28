@@ -59,12 +59,12 @@ EOF
     cd - > /dev/null
 
     # Prioritize GA over Beta over Alpha versions
-    # GA priority = 3, Beta priority = 2, Alpha priority = 1
+    # GA priority = 999, Beta priority >= 2, Alpha priority = 1
     max_version_priority=1
 
     for dir in ${service_dir}/*; do
         version=$(basename "$dir")
-        current_version_priority=3
+        current_version_priority=999
         # Check if directory name starts with 'v'
         if [[ ${version} == v* ]]; then
             # Remove the 'v' prefix
@@ -85,9 +85,16 @@ EOF
             fi
             # Check if version is beta
             if [[ ${version} == *beta* ]]; then
-                # Remove 'beta' suffix
-                version=${version%beta*}
                 current_version_priority=2
+		
+		# check if the version is e.g. "v2beta2"
+		if [[ ${version} =~ beta([0-9]+)$ ]]; then
+                    betaVersion="${BASH_REMATCH[1]}"
+		    current_version_priority=$((betaVersion+current_version_priority))
+            	fi
+        	
+		# Remove 'beta' suffix
+                version=${version%beta*}
             fi
             # Compare versions, prioritizing GA over Beta over Alpha versions
             if [[ $((version)) -gt ${max_version} || ($((version)) -eq ${max_version} && ${current_version_priority} -gt ${max_version_priority}) ]]; then
