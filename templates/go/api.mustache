@@ -19,27 +19,26 @@ import (
 type {{classname}} interface {
 	{{#operation}}
 	/*
-	{{operationId}} {{{summary}}}{{^summary}}Method for {{operationId}}{{/summary}}
-	{{#notes}}
+{{operationId}} {{{summary}}}{{^summary}}Method for {{operationId}}{{/summary}}
+{{#notes}}
+{{#isDeprecated}}Deprecated: {{/isDeprecated}}{{{unescapedNotes}}}
+{{/notes}}
 
-	{{#isDeprecated}}Deprecated: {{/isDeprecated}}{{{unescapedNotes}}}
-	{{/notes}}
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().{{#pathParams}}
-	@param {{paramName}}{{#description}} {{{.}}}{{/description}}{{/pathParams}}
-	@return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
+@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().{{#pathParams}}
+@param {{paramName}}{{#description}} {{{.}}}{{/description}}{{/pathParams}}
+@return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
 	*/
 	{{{nickname}}}(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
-
 	/*
-	{{nickname}}Execute executes the request{{#returnType}}
-    @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().{{#pathParams}}
-    @param {{paramName}}{{#description}} {{{.}}}{{/description}}{{/pathParams}}
-	@return {{{.}}}{{/returnType}}
-	
-	{{#isDeprecated}}
-	Deprecated: {{{unescapedNotes}}}
-	{{/isDeprecated}}
+{{nickname}}Execute executes the request{{#returnType}}
+
+@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().{{#pathParams}}
+@param {{paramName}}{{#description}} {{{.}}}{{/description}}{{/pathParams}}
+@return {{{.}}}{{/returnType}}
+
+{{#isDeprecated}}
+Deprecated: {{{unescapedNotes}}}
+{{/isDeprecated}}
 	*/
 	{{nickname}}Execute(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}} error)
 	{{/operation}}
