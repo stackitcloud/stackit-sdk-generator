@@ -18,43 +18,58 @@ import (
 
 type {{classname}} interface {
 	{{#operation}}
-
 	/*
-	{{operationId}} {{{summary}}}{{^summary}}Method for {{operationId}}{{/summary}}
-	{{#notes}}
+{{operationId}} {{{summary}}}{{^summary}}Method for {{operationId}}{{/summary}}
+{{#notes}}
+{{#isDeprecated}}Deprecated: {{/isDeprecated}}{{{unescapedNotes}}}
+{{/notes}}
 
-	{{#isDeprecated}}Deprecated: {{/isDeprecated}}{{{unescapedNotes}}}
-	{{/notes}}
-
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().{{#pathParams}}
-	@param {{paramName}}{{#description}} {{{.}}}{{/description}}{{/pathParams}}
-	@return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
+@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().{{#pathParams}}
+@param {{paramName}}{{#description}} {{{.}}}{{/description}}{{/pathParams}}
+@return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
 	*/
 	{{{nickname}}}(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
-
 	/*
-	{{nickname}}Execute executes the request{{#returnType}}
-	@return {{{.}}}{{/returnType}}
-	
-	{{#isDeprecated}}
-	Deprecated: {{{unescapedNotes}}}
-	{{/isDeprecated}}
+{{nickname}}Execute executes the request{{#returnType}}
+
+@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().{{#pathParams}}
+@param {{paramName}}{{#description}} {{{.}}}{{/description}}{{/pathParams}}
+@return {{{.}}}{{/returnType}}
+
+{{#isDeprecated}}
+Deprecated: {{{unescapedNotes}}}
+{{/isDeprecated}}
 	*/
-	{{nickname}}Execute(r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request) ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}}*http.Response, error)
+	{{nickname}}Execute(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}} error)
 	{{/operation}}
 }
+
+{{#operation}}
+type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request interface {
+{{#allParams}}
+{{^isPathParam}}
+{{#description}}
+// {{.}}
+{{/description}}
+{{#isDeprecated}}
+// Deprecated
+{{/isDeprecated}}
+{{vendorExtensions.x-export-param-name}}({{paramName}} {{{dataType}}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
+{{/isPathParam}}
+{{/allParams}}
+    Execute() ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}} error)
+}
+
+{{/operation}}
 {{/generateInterfaces}}
 
 // {{classname}}Service {{classname}} service
 type {{classname}}Service service
 {{#operation}}
 
-type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request struct {
-	ctx context.Context{{#generateInterfaces}}
-	apiService {{classname}}
-{{/generateInterfaces}}{{^generateInterfaces}}
+type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request struct {
+	ctx context.Context
 	apiService *{{classname}}Service
-{{/generateInterfaces}}
 {{#allParams}}
 	{{paramName}} {{^isPathParam}}{{^isFile}}*{{/isFile}}{{/isPathParam}}{{{dataType}}}
 {{/allParams}}
@@ -69,7 +84,7 @@ type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/stru
 // Deprecated
 {{/isDeprecated}}
 
-func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request) {{vendorExtensions.x-export-param-name}}({{paramName}} {{{dataType}}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request {
+func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request) {{vendorExtensions.x-export-param-name}}({{paramName}} {{{dataType}}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request {
     r.{{paramName}} = {{^isFile}}&{{/isFile}}{{paramName}}
 	return r
 }
@@ -77,7 +92,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
 {{/isPathParam}}
 {{/allParams}}
 
-func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request) Execute() ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}} error) {
+func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request) Execute() ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}} error) {
     var (
     localVarHTTPMethod   = http.Method{{httpMethod}}
     localVarPostBody     interface{}
@@ -87,7 +102,11 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
     {{/returnType}}
     )
     a := r.apiService
-    localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "{{{classname}}}Service.{{{nickname}}}")
+    client, ok := a.client.(*APIClient)
+    if !ok {
+        return {{#returnType}}nil, {{/returnType}} fmt.Errorf("could not parse client to type APIClient")
+    }
+    localBasePath, err := client.cfg.ServerURLWithContext(r.ctx, "{{{classname}}}Service.{{{nickname}}}")
     if err != nil {
     return {{#returnType}}localVarReturnValue, {{/returnType}} &oapierror.GenericOpenAPIError{ErrorMessage: err.Error()}
     }
@@ -301,7 +320,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
             {{/isKeyInCookie}}
         {{/isApiKey}}
     {{/authMethods}}
-    req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
+    req, err := client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
     if err != nil {
     return {{#returnType}}localVarReturnValue, {{/returnType}} err
     }
@@ -311,7 +330,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
     *contextHTTPRequest = req
     }
 
-    localVarHTTPResponse, err := a.client.callAPI(req)
+    localVarHTTPResponse, err := client.callAPI(req)
     contextHTTPResponse, ok := r.ctx.Value(config.ContextHTTPResponse).(**http.Response)
     if ok {
     *contextHTTPResponse = localVarHTTPResponse
@@ -354,7 +373,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
                         {{/wildcard}}
                     {{/range}}
                     var v {{{dataType}}}
-                    err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+                    err = client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
                     if err != nil {
                     newErr.ErrorMessage = err.Error()
                     return {{#returnType}}localVarReturnValue, {{/returnType}} newErr
@@ -375,7 +394,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
     }
 
     {{#returnType}}
-        err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+        err = client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
         if err != nil {
         newErr := &oapierror.GenericOpenAPIError{
         StatusCode: localVarHTTPResponse.StatusCode,
@@ -401,7 +420,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/s
  @return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
 */
 func (a *APIClient) {{{nickname}}}(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request {
-	return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request{
+	return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request{
 		apiService: a.defaultApi,
 		ctx: ctx,
 		{{#pathParams}}
@@ -416,7 +435,7 @@ Deprecated: {{{unescapedNotes}}}
 */
 {{/isDeprecated}}
 func (a *APIClient) {{{nickname}}}Execute(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}} error){
-	r := {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request{
+	r := {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request{
 		apiService: a.defaultApi,
 		ctx: ctx,
 		{{#pathParams}}
