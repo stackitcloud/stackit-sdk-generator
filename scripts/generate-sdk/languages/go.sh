@@ -160,8 +160,8 @@ generate_go_sdk() {
             --git-repo-id ${GIT_REPO_ID} \
             --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles \
             --additional-properties=isGoSubmodule=true,enumClassPrefix=true,generateInterfaces=true,$regional_api \
-	    --http-user-agent stackit-sdk-go/${service}
-	
+	          --http-user-agent stackit-sdk-go/${service} \
+            --reserved-words-mappings type=types
         # Remove unnecessary files
         rm ${SERVICES_FOLDER}/${service}/.openapi-generator-ignore
         rm ${SERVICES_FOLDER}/${service}/.openapi-generator/FILES
