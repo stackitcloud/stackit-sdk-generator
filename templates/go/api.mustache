@@ -104,7 +104,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request) 
     a := r.apiService
     client, ok := a.client.(*APIClient)
     if !ok {
-        return {{#returnType}}nil, {{/returnType}} fmt.Errorf("could not parse client to type APIClient")
+        return {{#returnType}}localVarReturnValue, {{/returnType}} fmt.Errorf("could not parse client to type APIClient")
     }
     localBasePath, err := client.cfg.ServerURLWithContext(r.ctx, "{{{classname}}}Service.{{{nickname}}}")
     if err != nil {
