@@ -1,1 +1,4 @@
 # Transitional file to disable generation for selected services
+assumerole
+customer
+openstack
