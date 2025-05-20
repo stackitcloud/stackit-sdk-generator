@@ -59,7 +59,7 @@ EOF
     cd - > /dev/null
 
     # Prioritize GA over Beta over Alpha versions
-    # GA priority = 999, Beta priority >= 2, Alpha priority = 1
+    # GA priority =999, Beta priority >=500, Alpha priority <500 and >=1
     max_version_priority=1
 
     for dir in ${service_dir}/*; do
@@ -75,17 +75,26 @@ EOF
                 # This check can be removed once the IaaS API moves all endpoints to Beta
                 if [[ ${service} == "iaas" ]]; then
                     mv -f ${dir}/*.json ${ROOT_DIR}/oas/iaasalpha.json
+                    continue
                 fi
                 if [[ ${ALLOW_ALPHA} != "true" ]]; then
                     continue
                 fi
+		
+                current_version_priority=1
+		
+                # check if the version is e.g. "v2alpha2"
+                if [[ ${version} =~ alpha([0-9]+)$ ]]; then
+                    alphaVersion="${BASH_REMATCH[1]}"
+                    current_version_priority=$((alphaVersion+current_version_priority))
+            	fi
+                
                 # Remove 'alpha' suffix
                 version=${version%alpha*}
-                current_version_priority=1
             fi
             # Check if version is beta
             if [[ ${version} == *beta* ]]; then
-                current_version_priority=2
+                current_version_priority=500
 		
 		# check if the version is e.g. "v2beta2"
 		if [[ ${version} =~ beta([0-9]+)$ ]]; then
