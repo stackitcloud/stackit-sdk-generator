@@ -208,6 +208,8 @@ generate_go_sdk() {
 
         cd ${SERVICES_FOLDER}/${service}
         go work use .
+        # Make sure that dependencies are uptodate
+        go get -u ./...
         go mod tidy
     done
 
