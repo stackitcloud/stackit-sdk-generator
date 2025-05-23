@@ -281,7 +281,8 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 // isEnum
 
 // {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} {{{description}}}{{^description}}the model '{{{classname}}}'{{/description}}
-type {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} {{dataType}}
+// value type for enums
+type {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} {{#isNumeric}}int{{/isNumeric}}{{^isNumeric}}string{{/isNumeric}}
 
 // List of {{name}}
 const (
@@ -304,13 +305,13 @@ var Allowed{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titl
 }
 
 func (v *{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) UnmarshalJSON(src []byte) error {
-	var value {{dataType}}
+	var value {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
 	err := json.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
 	// Allow unmarshalling zero value for testing purposes
-	var zeroValue {{dataType}}
+	var zeroValue {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
 	if value == zeroValue {
 		return nil
 	}
@@ -327,7 +328,7 @@ func (v *{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlec
 
 // New{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}FromValue returns a pointer to a valid {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
 // for the value passed as argument, or an error if the value passed is not allowed by the enum
-func New{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}FromValue(v {{dataType}}) (*{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}, error) {
+func New{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}FromValue(v {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) (*{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}, error) {
 	ev := {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}(v)
 	if ev.IsValid() {
 		return &ev, nil
