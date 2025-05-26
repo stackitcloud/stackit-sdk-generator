@@ -2,7 +2,7 @@
 var _ MappedNullable = &{{classname}}{}
 
 {{#vars}}
-
+	
 /*
 	types and functions for {{baseName}} 
 	{{!.}}
@@ -275,6 +275,143 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 	*arg={{^isNullable}}&{{/isNullable}}val
 }
 {{/isDate}}
+{{^isArray}}
+{{#isEnum}}
+{{^isEnumRef}}
+{{! special handling for enums}}
+// isEnum
+
+// {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} {{{description}}}{{^description}}the model '{{{classname}}}'{{/description}}
+// value type for enums
+type {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} {{#isNumeric}}int{{/isNumeric}}{{^isNumeric}}string{{/isNumeric}}
+
+// List of {{name}}
+const (
+	{{#allowableValues}}
+	{{#enumVars}}
+	{{^-first}}
+	{{/-first}}
+	{{{classname.toUpperCase}}}{{enumName}}_{{name}} {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} = {{{value}}}
+	{{/enumVars}}
+	{{/allowableValues}}
+)
+
+// All allowed values of {{{classname}}} enum
+
+var Allowed{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}EnumValues = []{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}{
+	{{#allowableValues}}
+	{{#enumVars}}
+	{{{value}}},
+	{{/enumVars}}
+	{{/allowableValues}}
+}
+
+func (v *{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) UnmarshalJSON(src []byte) error {
+	var value {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
+	err := json.Unmarshal(src, &value)
+	if err != nil {
+		return err
+	}
+	// Allow unmarshalling zero value for testing purposes
+	var zeroValue {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
+	if value == zeroValue {
+		return nil
+	}
+	enumTypeValue := {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}(value)
+	for _, existing := range Allowed{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}EnumValues {
+		if existing == enumTypeValue {
+			*v = enumTypeValue
+			return nil
+		}
+	}
+
+	return fmt.Errorf("%+v is not a valid {{classname}}", value)
+}
+
+// New{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}FromValue returns a pointer to a valid {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
+// for the value passed as argument, or an error if the value passed is not allowed by the enum
+func New{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}FromValue(v {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) (*{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}, error) {
+	ev := {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}(v)
+	if ev.IsValid() {
+		return &ev, nil
+	} else {
+		return nil, fmt.Errorf("invalid value '%v' for {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}: valid values are %v", v, Allowed{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}EnumValues)
+	}
+}
+
+// IsValid return true if the value is valid for the enum, false otherwise
+func (v {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) IsValid() bool {
+	for _, existing := range Allowed{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}EnumValues {
+		if existing == v {
+			return true
+		}
+	}
+	return false
+}
+
+// Ptr returns reference to {{{name}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} value
+func (v {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) Ptr() *{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} {
+	return &v
+}
+
+type Nullable{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} struct {
+	value *{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
+	isSet bool
+}
+
+func (v Nullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) Get() *{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} {
+	return v.value
+}
+
+func (v *Nullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) Set(val *{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) {
+	v.value = val
+	v.isSet = true
+}
+
+func (v Nullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) IsSet() bool {
+	return v.isSet
+}
+
+func (v *Nullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) Unset() {
+	v.value = nil
+	v.isSet = false
+}
+
+func NewNullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}(val *{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) *Nullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} {
+	return &Nullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}{value: val, isSet: true}
+}
+
+func (v Nullable{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) MarshalJSON() ([]byte, error) {
+	return json.Marshal(v.value)
+}
+
+func (v *Nullable{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) UnmarshalJSON(src []byte) error {
+	v.isSet = true
+	return json.Unmarshal(src, &v.value)
+}
+
+type {{classname}}{{getter}}AttributeType = *{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
+func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
+	if arg == nil {
+		{{#isNullable}}
+		return nil,false
+		{{/isNullable}}
+		{{^isNullable}}
+		return ret,false
+		{{/isNullable}}
+	}
+	return {{^isNullable}}*{{/isNullable}}arg,true
+}
+
+func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}AttributeType, val {{classname}}{{getter}}RetType) {
+	*arg={{^isNullable}}&{{/isNullable}}val
+}
+{{/isEnumRef}}
+{{/isEnum}}
+
+
 {{#isEnumRef}}
 {{! special handling for enums}}
 {{#isEnum}}
@@ -290,7 +427,7 @@ const (
 	{{#enumVars}}
 	{{^-first}}
 	{{/-first}}
-	{{{classname.toUpperCase}}}{{{enumName}}}_{{name}} {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} = {{{value}}}
+	{{{classname.toUpperCase}}}{{name}} {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} = {{{value}}}
 	{{/enumVars}}
 	{{/allowableValues}}
 )
@@ -429,6 +566,8 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 }
 {{/isEnum}}
 {{/isEnumRef}}
+{{/isArray}}
+
 {{#isModel}}
 {{! special handling for recursive datatypes}}
 // isModel
