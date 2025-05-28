@@ -11,7 +11,7 @@ import (
 
 {{#model}}
 {{^isEnum}}
-{{#oneOf}}{{#-first}}{{/-first}}{{/oneOf}}{{^oneOf}}{{#anyOf}}{{#-first}}{{/-first}}{{/anyOf}}{{^anyOf}}{{>model_simple_test}}{{/anyOf}}{{/oneOf}}
+{{#oneOf}}{{#-first}}{{/-first}}{{/oneOf}}{{^oneOf}}{{#anyOf}}{{#-first}}{{/-first}}{{/anyOf}}{{^anyOf}}{{>custom/model_simple_test}}{{/anyOf}}{{/oneOf}}
 {{/isEnum}}
 {{/model}}
 {{/models}}
