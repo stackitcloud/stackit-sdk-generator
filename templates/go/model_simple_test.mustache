@@ -1,0 +1,49 @@
+{{! NOTE: This is a custom STACKIT template which is not present in upsteam to support testing of enum models}}
+
+{{#vars}}
+{{! special handling for enums}}
+{{#isEnumRef}}
+{{#isEnum}}
+// isEnum
+
+func Test{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}_UnmarshalJSON(t *testing.T) {
+	type args struct {
+		src []byte
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+	{{#allowableValues}}
+	{{#enumVars}}
+		{
+			name: `success - possible enum value no. {{-index}}`,
+			args: args{
+				src: []byte(`{{{value}}}`),
+			},
+			wantErr: false,
+		},
+	{{/enumVars}}
+	{{/allowableValues}}
+		{
+			name: "fail",
+			args: args{
+				src: []byte("\"FOOBAR\""),
+			},
+			wantErr: true,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}({{#isNumeric}}-1{{/isNumeric}}{{^isNumeric}}""{{/isNumeric}})
+			if err := v.UnmarshalJSON(tt.args.src); (err != nil) != tt.wantErr {
+				t.Errorf("UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+{{/isEnum}}
+{{/isEnumRef}}
+{{/vars}}

@@ -1,0 +1,5 @@
+templateDir: templates/go
+files:
+  model_test.mustache:
+    templateType: ModelTests
+    destinationFilename: .go

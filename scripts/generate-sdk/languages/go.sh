@@ -153,15 +153,16 @@ generate_go_sdk() {
             --input-spec ${service_json} \
             --output ${SERVICES_FOLDER}/${service} \
             --package-name ${service} \
-            --template-dir ${ROOT_DIR}/templates/go/ \
             --enable-post-process-file \
             --git-host ${GIT_HOST} \
             --git-user-id ${GIT_USER_ID} \
             --git-repo-id ${GIT_REPO_ID} \
             --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles \
             --additional-properties=isGoSubmodule=true,enumClassPrefix=true,generateInterfaces=true,$regional_api \
-	          --http-user-agent stackit-sdk-go/${service} \
-            --reserved-words-mappings type=types
+	        --http-user-agent stackit-sdk-go/${service} \
+            --reserved-words-mappings type=types \
+            --config openapi-generator-config-go.yml
+            
         # Remove unnecessary files
         rm ${SERVICES_FOLDER}/${service}/.openapi-generator-ignore
         rm ${SERVICES_FOLDER}/${service}/.openapi-generator/FILES
