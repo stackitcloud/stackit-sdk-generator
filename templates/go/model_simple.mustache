@@ -305,13 +305,16 @@ var Allowed{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titl
 }
 
 func (v *{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) UnmarshalJSON(src []byte) error {
-	var value {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
+	// use a type alias to prevent infinite recursion during unmarshal, 
+	// see https://biscuit.ninja/posts/go-avoid-an-infitine-loop-with-custom-json-unmarshallers
+	type TmpJson {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
+	var value TmpJson
 	err := json.Unmarshal(src, &value)
 	if err != nil {
 		return err
 	}
 	// Allow unmarshalling zero value for testing purposes
-	var zeroValue {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
+	var zeroValue TmpJson
 	if value == zeroValue {
 		return nil
 	}

@@ -1,0 +1,7 @@
+templateDir: templates/go
+files:
+  custom/model_test.mustache:
+    # TODO: this should be 'ModelTests' instead of 'Model'
+    # 'Model' was used because 'ModelTests' didn't stick to golangs file naming conventions
+    templateType: Model
+    destinationFilename: _test.go

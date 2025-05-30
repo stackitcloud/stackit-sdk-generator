@@ -1,0 +1,20 @@
+{{#models}}
+
+{{>partial_header}}
+package {{packageName}}
+
+import (
+	"testing"
+{{#imports}}
+	"{{import}}"
+{{/imports}}
+)
+
+{{#model}}
+{{^isEnum}}
+{{^oneOf}}{{^anyOf}}
+{{>custom/model_simple_test}}
+{{/anyOf}}{{/oneOf}}
+{{/isEnum}}
+{{/model}}
+{{/models}}
