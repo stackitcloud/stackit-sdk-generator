@@ -1,7 +1,8 @@
+{{#models}}
+
 {{>partial_header}}
 package {{packageName}}
 
-{{#models}}
 import (
 	"testing"
 {{#imports}}
@@ -11,7 +12,9 @@ import (
 
 {{#model}}
 {{^isEnum}}
-{{#oneOf}}{{#-first}}{{/-first}}{{/oneOf}}{{^oneOf}}{{#anyOf}}{{#-first}}{{/-first}}{{/anyOf}}{{^anyOf}}{{>custom/model_simple_test}}{{/anyOf}}{{/oneOf}}
+{{^oneOf}}{{^anyOf}}
+{{>custom/model_simple_test}}
+{{/anyOf}}{{/oneOf}}
 {{/isEnum}}
 {{/model}}
 {{/models}}
