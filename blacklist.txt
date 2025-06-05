@@ -1,11 +1,10 @@
 # Transitional file to disable generation for selected services
-#assumerole
+assumerole
 #customer
 #openstack
 kms
 
 airflow
-edge
 customer
 vpn
 privateendpoint
