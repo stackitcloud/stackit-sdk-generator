@@ -28,7 +28,19 @@ func Test_{{packageName}}_{{classname}}Service(t *testing.T) {
 {{#operation}}
 	t.Run("Test {{classname}}Service {{{nickname}}}", func(t *testing.T) {
 		_apiUrlPath := "{{{path}}}"{{#pathParams}}
-		{{paramName}}Value := {{#isAnyType}}"unspecified type"{{/isAnyType}}{{#isString}}{{#isUuid}}uuid.NewString(){{/isUuid}}{{^isUuid}}"{{paramName}}-value"{{/isUuid}}{{/isString}}{{#isNumber}}123{{/isNumber}}{{#isFloat}}float32(123){{/isFloat}}{{#isDouble}}float64(123){{/isDouble}}{{#isInteger}}int32(123){{/isInteger}}{{#isLong}}int64(123){{/isLong}}{{^isString}}{{^isInteger}}{{defaultValue}}{{/isInteger}}{{/isString}}
+        {{^minLength}}
+            {{^maxLength}}
+                {{paramName}}Value := {{#isAnyType}}"unspecified type"{{/isAnyType}}{{#isString}}{{#isUuid}}uuid.NewString(){{/isUuid}}{{^isUuid}}"{{paramName}}-value"{{/isUuid}}{{/isString}}{{#isNumber}}123{{/isNumber}}{{#isFloat}}float32(123){{/isFloat}}{{#isDouble}}float64(123){{/isDouble}}{{#isInteger}}int32(123){{/isInteger}}{{#isLong}}int64(123){{/isLong}}{{^isString}}{{^isInteger}}{{defaultValue}}{{/isInteger}}{{/isString}}
+            {{/maxLength}}
+        {{/minLength}}
+        {{#minLength}}
+            {{paramName}}Value := randString({{minLength}})
+        {{/minLength}}
+        {{#maxLength}}
+            {{^minLength}}
+                {{paramName}}Value := randString({{maxLength}})
+            {{/minLength}}
+        {{/maxLength}}
 		_apiUrlPath = strings.Replace(_apiUrlPath, "{"+"{{baseName}}"+"}", url.PathEscape(ParameterValueToString({{paramName}}Value, "{{paramName}}")), -1){{/pathParams}}
 
 		test{{classname}}ServeMux := http.NewServeMux()
