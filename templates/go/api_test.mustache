@@ -30,7 +30,7 @@ func Test_{{packageName}}_{{classname}}Service(t *testing.T) {
 		_apiUrlPath := "{{{path}}}"{{#pathParams}}
         {{^minLength}}
             {{^maxLength}}
-                {{paramName}}Value := {{#isAnyType}}"unspecified type"{{/isAnyType}}{{#isString}}{{#isUuid}}uuid.NewString(){{/isUuid}}{{^isUuid}}"{{paramName}}-value"{{/isUuid}}{{/isString}}{{#isNumber}}123{{/isNumber}}{{#isFloat}}float32(123){{/isFloat}}{{#isDouble}}float64(123){{/isDouble}}{{#isInteger}}int32(123){{/isInteger}}{{#isLong}}int64(123){{/isLong}}{{^isString}}{{^isInteger}}{{defaultValue}}{{/isInteger}}{{/isString}}
+                {{paramName}}Value := {{#isEnumRef}}{{^isString}}{{dataType}}({{{defaultValue}}}){{/isString}}{{/isEnumRef}}{{#isAnyType}}"unspecified type"{{/isAnyType}}{{#isString}}{{#isUuid}}uuid.NewString(){{/isUuid}}{{^isUuid}}"{{paramName}}-value"{{/isUuid}}{{/isString}}{{#isNumber}}123{{/isNumber}}{{#isFloat}}float32(123){{/isFloat}}{{#isDouble}}float64(123){{/isDouble}}{{#isInteger}}int32(123){{/isInteger}}{{#isLong}}int64(123){{/isLong}}{{^isString}}{{^isInteger}}{{^isEnumRef}}{{{defaultValue}}}{{/isEnumRef}}{{/isInteger}}{{/isString}}
             {{/maxLength}}
         {{/minLength}}
         {{#minLength}}
