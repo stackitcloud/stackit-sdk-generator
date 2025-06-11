@@ -6,4 +6,3 @@ kms
 
 airflow
 customer
-privateendpoint
