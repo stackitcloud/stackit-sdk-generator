@@ -6,5 +6,4 @@ kms
 
 airflow
 customer
-vpn
 privateendpoint
