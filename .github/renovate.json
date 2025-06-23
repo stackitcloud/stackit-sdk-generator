@@ -14,20 +14,20 @@
     "customManagers": [
         {
             "customType": "regex",
-            "fileMatch": [
-                "(^|\\/)generate-sdk\\.sh$"
+            "managerFilePatterns": [
+                "/(^|\\/)generate-sdk\\.sh$/"
             ],
             "matchStrings": [
-                "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?) versioning=(?<versioning>.*?)?\\sGENERATOR_VERSION=\\\"?(?<currentValue>.*?)\\\"\\s"
+                "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?) versioning=(?<versioning>.*?)?\\s+GENERATOR_VERSION=\"?(?<currentValue>.*?)\""
             ]
         },
         {
             "customType": "regex",
-            "fileMatch": [
-                "(^|\\/)go\\.mod\\.mustache$"
+            "managerFilePatterns": [
+                "/(^|\\/)go\\.mod\\.mustache$/"
             ],
             "matchStrings": [
-                "{{gitHost}}\\/{{gitUserId}}\\/{{gitRepoId}}\\/core ?(?<currentValue>.*?)\\s"
+                "github.com\/stackitcloud\/stackit-sdk-go\/core (?<currentValue>.*?)\\s"
             ],
             "datasourceTemplate": "go",
             "depNameTemplate": "github.com/stackitcloud/stackit-sdk-go",

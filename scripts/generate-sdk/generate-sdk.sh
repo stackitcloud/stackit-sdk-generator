@@ -57,6 +57,7 @@ go)
     GENERATOR_VERSION="v6.6.0" # There are issues with GO SDK generation in version v7
     ;;
 python)
+# Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
     GENERATOR_VERSION="v7.9.0"
     ;;
 *)
