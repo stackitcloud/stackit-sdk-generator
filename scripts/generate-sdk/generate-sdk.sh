@@ -58,7 +58,7 @@ go)
     ;;
 python)
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
-    GENERATOR_VERSION="v7.9.0"
+    GENERATOR_VERSION="v7.13.0"
     ;;
 *)
     echo "SDK language not supported."
@@ -91,8 +91,8 @@ python)
     echo -e "\n>> Generating the Python SDK..."
 
     source ${LANGUAGE_GENERATORS_FOLDER_PATH}/${LANGUAGE}.sh
-    # Usage: generate_python_sdk GENERATOR_PATH GIT_HOST GIT_USER_ID [GIT_REPO_ID] [SDK_REPO_URL]
-    generate_python_sdk ${jar_path} ${GIT_HOST} ${GIT_USER_ID} ${GIT_REPO_ID} ${SDK_REPO_URL}
+    # Usage: generate_python_sdk GENERATOR_PATH GIT_HOST GIT_USER_ID [GIT_REPO_ID] [SDK_REPO_URL] [SDK_BRANCH]
+    generate_python_sdk "${jar_path}" "${GIT_HOST}" "${GIT_USER_ID}" "${GIT_REPO_ID}" "${SDK_REPO_URL}" "${SDK_BRANCH}"
     ;;
 *)
     echo "! SDK language not supported."

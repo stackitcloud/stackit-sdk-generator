@@ -21,6 +21,7 @@ generate_python_sdk() {
     # Optional parameters
     local GIT_REPO_ID=$4
     local SDK_REPO_URL=$5
+    local SDK_BRANCH=$6
 
     # Check required parameters
     if [[ -z ${GIT_HOST} ]]; then
@@ -54,7 +55,7 @@ generate_python_sdk() {
         echo "Old SDK repo clone was found, it will be removed."
         rm -rf ${SDK_REPO_LOCAL_PATH}
     fi
-    git clone --quiet ${SDK_REPO_URL} ${SDK_REPO_LOCAL_PATH}
+    git clone --quiet -b ${SDK_BRANCH} ${SDK_REPO_URL} ${SDK_REPO_LOCAL_PATH}
 
     # Install SDK project tools
     cd ${ROOT_DIR}
