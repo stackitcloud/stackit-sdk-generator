@@ -1,7 +1,6 @@
 # Transitional file to disable generation for selected services
 #customer
 #openstack
-kms
 
 airflow
 customer
