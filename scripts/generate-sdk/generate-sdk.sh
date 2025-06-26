@@ -58,7 +58,7 @@ go)
     ;;
 python)
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
-    GENERATOR_VERSION="v7.13.0"
+    GENERATOR_VERSION="v7.14.0"
     ;;
 *)
     echo "SDK language not supported."

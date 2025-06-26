@@ -2,7 +2,7 @@
 
 This folder contains only our customized python templates. Beside these customized templates,
 the original templates of openapi-generator for python are used. These can be found in the 
-official GitHub repo of the [openapi-generator](https://github.com/OpenAPITools/openapi-generator/tree/v7.13.0/modules/openapi-generator/src/main/resources/python).
+official GitHub repo of the [openapi-generator](https://github.com/OpenAPITools/openapi-generator/tree/v7.14.0/modules/openapi-generator/src/main/resources/python).
 
 If you need to change something in the Python Generator, try always first to add
 [user-defined templates](https://openapi-generator.tech/docs/customization#user-defined-templates),
