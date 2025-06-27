@@ -1,3 +1,4 @@
+useOneOfDiscriminatorLookup: true
 templateDir: templates/go
 files:
   custom/model_test.mustache:
