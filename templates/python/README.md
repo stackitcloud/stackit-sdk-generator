@@ -6,7 +6,7 @@ official GitHub repo of the [openapi-generator](https://github.com/OpenAPITools/
 
 If you need to change something in the Python Generator, try always first to add
 [user-defined templates](https://openapi-generator.tech/docs/customization#user-defined-templates),
-instead of overwritten existing templates. These ensure an easier upgrade process, to newer
+instead of overwriting existing templates. These ensure an easier upgrade process, to newer
 versions of the openapi-generator.
 
 If it's required to customize the original templates, you can copy them into this directory.  
