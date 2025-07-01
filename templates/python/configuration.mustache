@@ -1,8 +1,23 @@
 # coding: utf-8
 
-import sys
-
 {{>partial_header}}
+import sys
+from typing import Dict, List, Optional, TypedDict
+from typing_extensions import NotRequired
+
+ServerVariablesT = Dict[str, str]
+
+class HostSettingVariable(TypedDict):
+    description: str
+    default_value: str
+    enum_values: List[str]
+
+
+class HostSetting(TypedDict):
+    url: str
+    description: str
+    variables: NotRequired[Dict[str, HostSettingVariable]]
+
 class HostConfiguration:
     def __init__(self,
                  region=None,
@@ -32,8 +47,7 @@ class HostConfiguration:
         self.ignore_operation_servers = ignore_operation_servers
         """Ignore operation servers
         """
-
-    def get_host_settings(self):
+    def get_host_settings(self) -> List[HostSetting]:
         """Gets an array of host settings
 
         :return: An array of host settings
@@ -68,7 +82,12 @@ class HostConfiguration:
             {{/servers}}
         ]
 
-    def get_host_from_settings(self, index, variables=None, servers=None):
+    def get_host_from_settings(
+        self,
+        index: Optional[int],
+        variables: Optional[ServerVariablesT]=None,
+        servers: Optional[List[HostSetting]]=None,
+    ) -> str:
         """Gets host URL based on the index and variables
         :param index: array index of the host settings
         :param variables: hash of variable and the corresponding value
@@ -105,7 +124,7 @@ class HostConfiguration:
                region_env is None and \
                variables.get(variable_name) is not None:
                     raise ValueError(
-                        "this API does not support setting a region in the the client configuration, "
+                        "this API does not support setting a region in the client configuration, "
                         "please check if the region can be specified as a function parameter"
                     )
             used_value = variables.get(
@@ -127,12 +146,12 @@ class HostConfiguration:
         return url
 
     @property
-    def host(self):
+    def host(self) -> str:
         """Return generated host."""
         return self.get_host_from_settings(self.server_index, variables=self.server_variables)
 
     @host.setter
-    def host(self, value):
+    def host(self, value: str) -> None:
         """Fix base path."""
         self._base_path = value
         self.server_index = None
