@@ -372,7 +372,7 @@ class ApiClient:
                 obj_dict = obj.__dict__
 
         if isinstance(obj_dict, list):
-            # here we handle instances that can either be a list or something else, and only became a real list by calling to_dict()
+            # here we handle instances that can either be a list or something else, and only became a real list by calling to_dict() # noqa: E501
             return self.sanitize_for_serialization(obj_dict)
 
         return {
