@@ -207,6 +207,12 @@ generate_go_sdk() {
             cp -r ${sdk_services_backup_dir}/${service}/NOTICE.txt ${SERVICES_FOLDER}/${service}/NOTICE.txt
         fi
 
+        # If the service has a VERSION file, move it inside the service folder
+        if [ -f ${sdk_services_backup_dir}/${service}/VERSION ]; then
+            echo "Found ${service} \"VERSION\" file"
+            cp -r ${sdk_services_backup_dir}/${service}/VERSION ${SERVICES_FOLDER}/${service}/VERSION
+        fi
+
         cd ${SERVICES_FOLDER}/${service}
         go work use .
         # Make sure that dependencies are uptodate
