@@ -17,3 +17,11 @@ download-oas:
 generate-sdk:
 	@$(SCRIPTS_BASE)/generate-sdk/generate-sdk.sh "$(GIT_HOST)" "$(GIT_USER_ID)" "$(GIT_REPO_ID)" "$(SDK_REPO_URL)" "$(LANGUAGE)" "$(SDK_BRANCH)"
 
+generate-go-sdk: LANGUAGE=go
+generate-go-sdk: generate-sdk
+
+generate-python-sdk: LANGUAGE=python
+generate-python-sdk: generate-sdk
+
+generate-java-sdk: LANGUAGE=java
+generate-java-sdk: generate-sdk

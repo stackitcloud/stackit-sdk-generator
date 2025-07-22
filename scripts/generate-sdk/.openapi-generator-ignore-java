@@ -1,0 +1,6 @@
+git_push.sh
+.travis.yml
+.gitignore
+api/openapi.yaml
+tox.ini
+**/.github/**
