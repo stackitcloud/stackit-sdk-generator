@@ -1,6 +1,5 @@
 # Transitional file to disable generation for selected services
-#customer
-#openstack
-
-airflow
 customer
+featuretoggle
+workflows
+openstack
