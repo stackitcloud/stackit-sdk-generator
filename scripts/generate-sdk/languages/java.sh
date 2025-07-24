@@ -122,12 +122,6 @@ generate_java_sdk() {
         rm -r "${SERVICES_FOLDER}/${service}/.openapi-generator/"
         rm "${SERVICES_FOLDER}/${service}/.github/workflows/maven.yml"
 
-        # If the service has a wait package files, move them inside the service folder
-        if [ -d ${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/${service}/wait ]; then
-            echo "Found ${service} \"wait\" package"
-            cp -r ${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/${service}/wait ${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/${service}/wait
-        fi
-
         # If the service has a README.md file, move them inside the service folder
         if [ -f ${sdk_services_backup_dir}/${service}/README.md ]; then
             echo "Found ${service} \"README.md\" file"
