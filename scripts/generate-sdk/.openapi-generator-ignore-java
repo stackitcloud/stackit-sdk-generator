@@ -5,3 +5,4 @@ api/openapi.yaml
 tox.ini
 **/.github/**
 **/AndroidManifest.xml
+pom.xml

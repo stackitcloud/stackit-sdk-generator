@@ -16,27 +16,21 @@ This package is part of the STACKIT Java SDK. For additional information, please
 ## Requirements
 
 Building the API client library requires:
-
 1. Java 1.8+
-{{#jersey2}}
-2. Maven (3.8.3+)/Gradle (7.2+)
-{{/jersey2}}
-{{^jersey2}}
-2. Maven/Gradle
-{{/jersey2}}
 
 ## Installation
 
 To install the API client library to your local Maven repository, simply execute:
 
 ```shell
-mvn clean install
+./gradlew publishToMavenLocal
 ```
 
 To deploy it to a remote Maven repository instead, configure the settings of the repository and execute:
 
 ```shell
-mvn clean deploy
+# TODO: follow up story
+# ./gradlew publishToMavenCentral
 ```
 
 Refer to the [OSSRH Guide](http://central.sonatype.org/pages/ossrh-guide.html) for more information.
@@ -49,7 +43,7 @@ Add this dependency to your project's POM:
 <dependency>
   <groupId>{{{groupId}}}</groupId>
   <artifactId>{{{artifactId}}}</artifactId>
-  <version>{{{artifactVersion}}}</version>
+  <version><SDK_VERSION></version>
   <scope>compile</scope>
 </dependency>
 ```
@@ -65,7 +59,7 @@ Add this dependency to your project's build file:
   }
 
   dependencies {
-     implementation "{{{groupId}}}:{{{artifactId}}}:{{{artifactVersion}}}"
+     implementation "{{{groupId}}}:{{{artifactId}}}:<SDK_VERSION>"
   }
 ```
 
@@ -79,7 +73,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-- `target/{{{artifactId}}}-{{{artifactVersion}}}.jar`
+- `target/{{{artifactId}}}-<SDK_VERSION>.jar`
 - `target/lib/*.jar`
 
 {{#jersey2}}
@@ -194,10 +188,6 @@ Class | Method | HTTP request | Description
 {{#models}}{{#model}} - [{{classname}}]({{modelDocPath}}{{classname}}.md)
 {{/model}}{{/models}}
 
-<a id="documentation-for-authorization"></a>
-
 ## Recommendation
 
 It's recommended to create an instance of `ApiClient` per thread in a multithreaded environment to avoid any potential issues.
-
-## Author
