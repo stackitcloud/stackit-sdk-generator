@@ -4,3 +4,4 @@ git_push.sh
 api/openapi.yaml
 tox.ini
 **/.github/**
+**/AndroidManifest.xml
