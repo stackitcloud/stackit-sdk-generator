@@ -1,0 +1,14 @@
+templateDir: templates/java
+additionalProperties:
+  artifactUrl: https://github.com/stackitcloud/stackit-sdk-java
+  developerName: STACKIT Developer Tools
+  developerEmail: developer-tools@stackit.cloud
+  developerOrganization: STACKIT
+  developerOrganizationUrl: https://www.stackit.de
+  groupId: cloud.stackit
+  hideGenerationTimestamp: true
+  licenseName: Apache License 2.0
+  licenseUrl: http://www.apache.org/licenses/
+  scmConnection: scm:git@github.com:stackitcloud/stackit-sdk-java.git
+  scmDeveloperConnection: scm:git@github.com:stackitcloud/stackit-sdk-java.git
+  scmUrl: https://github.com/stackitcloud/stackit-sdk-java

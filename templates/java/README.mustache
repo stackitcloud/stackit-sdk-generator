@@ -1,0 +1,179 @@
+# {{artifactId}}
+
+{{appName}}
+
+- API version: {{appVersion}}
+
+{{{appDescriptionWithNewLines}}}
+
+{{#infoUrl}}
+For more information, please visit [{{{infoUrl}}}]({{{infoUrl}}})
+{{/infoUrl}}
+
+This package is part of the STACKIT Java SDK. For additional information, please visit the [GitHub repository](https://{{gitHost}}/{{{gitUserId}}}/{{{gitRepoId}}}) of the SDK.
+
+
+## Requirements
+
+Building the API client library requires:
+1. Java 1.8+
+
+## Installation
+
+To install the API client library to your local Maven repository, simply execute:
+
+```shell
+./gradlew publishToMavenLocal
+```
+
+To deploy it to a remote Maven repository instead, configure the settings of the repository and execute:
+
+```shell
+# TODO: follow up story
+# ./gradlew publishToMavenCentral
+```
+
+Refer to the [OSSRH Guide](http://central.sonatype.org/pages/ossrh-guide.html) for more information.
+
+### Maven users
+
+Add this dependency to your project's POM:
+
+```xml
+<dependency>
+  <groupId>{{{groupId}}}</groupId>
+  <artifactId>{{{artifactId}}}</artifactId>
+  <version><SDK_VERSION></version>
+  <scope>compile</scope>
+</dependency>
+```
+
+### Gradle users
+
+Add this dependency to your project's build file:
+
+```groovy
+  repositories {
+    mavenCentral()     // Needed if the '{{{artifactId}}}' jar has been published to maven central.
+    mavenLocal()       // Needed if the '{{{artifactId}}}' jar has been published to the local maven repo.
+  }
+
+  dependencies {
+     implementation "{{{groupId}}}:{{{artifactId}}}:<SDK_VERSION>"
+  }
+```
+
+### Others
+
+At first generate the JAR by executing:
+
+```shell
+mvn clean package
+```
+
+Then manually install the following JARs:
+
+- `target/{{{artifactId}}}-<SDK_VERSION>.jar`
+- `target/lib/*.jar`
+
+{{#jersey2}}
+## Usage
+
+To add a HTTP proxy for the API client, use `ClientConfig`:
+```java
+{{#apiInfo}}{{#apis}}{{#-first}}{{#operations}}{{#operation}}{{#-first}}
+import org.glassfish.jersey.apache.connector.ApacheConnectorProvider;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
+import {{{invokerPackage}}}.*;
+import {{{package}}}.{{{classname}}};
+
+...
+
+ApiClient defaultClient = Configuration.getDefaultApiClient();
+ClientConfig clientConfig = defaultClient.getClientConfig();
+clientConfig.connectorProvider(new ApacheConnectorProvider());
+clientConfig.property(ClientProperties.PROXY_URI, "http://proxy_url_here");
+clientConfig.property(ClientProperties.PROXY_USERNAME, "proxy_username");
+clientConfig.property(ClientProperties.PROXY_PASSWORD, "proxy_password");
+defaultClient.setClientConfig(clientConfig);
+
+{{{classname}}} apiInstance = new {{{classname}}}(defaultClient);
+{{/-first}}{{/operation}}{{/operations}}{{/-first}}{{/apis}}{{/apiInfo}}
+```
+
+{{/jersey2}}
+## Getting Started
+
+Please follow the [installation](#installation) instruction and execute the following Java code:
+
+```java
+{{#apiInfo}}{{#apis}}{{#-first}}{{#operations}}{{#operation}}{{#-first}}
+import {{{invokerPackage}}}.*;
+import {{{invokerPackage}}}.auth.*;
+import {{{modelPackage}}}.*;
+import {{{package}}}.{{{classname}}};
+
+public class {{{classname}}}Example {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        defaultClient.setBasePath("{{{basePath}}}");
+        {{#hasAuthMethods}}{{#authMethods}}{{#isBasic}}{{#isBasicBasic}}
+        // Configure HTTP basic authorization: {{{name}}}
+        HttpBasicAuth {{{name}}} = (HttpBasicAuth) defaultClient.getAuthentication("{{{name}}}");
+        {{{name}}}.setUsername("YOUR USERNAME");
+        {{{name}}}.setPassword("YOUR PASSWORD");{{/isBasicBasic}}{{#isBasicBearer}}
+        // Configure HTTP bearer authorization: {{{name}}}
+        HttpBearerAuth {{{name}}} = (HttpBearerAuth) defaultClient.getAuthentication("{{{name}}}");
+        {{{name}}}.setBearerToken("BEARER TOKEN");{{/isBasicBearer}}{{/isBasic}}{{#isApiKey}}
+        // Configure API key authorization: {{{name}}}
+        ApiKeyAuth {{{name}}} = (ApiKeyAuth) defaultClient.getAuthentication("{{{name}}}");
+        {{{name}}}.setApiKey("YOUR API KEY");
+        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
+        //{{{name}}}.setApiKeyPrefix("Token");{{/isApiKey}}{{#isOAuth}}
+        // Configure OAuth2 access token for authorization: {{{name}}}
+        OAuth {{{name}}} = (OAuth) defaultClient.getAuthentication("{{{name}}}");
+        {{{name}}}.setAccessToken("YOUR ACCESS TOKEN");{{/isOAuth}}{{#isHttpSignature}}
+        // Configure HTTP signature authorization: {{{name}}}
+        HttpSignatureAuth {{{name}}} = (HttpSignatureAuth) defaultClient.getAuthentication("{{{name}}}");
+        // All the HTTP signature parameters below should be customized to your environment.
+        // Configure the keyId
+        {{{name}}}.setKeyId("YOUR KEY ID");
+        // Configure the signature algorithm
+        {{{name}}}.setSigningAlgorithm(SigningAlgorithm.HS2019);
+        // Configure the specific cryptographic algorithm
+        {{{name}}}.setAlgorithm(Algorithm.ECDSA_SHA256);
+        // Configure the cryptographic algorithm parameters, if applicable
+        {{{name}}}.setAlgorithmParameterSpec(null);
+        // Set the cryptographic digest algorithm.
+        {{{name}}}.setDigestAlgorithm("SHA-256");
+        // Set the HTTP headers that should be included in the HTTP signature.
+        {{{name}}}.setHeaders(Arrays.asList("date", "host"));
+        // Set the private key used to sign the HTTP messages
+        {{{name}}}.setPrivateKey();{{/isHttpSignature}}
+        {{/authMethods}}
+        {{/hasAuthMethods}}
+
+        {{{classname}}} apiInstance = new {{{classname}}}(defaultClient);
+        {{#allParams}}
+        {{{dataType}}} {{{paramName}}} = {{{example}}}; // {{{dataType}}} | {{{description}}}
+        {{/allParams}}
+        try {
+            {{#returnType}}{{{.}}} result = {{/returnType}}apiInstance.{{{operationId}}}({{#allParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/allParams}});{{#returnType}}
+            System.out.println(result);{{/returnType}}
+        } catch (ApiException e) {
+            System.err.println("Exception when calling {{{classname}}}#{{{operationId}}}");
+            System.err.println("Status code: " + e.getCode());
+            System.err.println("Reason: " + e.getResponseBody());
+            System.err.println("Response headers: " + e.getResponseHeaders());
+            e.printStackTrace();
+        }
+    }
+}
+{{/-first}}{{/operation}}{{/operations}}{{/-first}}{{/apis}}{{/apiInfo}}
+```
+
+## Recommendation
+
+It's recommended to create an instance of `ApiClient` per thread in a multithreaded environment to avoid any potential issues.
