@@ -112,7 +112,7 @@ generate_java_sdk() {
             --git-host ${GIT_HOST} \
             --git-user-id ${GIT_USER_ID} \
             --git-repo-id ${GIT_REPO_ID} \
-            --global-property apis,models,modelTests=false,apiTests=false,supportingFiles \
+            --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=false,supportingFiles \
             --additional-properties=artifactId="stackit-sdk-${service}",artifactDescription="${SERVICE_DESCRIPTION}",invokerPackage="cloud.stackit.sdk.${service}",modelPackage="cloud.stackit.sdk.${service}.model",apiPackage="cloud.stackit.sdk.${service}.api"  >/dev/null \
 	          --http-user-agent stackit-sdk-java/"${service}" \
             --config openapi-generator-config-java.yml
