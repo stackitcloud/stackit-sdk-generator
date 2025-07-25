@@ -83,7 +83,7 @@ generate_java_sdk() {
         service="${service//-/}"                                  # remove dashes
         service="${service// /}"                                  # remove spaces
         service=$(echo "${service}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
-        service=$(echo "${service}" | sed 's/[^a-z0-9_]//g')      # remove non-alphanumeric (except underscore)
+        service=$(echo "${service}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
 
         # Ensure the package name doesn't start with a number
         if [[ "${service}" =~ ^[0-9] ]]; then
