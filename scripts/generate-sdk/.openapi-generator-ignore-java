@@ -6,3 +6,4 @@ tox.ini
 **/.github/**
 **/AndroidManifest.xml
 pom.xml
+build.sbt

@@ -79,12 +79,16 @@ generate_java_sdk() {
         service="${service_json##*/}"
         service="${service%.json}"
 
-        # Remove invalid characters to ensure a valid Go pkg name
+        # Remove invalid characters to ensure a valid Java pkg name
         service="${service//-/}"                                  # remove dashes
-        service="${service// /}"                                  # remove empty spaces
-        service="${service//_/}"                                  # remove underscores
+        service="${service// /}"                                  # remove spaces
         service=$(echo "${service}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
-        service=$(echo "${service}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
+        service=$(echo "${service}" | sed 's/[^a-z0-9_]//g')      # remove non-alphanumeric (except underscore)
+
+        # Ensure the package name doesn't start with a number
+        if [[ "${service}" =~ ^[0-9] ]]; then
+          service="_${service}" # Prepend a valid prefix if it starts with a number
+        fi
 
         if ! [[ ${INCLUDE_SERVICES[*]} =~ ${service} ]]; then
             echo "Skipping not included service ${service}"
@@ -144,6 +148,12 @@ generate_java_sdk() {
         if [ -f ${sdk_services_backup_dir}/${service}/NOTICE.txt ]; then
             echo "Found ${service} \"NOTICE\" file"
             cp -r ${sdk_services_backup_dir}/${service}/NOTICE.txt ${SERVICES_FOLDER}/${service}/NOTICE.txt
+        fi
+
+        # If the service has a VERSION file, move it inside the service folder
+        if [ -f ${sdk_services_backup_dir}/${service}/VERSION ]; then
+            echo "Found ${service} \"VERSION\" file"
+            cp -r ${sdk_services_backup_dir}/${service}/VERSION ${SERVICES_FOLDER}/${service}/VERSION
         fi
 
     done
