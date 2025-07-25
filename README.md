@@ -13,19 +13,29 @@ If you want to modify script or templates and you can run code locally.
 Requires `Go 1.21` or higher.
 
 1. Set up the project and tools by running
-   ```
+   ```bash
    make project-tools
    ```
 2. Download Open Api Specifications (OAS), that are the input for the SDK generation, by running
-   ```
+   ```bash
    make download-oas
    ```
    This step needs to be done only at the first start and when OAS updates are present.
-3. Run the SDK generation for testing by
+3. Run the Go SDK generation for testing by
+   ```bash
+   make generate-go-sdk
    ```
-   make generate-sdk
+   The output goes to the `./sdk-repo-updated` folder.
+   1. Run the Python SDK generation for testing by
+   ```bash
+   make generate-python-sdk
    ```
-   The output goes to the `./sdk` folder.
+   The output goes to the `./sdk-repo-updated` folder.
+   2. Run the Java SDK generation for testing by
+   ```bash
+   make generate-java-sdk
+   ```
+   The output goes to the `./sdk-repo-updated` folder.
 
 ## Reporting issues
 
