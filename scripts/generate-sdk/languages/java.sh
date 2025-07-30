@@ -124,13 +124,6 @@ generate_java_sdk() {
         # Remove unnecessary files
         rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
         rm -r "${SERVICES_FOLDER}/${service}/.openapi-generator/"
-        rm "${SERVICES_FOLDER}/${service}/.github/workflows/maven.yml"
-
-        # If the service has a README.md file, move them inside the service folder
-        if [ -f ${sdk_services_backup_dir}/${service}/README.md ]; then
-            echo "Found ${service} \"README.md\" file"
-            cp -r ${sdk_services_backup_dir}/${service}/README.md ${SERVICES_FOLDER}/${service}/README.md
-        fi
 
         # If the service has a CHANGELOG file, move it inside the service folder
         if [ -f ${sdk_services_backup_dir}/${service}/CHANGELOG.md ]; then
@@ -157,4 +150,7 @@ generate_java_sdk() {
         fi
 
     done
+
+    cd "${SDK_REPO_LOCAL_PATH}"
+    make fmt
 }

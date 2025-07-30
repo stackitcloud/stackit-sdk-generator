@@ -3,7 +3,19 @@ git_push.sh
 .gitignore
 api/openapi.yaml
 tox.ini
-**/.github/**
 **/AndroidManifest.xml
+
+# we have our own github workflows
+.github/**
+
+# Ignore maven and simple build tool (sbt) stuff, because we use gradle
 pom.xml
 build.sbt
+
+# there's no content in it
+gradle.properties
+
+# gradle wrapper (we don't need it because we use the generated projects as gradle subprojects)
+gradlew.bat
+gradlew
+gradle/**
