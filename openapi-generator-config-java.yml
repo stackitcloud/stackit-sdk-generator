@@ -1,5 +1,6 @@
 templateDir: templates/java
 additionalProperties:
+  enumUnknownDefaultCase: true
   artifactUrl: https://github.com/stackitcloud/stackit-sdk-java
   developerName: STACKIT Developer Tools
   developerEmail: developer-tools@stackit.cloud
