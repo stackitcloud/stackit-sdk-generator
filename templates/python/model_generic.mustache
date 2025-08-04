@@ -9,6 +9,7 @@ import json
 {{#vendorExtensions.x-py-model-imports}}
 {{{.}}}
 {{/vendorExtensions.x-py-model-imports}}
+from pydantic import field_validator
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -91,6 +92,19 @@ class {{classname}}({{#parent}}{{{.}}}{{/parent}}{{^parent}}BaseModel{{/parent}}
         {{/isContainer}}
         return value
     {{/isEnum}}
+   
+    {{#isDateTime}}
+    @field_validator('{{{name}}}', mode='before')
+    def {{{name}}}_change_year_zero_to_one(cls, value):
+        """Prevents year 0 issue"""
+        if isinstance(value, str):
+            # Check for year "0000" at the beginning of the string
+            # This assumes common date formats like YYYY-MM-DD or YYYY-MM-DDTHH:MM:SS
+            if value.startswith("0000-"):
+                # Replace "0000" with "0001"
+                return "0001" + value[4:] # Take "0001" and append the rest of the string
+        return value
+    {{/isDateTime}}
 {{/vars}}
 
     model_config = ConfigDict(
