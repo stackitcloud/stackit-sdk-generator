@@ -9,6 +9,7 @@ import json
 {{#vendorExtensions.x-py-model-imports}}
 {{{.}}}
 {{/vendorExtensions.x-py-model-imports}}
+from pydantic import field_validator
 from typing import Optional, Set
 from typing_extensions import Self
 
@@ -91,6 +92,22 @@ class {{classname}}({{#parent}}{{{.}}}{{/parent}}{{^parent}}BaseModel{{/parent}}
         {{/isContainer}}
         return value
     {{/isEnum}}
+  
+    {{! BEGIN OF WORKAROUND - YEAR 0 ISSUE - see STACKITSDK-202 }}
+    {{! Workaround should be removed during work on STACKITSDK-260 }}
+    {{#isDateTime}}
+    @field_validator('{{{name}}}', mode='before')
+    def {{{name}}}_change_year_zero_to_one(cls, value):
+        """Workaround which prevents year 0 issue"""
+        if isinstance(value, str):
+            # Check for year "0000" at the beginning of the string
+            # This assumes common date formats like YYYY-MM-DDTHH:MM:SS+00:00 or YYYY-MM-DDTHH:MM:SSZ
+            if value.startswith("0000-01-01T") and re.match(r'^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\+\d{2}:\d{2}|Z)$', value):
+                # Workaround: Replace "0000" with "0001"
+                return "0001" + value[4:] # Take "0001" and append the rest of the string
+        return value
+    {{/isDateTime}}
+    {{! END OF WORKAROUND - YEAR 0 ISSUE }}
 {{/vars}}
 
     model_config = ConfigDict(
