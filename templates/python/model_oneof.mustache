@@ -1,6 +1,7 @@
 from __future__ import annotations
 import json
 import pprint
+import re
 {{#vendorExtensions.x-py-other-imports}}
 {{{.}}}
 {{/vendorExtensions.x-py-other-imports}}
@@ -19,7 +20,12 @@ class {{classname}}({{#parent}}{{{.}}}{{/parent}}{{^parent}}BaseModel{{/parent}}
     """
 {{#composedSchemas.oneOf}}
     # data type: {{{dataType}}}
+    {{#isString}}
+    {{vendorExtensions.x-py-name}}: Optional[Annotated[{{{dataType}}}, Field(strict=True)]] = Field(default=None, description="{{{description}}}"{{#pattern}}, pattern=re.sub(r'^\/|\/$', '',"{{.}}"){{/pattern}})
+    {{/isString}}
+    {{^isString}}
     {{vendorExtensions.x-py-name}}: {{{vendorExtensions.x-py-typing}}}
+    {{/isString}}
 {{/composedSchemas.oneOf}}
     actual_instance: Optional[Union[{{#oneOf}}{{{.}}}{{^-last}}, {{/-last}}{{/oneOf}}]] = None
     one_of_schemas: Set[str] = { {{#oneOf}}"{{.}}"{{^-last}}, {{/-last}}{{/oneOf}} }
