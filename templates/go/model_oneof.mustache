@@ -54,21 +54,36 @@ func (dst *{{classname}}) UnmarshalJSON(data []byte) error {
 	{{/discriminator}}
 	{{^discriminator}}
 	match := 0
-	{{#oneOf}}
+    {{! Workaround in case oneOf contains enums and strings. The enum value would match with both. }}
+    {{! The workaround adds a regex check for the string (in case the api spec provides a regex) }}
+	{{#composedSchemas.oneOf}}
+        {{#dataType}}
 	// try to unmarshal data into {{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}}
 	err = json.Unmarshal(data, &dst.{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}})
 	if err == nil {
 		json{{{.}}}, _ := json.Marshal(dst.{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}})
+        {{#pattern}}
+        regex := `{{.}}`
+        regex = regexp.MustCompile("^\\/|\\/$").ReplaceAllString(regex, "$1") // Remove beginning slash and ending slash
+        regex = regexp.MustCompile("\\\\(.)").ReplaceAllString(regex, "$1") // Remove duplicate escaping char for dots
+        rawString := strings.Trim(*dst.String, "\"")
+        {{/pattern}}
 		if string(json{{{.}}}) == "{}" { // empty struct
 			dst.{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}} = nil
-		} else {
+        {{#pattern}}
+        } else if matched, _ := regexp.MatchString(regex, rawString); matched  {
+        {{/pattern}}
+        {{^pattern}}
+        } else {
+        {{/pattern}}
 			match++
 		}
 	} else {
 		dst.{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}} = nil
 	}
 
-	{{/oneOf}}
+        {{/dataType}}
+	{{/composedSchemas.oneOf}}
 	if match > 1 { // more than 1 match
 		// reset to nil
 		{{#oneOf}}
