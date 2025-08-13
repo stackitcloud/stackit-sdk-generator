@@ -1,10 +1,12 @@
+{{! This template was customized to initialize the DefaultApi with the CoreConfiguration to easily setup the KeyFlow Authentication and custom endpoints. }}
+{{! Original template: https://github.com/OpenAPITools/openapi-generator/blob/v7.14.0/modules/openapi-generator/src/main/resources/Java/libraries/okhttp-gson/api.mustache }}
+
 {{>licenseInfo}}
 
 package {{package}};
 
 import {{invokerPackage}}.ApiCallback;
 import {{invokerPackage}}.ApiClient;
-import {{invokerPackage}}.ApiException;
 {{#dynamicOperations}}
 import {{invokerPackage}}.ApiOperation;
 {{/dynamicOperations}}
@@ -50,6 +52,8 @@ import java.util.Map;
 {{#supportStreaming}}
 import java.io.InputStream;
 {{/supportStreaming}}
+import cloud.stackit.sdk.core.config.CoreConfiguration;
+import cloud.stackit.sdk.core.exception.ApiException;
 
 {{#operations}}
 public class {{classname}} {
@@ -57,13 +61,18 @@ public class {{classname}} {
     private int localHostIndex;
     private String localCustomBaseUrl;
 
-    public {{classname}}() {
-        this(Configuration.getDefaultApiClient());
+{{! BEGIN - Remove default constructor and replaced with constructor which uses CoreConfiguration }}
+    public {{classname}}() throws IOException {
+        this(new CoreConfiguration.Builder().build());
     }
 
-    public {{classname}}(ApiClient apiClient) {
-        this.localVarApiClient = apiClient;
+    public {{classname}}(CoreConfiguration config) throws IOException {
+        if (config.getCustomEndpoint() != null && !config.getCustomEndpoint().trim().isEmpty()) {
+			localCustomBaseUrl = config.getCustomEndpoint();
+		}
+		this.localVarApiClient = new ApiClient(config);
     }
+{{! END - Remove default constructor and replaced with constructor which uses CoreConfiguration }}
 
     public ApiClient getApiClient() {
         return localVarApiClient;

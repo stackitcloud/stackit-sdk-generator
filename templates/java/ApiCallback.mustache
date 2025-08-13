@@ -1,8 +1,11 @@
+{{! This template was customized to add the core ApiException class as import. }}
+{{! Original template: https://github.com/OpenAPITools/openapi-generator/blob/v7.14.0/modules/openapi-generator/src/main/resources/Java/libraries/okhttp-gson/ApiCallback.mustache }}
 {{>licenseInfo}}
 
 package {{invokerPackage}};
 
 import java.io.IOException;
+import cloud.stackit.sdk.core.exception.ApiException;
 
 import java.util.Map;
 import java.util.List;
