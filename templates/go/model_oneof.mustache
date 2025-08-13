@@ -66,16 +66,12 @@ func (dst *{{classname}}) UnmarshalJSON(data []byte) error {
         regex := `{{.}}`
         regex = regexp.MustCompile("^\\/|\\/$").ReplaceAllString(regex, "$1") // Remove beginning slash and ending slash
         regex = regexp.MustCompile("\\\\(.)").ReplaceAllString(regex, "$1") // Remove duplicate escaping char for dots
-        rawString := strings.Trim(*dst.String, "\"")
+        rawString := regexp.MustCompile(`^"|"$`).ReplaceAllString(*dst.String, "$1") // Remove quotes
+        isMatched, _ := regexp.MatchString(regex, rawString)
         {{/pattern}}
-		if string(json{{{.}}}) == "{}" { // empty struct
+		if string(json{{{.}}}) == "{}" {{#pattern}}|| !isMatched {{/pattern}} { // empty struct
 			dst.{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}} = nil
-        {{#pattern}}
-        } else if matched, _ := regexp.MatchString(regex, rawString); matched  {
-        {{/pattern}}
-        {{^pattern}}
         } else {
-        {{/pattern}}
 			match++
 		}
 	} else {
