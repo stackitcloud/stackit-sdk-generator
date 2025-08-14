@@ -143,7 +143,7 @@ public class ApiClient {
      */
     public ApiClient() throws IOException {
         {{! BEGIN - replace basic constructur }}
-		this(new CoreConfiguration.Builder().build());
+		this(new CoreConfiguration());
         {{! END - replace basic constructur }}
     }
 

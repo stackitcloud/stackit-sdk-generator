@@ -63,7 +63,7 @@ public class {{classname}} {
 
 {{! BEGIN - Remove default constructor and replaced with constructor which uses CoreConfiguration }}
     public {{classname}}() throws IOException {
-        this(new CoreConfiguration.Builder().build());
+        this(new CoreConfiguration());
     }
 
     public {{classname}}(CoreConfiguration config) throws IOException {
