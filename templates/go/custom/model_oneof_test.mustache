@@ -44,6 +44,13 @@ func Test{{{classname}}}_UnmarshalJSON(t *testing.T) {
 			if err := v.UnmarshalJSON(tt.args.src); (err != nil) != tt.wantErr {
 				t.Errorf("UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
 			}
+            marshalJson, err := v.MarshalJSON()
+            if err != nil {
+                t.Fatalf("failed marshalling {{classname}}: %v", err)
+            }
+            if string(marshalJson) != string(tt.args.src) {
+                t.Fatalf("wanted %s, get %s", tt.args.src, marshalJson)
+            }
 		})
 	}
 }
