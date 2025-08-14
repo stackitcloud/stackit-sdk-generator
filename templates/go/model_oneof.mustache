@@ -54,8 +54,11 @@ func (dst *{{classname}}) UnmarshalJSON(data []byte) error {
 	{{/discriminator}}
 	{{^discriminator}}
 	match := 0
-    {{! Workaround in case oneOf contains enums and strings. The enum value would match with both. }}
-    {{! The workaround adds a regex check for the string (in case the api spec provides a regex) }}
+    {{! BEGIN - Workaround in case oneOf contains enums and strings. The enum value would match with both. }}
+    {{! This workaround adds a regex check for the string (in case the api spec provides a regex) }}
+    // Workaround until upstream issue is fixed:
+    // https://github.com/OpenAPITools/openapi-generator/issues/21751
+    // Tracking issue on our side: https://jira.schwarz/browse/STACKITSDK-226
 	{{#composedSchemas.oneOf}}
         {{#dataType}}
 	// try to unmarshal data into {{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}}
@@ -78,6 +81,7 @@ func (dst *{{classname}}) UnmarshalJSON(data []byte) error {
 
         {{/dataType}}
 	{{/composedSchemas.oneOf}}
+    {{! END - Workaround in case oneOf contains enums and strings. The enum value would match with both. }}
 	if match > 1 { // more than 1 match
 		// reset to nil
 		{{#oneOf}}
