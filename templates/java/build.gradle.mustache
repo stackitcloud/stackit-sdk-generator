@@ -15,6 +15,7 @@ ext {
 }
 
 dependencies {
+    implementation project (':core')
     {{#swagger1AnnotationLibrary}}
     implementation "io.swagger:swagger-annotations:$swagger_annotations_version"
     {{/swagger1AnnotationLibrary}}

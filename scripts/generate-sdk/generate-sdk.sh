@@ -54,13 +54,16 @@ fi
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
 case "${LANGUAGE}" in
 go)
+# When the GENERATOR_VERSION changes, migrate also the templates in templates/go
     GENERATOR_VERSION="v6.6.0" # There are issues with GO SDK generation in version v7
     ;;
 python)
+# When the GENERATOR_VERSION changes, migrate also the templates in templates/python
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
     GENERATOR_VERSION="v7.14.0"
     ;;
 java)
+# When the GENERATOR_VERSION changes, migrate also the templates in templates/java
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
     GENERATOR_VERSION="v7.14.0"
     ;;
