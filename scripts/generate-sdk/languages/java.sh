@@ -79,6 +79,8 @@ generate_java_sdk() {
         service="${service_json##*/}"
         service="${service%.json}"
 
+        service_pascal_case=$(to_pascal_case "${service}")
+
         # Remove invalid characters to ensure a valid Java pkg name
         service="${service//-/}"                                  # remove dashes
         service="${service// /}"                                  # remove spaces
@@ -117,9 +119,16 @@ generate_java_sdk() {
             --git-user-id ${GIT_USER_ID} \
             --git-repo-id ${GIT_REPO_ID} \
             --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=false,supportingFiles \
-            --additional-properties=artifactId="stackit-sdk-${service}",artifactDescription="${SERVICE_DESCRIPTION}",invokerPackage="cloud.stackit.sdk.${service}",modelPackage="cloud.stackit.sdk.${service}.model",apiPackage="cloud.stackit.sdk.${service}.api"  >/dev/null \
-	          --http-user-agent stackit-sdk-java/"${service}" \
+            --additional-properties=artifactId="stackit-sdk-${service}",artifactDescription="${SERVICE_DESCRIPTION}",invokerPackage="cloud.stackit.sdk.${service}",modelPackage="cloud.stackit.sdk.${service}.model",apiPackage="cloud.stackit.sdk.${service}.api",serviceName="${service_pascal_case}"  >/dev/null \
+  	        --http-user-agent stackit-sdk-java/"${service}" \
             --config openapi-generator-config-java.yml
+
+        # Rename DefaultApiServiceApi.java to {serviceName}Api.java
+        # This approach is a workaround because the file name cannot be set dynamically via --additional-properties or the config file in OpenAPI Generator. 
+        api_file="${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/api/DefaultApiServiceApi.java"
+        if [ -f "$api_file" ]; then
+            mv "$api_file" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/api/${service_pascal_case}Api.java"
+        fi
 
         # Remove unnecessary files
         rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
@@ -153,4 +162,16 @@ generate_java_sdk() {
 
     cd "${SDK_REPO_LOCAL_PATH}"
     make fmt
+}
+
+to_pascal_case() {
+    # Joins all arguments, splits on space or dash, capitalizes each part, and concatenates.
+    echo "$1" | awk -F'[- ]' '{
+        for (i=1; i<=NF; i++) {
+            $i = toupper(substr($i,1,1)) tolower(substr($i,2))
+        }
+        printf "%s", $1
+        for (i=2; i<=NF; i++) printf "%s", $i
+        print ""
+    }'
 }
