@@ -12,6 +12,9 @@ import (
 
 {{#model}}
 {{^isEnum}}
+{{#oneOf}}
+{{#-first}}{{>custom/model_oneof_test}}{{/-first}}
+{{/oneOf}}
 {{^oneOf}}{{^anyOf}}
 {{>custom/model_simple_test}}
 {{/anyOf}}{{/oneOf}}

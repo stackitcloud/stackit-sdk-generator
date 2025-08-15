@@ -1,0 +1,61 @@
+{{! NOTE: This is a custom STACKIT template which is not present in upsteam to support testing of oneOf models}}
+
+
+{{! tests only the adjusted cases in the Generator of UnmarshalJSON}}
+{{#useOneOfDiscriminatorLookup}}
+{{^discriminator}}
+// isOneOf
+
+{{#composedSchemas.oneOf}}
+{{#-first}}
+func Test{{{classname}}}_UnmarshalJSON(t *testing.T) {
+	type args struct {
+		src []byte
+	}
+	tests := []struct {
+		name    string
+		args    args
+		wantErr bool
+	}{
+{{/-first}}
+    {{#allowableValues.values}}
+        {
+            name: "success - {{dataType}} {{.}}",
+            args: args{
+                src: []byte(`"{{.}}"`),
+            },
+            wantErr: false,
+        },
+    {{/allowableValues.values}}
+    {{^allowableValues.values}}{{^isModel}}
+        {
+            name: "success - {{dataType}} {{example}}",
+            args: args{
+                src: []byte(`"{{example}}"`),
+            },
+            wantErr: false,
+        },
+    {{/isModel}}{{/allowableValues.values}}
+{{#-last}}
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := &{{{classname}}}{}
+			if err := v.UnmarshalJSON(tt.args.src); (err != nil) != tt.wantErr {
+				t.Errorf("UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
+			}
+            marshalJson, err := v.MarshalJSON()
+            if err != nil {
+                t.Fatalf("failed marshalling {{classname}}: %v", err)
+            }
+            if string(marshalJson) != string(tt.args.src) {
+                t.Fatalf("wanted %s, get %s", tt.args.src, marshalJson)
+            }
+		})
+	}
+}
+{{/-last}}
+{{/composedSchemas.oneOf}}
+
+{{/discriminator}}
+{{/useOneOfDiscriminatorLookup}}
