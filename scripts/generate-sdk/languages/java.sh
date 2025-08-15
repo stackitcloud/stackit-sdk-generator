@@ -117,9 +117,17 @@ generate_java_sdk() {
             --git-user-id ${GIT_USER_ID} \
             --git-repo-id ${GIT_REPO_ID} \
             --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=false,supportingFiles \
-            --additional-properties=artifactId="stackit-sdk-${service}",artifactDescription="${SERVICE_DESCRIPTION}",invokerPackage="cloud.stackit.sdk.${service}",modelPackage="cloud.stackit.sdk.${service}.model",apiPackage="cloud.stackit.sdk.${service}.api"  >/dev/null \
-	          --http-user-agent stackit-sdk-java/"${service}" \
+                        --additional-properties=artifactId="stackit-sdk-${service}",artifactDescription="${SERVICE_DESCRIPTION}",invokerPackage="cloud.stackit.sdk.${service}",modelPackage="cloud.stackit.sdk.${service}.model",apiPackage="cloud.stackit.sdk.${service}.api",serviceName="${service}"  >/dev/null \
+  	        --http-user-agent stackit-sdk-java/"${service}" \
             --config openapi-generator-config-java.yml
+
+        # Rename DefaultApiServiceApi.java to {serviceName}Api.java
+        api_file="${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/api/DefaultApiServiceApi.java"
+        if [ -f "$api_file" ]; then
+            # Capitalize first letter of service name
+            service_capitalized=$(echo "${service}" | tr '[:lower:]' '[:upper:]' | cut -c1)$(echo "${service}" | cut -c2-)
+            mv "$api_file" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/api/${service_capitalized}Api.java"
+        fi
 
         # Remove unnecessary files
         rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"

@@ -1,0 +1,18 @@
+package {{invokerPackage}}.api;
+
+import {{invokerPackage}}.api.DefaultApi;
+import cloud.stackit.sdk.core.config.CoreConfiguration;
+import cloud.stackit.sdk.core.exception.ApiException;
+import java.io.IOException;
+import java.security.spec.InvalidKeySpecException;
+
+public class {{#serviceName}}{{#lambda.pascalcase}}{{.}}Api{{/lambda.pascalcase}}{{/serviceName}} extends DefaultApi {
+    public {{#serviceName}}{{#lambda.pascalcase}}{{.}}Api{{/lambda.pascalcase}}{{/serviceName}}() throws InvalidKeySpecException, IOException, ApiException {
+        super();
+    }
+
+    public {{#serviceName}}{{#lambda.pascalcase}}{{.}}Api{{/lambda.pascalcase}}{{/serviceName}}(CoreConfiguration configuration)
+            throws InvalidKeySpecException, IOException, ApiException {
+        super(configuration);
+    }
+} 
