@@ -13,3 +13,8 @@ additionalProperties:
   scmConnection: scm:git@github.com:stackitcloud/stackit-sdk-java.git
   scmDeveloperConnection: scm:git@github.com:stackitcloud/stackit-sdk-java.git
   scmUrl: https://github.com/stackitcloud/stackit-sdk-java
+
+files:
+  custom/serviceApi.mustache:
+    templateType: API
+    destinationFilename: ServiceApi.java

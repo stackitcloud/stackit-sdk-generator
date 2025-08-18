@@ -56,7 +56,8 @@ import cloud.stackit.sdk.core.config.CoreConfiguration;
 import cloud.stackit.sdk.core.exception.ApiException;
 
 {{#operations}}
-public class {{classname}} {
+// Package-private access to enforce service-specific API usage (DefaultApi => <ServiceName>Api) 
+class {{classname}} {
     private ApiClient localVarApiClient;
     private int localHostIndex;
     private String localCustomBaseUrl;
