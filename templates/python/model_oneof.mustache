@@ -20,17 +20,17 @@ class {{classname}}({{#parent}}{{{.}}}{{/parent}}{{^parent}}BaseModel{{/parent}}
     """
 {{#composedSchemas.oneOf}}
     # data type: {{{dataType}}}
+    {{#isString}}
     # BEGIN of the workaround until upstream issues are fixed:
     # https://github.com/OpenAPITools/openapi-generator/issues/19034 from Jun 28, 2024
     # and https://github.com/OpenAPITools/openapi-generator/issues/19842 from Oct 11, 2024
     # Tracking issue on our side: https://jira.schwarz/browse/STACKITSDK-227
-    {{#isString}}
     {{vendorExtensions.x-py-name}}: Optional[Annotated[{{{dataType}}}, Field(strict=True)]] = Field(default=None, description="{{{description}}}"{{#pattern}}, pattern=re.sub(r'^\/|\/$', '',r"{{.}}"){{/pattern}})
+    # END of the workaround
     {{/isString}}
     {{^isString}}
     {{vendorExtensions.x-py-name}}: {{{vendorExtensions.x-py-typing}}}
     {{/isString}}
-    # END of the workaround
 {{/composedSchemas.oneOf}}
     actual_instance: Optional[Union[{{#oneOf}}{{{.}}}{{^-last}}, {{/-last}}{{/oneOf}}]] = None
     one_of_schemas: Set[str] = { {{#oneOf}}"{{.}}"{{^-last}}, {{/-last}}{{/oneOf}} }
