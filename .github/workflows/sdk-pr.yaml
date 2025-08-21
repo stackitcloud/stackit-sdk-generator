@@ -78,3 +78,33 @@ jobs:
           poetry config virtualenvs.create false
           (cd ./sdk-repo-updated && make install-dev)
           scripts/sdk-create-pr.sh "generator-bot-${{ github.run_id }}" "Generated from GitHub run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" "git@github.com:stackitcloud/stackit-sdk-python.git" "python"
+
+  main-java:
+    name: "[Java] Update SDK Repo"
+    runs-on: ubuntu-latest
+    permissions: 
+      pull-requests: write
+      contents: write
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ vars.SSH_KNOWN_HOSTS }}
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: ${{ env.JAVA_VERSION }}
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Build
+        uses: ./.github/actions/build/java
+      - name: Generate SDK
+        uses: ./.github/actions/generate-sdk/java
+      - name: Push SDK
+        env:
+          GH_REPO: "stackitcloud/stackit-sdk-java"
+          GH_TOKEN: ${{ secrets.SDK_PR_TOKEN }}
+        run: |
+          scripts/sdk-create-pr.sh "generator-bot-${{ github.run_id }}" "Generated from GitHub run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" "git@github.com:stackitcloud/stackit-sdk-java.git" "java"
