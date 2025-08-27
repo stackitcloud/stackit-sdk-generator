@@ -105,74 +105,8 @@ defaultClient.setClientConfig(clientConfig);
 {{/jersey2}}
 ## Getting Started
 
-Please follow the [installation](#installation) instruction and execute the following Java code:
+See the [{{serviceId}} examples]({{scmUrl}}/tree/main/examples/{{serviceId}}/src/main/java/cloud/stackit/sdk/{{serviceId}}/examples).
 
-```java
-{{#apiInfo}}{{#apis}}{{#-first}}{{#operations}}{{#operation}}{{#-first}}
-import {{{invokerPackage}}}.*;
-import {{{invokerPackage}}}.auth.*;
-import {{{modelPackage}}}.*;
-import {{{package}}}.{{{classname}}};
-
-public class {{{classname}}}Example {
-
-    public static void main(String[] args) {
-        ApiClient defaultClient = Configuration.getDefaultApiClient();
-        defaultClient.setBasePath("{{{basePath}}}");
-        {{#hasAuthMethods}}{{#authMethods}}{{#isBasic}}{{#isBasicBasic}}
-        // Configure HTTP basic authorization: {{{name}}}
-        HttpBasicAuth {{{name}}} = (HttpBasicAuth) defaultClient.getAuthentication("{{{name}}}");
-        {{{name}}}.setUsername("YOUR USERNAME");
-        {{{name}}}.setPassword("YOUR PASSWORD");{{/isBasicBasic}}{{#isBasicBearer}}
-        // Configure HTTP bearer authorization: {{{name}}}
-        HttpBearerAuth {{{name}}} = (HttpBearerAuth) defaultClient.getAuthentication("{{{name}}}");
-        {{{name}}}.setBearerToken("BEARER TOKEN");{{/isBasicBearer}}{{/isBasic}}{{#isApiKey}}
-        // Configure API key authorization: {{{name}}}
-        ApiKeyAuth {{{name}}} = (ApiKeyAuth) defaultClient.getAuthentication("{{{name}}}");
-        {{{name}}}.setApiKey("YOUR API KEY");
-        // Uncomment the following line to set a prefix for the API key, e.g. "Token" (defaults to null)
-        //{{{name}}}.setApiKeyPrefix("Token");{{/isApiKey}}{{#isOAuth}}
-        // Configure OAuth2 access token for authorization: {{{name}}}
-        OAuth {{{name}}} = (OAuth) defaultClient.getAuthentication("{{{name}}}");
-        {{{name}}}.setAccessToken("YOUR ACCESS TOKEN");{{/isOAuth}}{{#isHttpSignature}}
-        // Configure HTTP signature authorization: {{{name}}}
-        HttpSignatureAuth {{{name}}} = (HttpSignatureAuth) defaultClient.getAuthentication("{{{name}}}");
-        // All the HTTP signature parameters below should be customized to your environment.
-        // Configure the keyId
-        {{{name}}}.setKeyId("YOUR KEY ID");
-        // Configure the signature algorithm
-        {{{name}}}.setSigningAlgorithm(SigningAlgorithm.HS2019);
-        // Configure the specific cryptographic algorithm
-        {{{name}}}.setAlgorithm(Algorithm.ECDSA_SHA256);
-        // Configure the cryptographic algorithm parameters, if applicable
-        {{{name}}}.setAlgorithmParameterSpec(null);
-        // Set the cryptographic digest algorithm.
-        {{{name}}}.setDigestAlgorithm("SHA-256");
-        // Set the HTTP headers that should be included in the HTTP signature.
-        {{{name}}}.setHeaders(Arrays.asList("date", "host"));
-        // Set the private key used to sign the HTTP messages
-        {{{name}}}.setPrivateKey();{{/isHttpSignature}}
-        {{/authMethods}}
-        {{/hasAuthMethods}}
-
-        {{{classname}}} apiInstance = new {{{classname}}}(defaultClient);
-        {{#allParams}}
-        {{{dataType}}} {{{paramName}}} = {{{example}}}; // {{{dataType}}} | {{{description}}}
-        {{/allParams}}
-        try {
-            {{#returnType}}{{{.}}} result = {{/returnType}}apiInstance.{{{operationId}}}({{#allParams}}{{{paramName}}}{{^-last}}, {{/-last}}{{/allParams}});{{#returnType}}
-            System.out.println(result);{{/returnType}}
-        } catch (ApiException e) {
-            System.err.println("Exception when calling {{{classname}}}#{{{operationId}}}");
-            System.err.println("Status code: " + e.getCode());
-            System.err.println("Reason: " + e.getResponseBody());
-            System.err.println("Response headers: " + e.getResponseHeaders());
-            e.printStackTrace();
-        }
-    }
-}
-{{/-first}}{{/operation}}{{/operations}}{{/-first}}{{/apis}}{{/apiInfo}}
-```
 
 ## Recommendation
 
