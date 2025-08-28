@@ -98,10 +98,10 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build
-        uses: ./.github/actions/build/java
+      - name: Download OAS
+        run: make download-oas
       - name: Generate SDK
-        uses: ./.github/actions/generate-sdk/java
+        run: make generate-sdk LANGUAGE=java 
       - name: Push SDK
         env:
           GH_REPO: "stackitcloud/stackit-sdk-java"

@@ -101,19 +101,13 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
         fi
 
         # If lint or test fails for a service, we skip it and continue to the next one
-        # Skip linting for Java as it doesn't have a lint target
-        if [ "${LANGUAGE}" != "java" ]; then
-            make lint skip-non-generated-files=true service=$service || {
-                echo "! Linting failed for $service. THE UPDATE OF THIS SERVICE WILL BE SKIPPED."
-                continue
-            }
-        else
-            echo ">> Skipping linting for Java service $service (no lint target available)"
-        fi
+        make lint skip-non-generated-files=true service=$service || {
+            echo "! Linting failed for $service. THE UPDATE OF THIS SERVICE WILL BE SKIPPED."
+            continue
+        }
         # Our unit test template fails because it doesn't support fields with validations,
         # such as the UUID component used by IaaS. We introduce this hardcoded skip until we fix it
-        # We also skip tests for Java as it doesn't have a test target available yet
-        if [ "${LANGUAGE}" = "java" ] || [ "${service}" = "iaas" ] || [ "${service}" = "iaasalpha" ]; then
+        if [ "${service}" = "iaas" ] || [ "${service}" = "iaasalpha" ]; then
             echo ">> Skipping tests of $service service"
         else
             make test skip-non-generated-files=true service=$service || {

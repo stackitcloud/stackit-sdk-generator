@@ -1,8 +1,0 @@
-name: Build
-description: "Build tools"
-runs:
-  using: "composite"
-  steps:
-    - name: Install project tools and dependencies
-      shell: bash
-      run: make project-tools LANGUAGE=java 
