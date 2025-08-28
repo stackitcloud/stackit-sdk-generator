@@ -40,9 +40,10 @@ generate_java_sdk() {
         GIT_REPO_ID="stackit-sdk-java"
     fi
 
+    # TODO: Change to use the https url when repo is public
     if [[ -z ${SDK_REPO_URL} ]]; then
         echo "SDK_REPO_URL not specified, default will be used."
-        SDK_REPO_URL="https://github.com/stackitcloud/stackit-sdk-java.git"
+        SDK_REPO_URL="git@github.com:stackitcloud/stackit-sdk-java.git"
     fi
 
     # Prepare folders

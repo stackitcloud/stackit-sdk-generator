@@ -121,3 +121,35 @@ jobs:
         run: |
           . .venv/bin/activate
           make test
+
+  main-java:
+    name: CI [Java]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: ["11", "17", "21"]
+    steps:
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: ${{ vars.SSH_KNOWN_HOSTS }}
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: ${{ matrix.java-version }}
+      - name: Checkout
+        uses: actions/checkout@v5
+      - name: Download OAS
+        run: make download-oas
+      - name: Generate SDK
+        run: make generate-sdk
+        env:
+          LANGUAGE: java
+      - name: Lint
+        working-directory: ./sdk-repo-updated
+        run: make lint
+      - name: Test
+        working-directory: ./sdk-repo-updated
+        run: make test

@@ -26,6 +26,8 @@ elif [ "$action" = "tools" ]; then
         go install golang.org/x/tools/cmd/goimports@latest
     elif [ "${LANGUAGE}" == "python" ]; then
         pip install black==24.8.0 isort~=5.13.2 autoimport~=1.6.1
+    elif [ "${LANGUAGE}" == "java" ]; then
+        echo "No additional project setup for java needed"
     else
         echo "! Invalid language: $($LANGUAGE), please use $0 help for help"
     fi
