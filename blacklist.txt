@@ -3,3 +3,4 @@ customer
 featuretoggle
 workflows
 openstack
+notebooks
