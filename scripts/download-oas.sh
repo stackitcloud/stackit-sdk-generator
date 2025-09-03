@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -eo pipefail
 
 ROOT_DIR=$(git rev-parse --show-toplevel)
@@ -19,7 +19,7 @@ if [[ ! ${OAS_REPO} || -d ${OAS_REPO} ]]; then
 fi
 
 if [[ -z ${OAS_API_VERSIONS} ]]; then
-    echo "No API version passed, using ${ROOTDIR}/api-versions-lock.json"
+    echo "No API version passed, using ${ROOT_DIR}/api-versions-lock.json"
     OAS_API_VERSIONS="${ROOT_DIR}/api-versions-lock.json"
 fi
 
@@ -31,15 +31,15 @@ if [[ ! ${work_dir} || -d {work_dir} ]]; then
 fi
 trap "rm -rf ${work_dir}" EXIT # Delete temp directory on exit
 
-if [ -d ${ROOT_DIR}/oas ]; then
+if [ -d "${ROOT_DIR}/oas" ]; then
     echo "OAS folder found. Will be removed"
-    rm -r ${ROOT_DIR}/oas
+    rm -r "${ROOT_DIR}/oas"
 fi
 
 # Move oas to root level
-mkdir ${ROOT_DIR}/oas
-cd ${work_dir}
-git clone ${OAS_REPO} --quiet
+mkdir "${ROOT_DIR}/oas"
+cd "${work_dir}"
+git clone "${OAS_REPO}" --quiet
 
 for service_dir in ${work_dir}/${OAS_REPO_NAME}/services/*; do
 

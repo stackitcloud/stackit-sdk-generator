@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # This script pushes the generated SDK to its repo and creates a PR
 set -eo pipefail
 
