@@ -22,7 +22,7 @@ else
     exit 1
 fi
 
-if [ ! -d ${SDK_REPO_LOCAL_PATH} ]; then
+if [ ! -d "${SDK_REPO_LOCAL_PATH}" ]; then
     echo "! SDK to commit not found in root. Please run make generate-sdk"
     exit 1
 fi
@@ -42,7 +42,7 @@ fi
 
 # Create temp directory to work on
 work_dir="$ROOT_DIR/temp"
-mkdir -p ${work_dir}
+mkdir -p "${work_dir}"
 if [[ ! ${work_dir} || -d {work_dir} ]]; then
     echo "Unable to create temporary directory"
     exit 1
@@ -51,21 +51,21 @@ fi
 # Delete temp directory on exit
 trap "rm -rf ${work_dir}" EXIT
 
-mkdir ${work_dir}/git_repo    # Where the git repo will be created
-mkdir ${work_dir}/sdk_backup  # Backup of the SDK to check for new modules
-mkdir ${work_dir}/sdk_to_push # Copy of SDK to push
+mkdir "${work_dir}/git_repo"    # Where the git repo will be created
+mkdir "${work_dir}/sdk_backup"  # Backup of the SDK to check for new modules
+mkdir "${work_dir}/sdk_to_push" # Copy of SDK to push
 
 # Prepare SDK to push
-cp -a ${SDK_REPO_LOCAL_PATH}/. ${work_dir}/sdk_to_push
-rm -rf ${work_dir}/sdk_to_push/.git
+cp -a "${SDK_REPO_LOCAL_PATH}/." "${work_dir}/sdk_to_push"
+rm -rf "${work_dir}/sdk_to_push/.git"
 
 # Initialize git repo
-cd ${work_dir}/git_repo
-git clone ${REPO_URL_SSH} ./ --quiet
+cd "${work_dir}/git_repo"
+git clone "${REPO_URL_SSH}" ./ --quiet
 git config user.name "${COMMIT_NAME}"
 git config user.email "${COMMIT_EMAIL}"
 
-cp -a . ${work_dir}/sdk_backup
+cp -a . "${work_dir}/sdk_backup"
 
 # Create PR for each new SDK module if there are changes
 for service_path in ${work_dir}/sdk_to_push/services/*; do
@@ -74,8 +74,8 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
     # Replace old SDK with new one
     # Removal of pulled data is necessary because the old version may have files
     # that were deleted in the new version
-    rm -rf ./services/$service/*
-    cp -a ${work_dir}/sdk_to_push/services/$service/. ./services/$service
+    rm -rf "./services/${service}/*"
+    cp -a "${work_dir}/sdk_to_push/services/${service}/." "./services/${service}"
 
     # Check for changes in the specific folder compared to main
     service_changes=$(git status --porcelain "services/$service")
@@ -91,17 +91,15 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
             branch=$BRANCH_PREFIX
         fi
 
-        git add services/${service}/
         if [ "${LANGUAGE}" == "go" ] && [ ! -d "${work_dir}/sdk_backup/services/${service}/" ]; then # Check if it is a newly added SDK module
             # go work use -r adds a use directive to the go.work file for dir, if it exists, and removes the use directory if the argument directory doesn’t exist
             # the -r flag examines subdirectories of dir recursively
             # this prevents errors if there is more than one new module in the SDK generation
             go work use -r .
-            git add go.work
         fi
 
         # If lint or test fails for a service, we skip it and continue to the next one
-        make lint skip-non-generated-files=true service=$service || {
+        make lint skip-non-generated-files=true service="$service" || {
             echo "! Linting failed for $service. THE UPDATE OF THIS SERVICE WILL BE SKIPPED."
             continue
         }
@@ -110,10 +108,15 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
         if [ "${service}" = "iaas" ] || [ "${service}" = "iaasalpha" ]; then
             echo ">> Skipping tests of $service service"
         else
-            make test skip-non-generated-files=true service=$service || {
+            make test skip-non-generated-files=true service="$service" || {
                 echo "! Testing failed for $service. THE UPDATE OF THIS SERVICE WILL BE SKIPPED."
                 continue
             }
+        fi
+        
+        git add "services/${service}/"
+        if [ "${LANGUAGE}" == "go" ] && [ ! -d "${work_dir}/sdk_backup/services/${service}/" ]; then # Check if it is a newly added SDK module
+            git add go.work
         fi
 
         if [[ "$branch" != "main" ]]; then
