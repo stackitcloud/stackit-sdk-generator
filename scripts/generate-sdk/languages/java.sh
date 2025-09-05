@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # This script clones the SDK repo and updates it with the generated API modules
 # Pre-requisites: Java
 set -eo pipefail
