@@ -6,7 +6,7 @@ additionalProperties:
   developerEmail: developer-tools@stackit.cloud
   developerOrganization: STACKIT
   developerOrganizationUrl: https://www.stackit.de
-  groupId: cloud.stackit
+  groupId: cloud.stackit.sdk
   hideGenerationTimestamp: true
   licenseName: Apache License 2.0
   licenseUrl: http://www.apache.org/licenses/

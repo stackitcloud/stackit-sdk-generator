@@ -15,6 +15,9 @@ build.sbt
 # there's no content in it
 gradle.properties
 
+# content isn't needed
+settings.gradle
+
 # gradle wrapper (we don't need it because we use the generated projects as gradle subprojects)
 gradlew.bat
 gradlew
