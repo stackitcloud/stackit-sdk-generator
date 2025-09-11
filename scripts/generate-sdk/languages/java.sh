@@ -118,7 +118,7 @@ generate_java_sdk() {
             --git-host "${GIT_HOST}" \
             --git-user-id "${GIT_USER_ID}" \
             --git-repo-id "${GIT_REPO_ID}" \
-            --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=false,supportingFiles \
+            --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=true,supportingFiles \
             --additional-properties="artifactId=${service},artifactDescription=${SERVICE_DESCRIPTION},invokerPackage=cloud.stackit.sdk.${service},modelPackage=cloud.stackit.sdk.${service}.model,apiPackage=cloud.stackit.sdk.${service}.api,serviceName=${service_pascal_case}"  >/dev/null \
   	        --http-user-agent stackit-sdk-java/"${service}" \
             --config openapi-generator-config-java.yml
@@ -128,6 +128,10 @@ generate_java_sdk() {
         api_file="${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/api/DefaultApiServiceApi.java"
         if [ -f "$api_file" ]; then
             mv "$api_file" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/api/${service_pascal_case}Api.java"
+        fi
+        api_test_file="${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/api/DefaultApiTestServiceApiTest.java"
+        if [ -f "$api_test_file" ]; then
+            mv "$api_test_file" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/api/${service_pascal_case}ApiTest.java"
         fi
 
         # Remove unnecessary files

@@ -54,6 +54,7 @@ import java.io.InputStream;
 {{/supportStreaming}}
 import cloud.stackit.sdk.core.config.CoreConfiguration;
 import cloud.stackit.sdk.core.exception.ApiException;
+import okhttp3.OkHttpClient;
 
 {{#operations}}
 // Package-private access to enforce service-specific API usage (DefaultApi => <ServiceName>Api) 
@@ -63,16 +64,52 @@ class {{classname}} {
     private String localCustomBaseUrl;
 
 {{! BEGIN - Remove default constructor and replaced with constructor which uses CoreConfiguration }}
-    public {{classname}}() throws IOException {
-        this(new CoreConfiguration());
-    }
+	/**
+	 * Basic constructor for DefaultApi
+	 *
+	 * For production use consider using the constructor with the OkHttpClient parameter.
+	 *
+	 * @throws IOException
+	 */
+	public DefaultApi() throws IOException {
+		this(null, new CoreConfiguration());
+	}
 
-    public {{classname}}(CoreConfiguration config) throws IOException {
-        if (config.getCustomEndpoint() != null && !config.getCustomEndpoint().trim().isEmpty()) {
+	/**
+	 * Basic Constructor for DefaultApi
+	 *
+	 * For production use consider using the constructor with the OkHttpClient parameter.
+	 *
+	 * @param config your STACKIT SDK CoreConfiguration
+	 * @throws IOException
+	 */
+	public DefaultApi(CoreConfiguration config) throws IOException {
+		this(null, config);
+	}
+
+	/**
+	 * Constructor for DefaultApi
+	 *
+	 * @param httpClient OkHttpClient object
+	 * @throws IOException
+	 */
+	public DefaultApi(OkHttpClient httpClient) throws IOException {
+		this(httpClient, new CoreConfiguration());
+	}
+
+	/**
+	 * Constructor for DefaultApi
+	 *
+	 * @param httpClient OkHttpClient object
+	 * @param config your STACKIT SDK CoreConfiguration
+	 * @throws IOException
+	 */
+	public DefaultApi(OkHttpClient httpClient, CoreConfiguration config) throws IOException {
+		if (config.getCustomEndpoint() != null && !config.getCustomEndpoint().trim().isEmpty()) {
 			localCustomBaseUrl = config.getCustomEndpoint();
 		}
-		this.localVarApiClient = new ApiClient(config);
-    }
+		this.localVarApiClient = new ApiClient(httpClient, config);
+	}
 {{! END - Remove default constructor and replaced with constructor which uses CoreConfiguration }}
 
     public ApiClient getApiClient() {
