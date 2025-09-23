@@ -96,17 +96,17 @@ EOF
             if [[ ${version} == *beta* ]]; then
                 current_version_priority=500
 		
-		# check if the version is e.g. "v2beta2"
-		if [[ ${version} =~ beta([0-9]+)$ ]]; then
-                    betaVersion="${BASH_REMATCH[1]}"
-		    current_version_priority=$((betaVersion+current_version_priority))
-            	fi
+		          # check if the version is e.g. "v2beta2"
+		          if [[ ${version} =~ beta([0-9]+)$ ]]; then
+                betaVersion="${BASH_REMATCH[1]}"
+		            current_version_priority=$((betaVersion+current_version_priority))
+              fi
         	
-		# Remove 'beta' suffix
-                version=${version%beta*}
+		          # Remove 'beta' suffix
+              version=${version%beta*}
             fi
             # Compare versions, prioritizing GA over Beta over Alpha versions
-            if [[ $((version)) -gt ${max_version} || ($((version)) -eq ${max_version} && ${current_version_priority} -gt ${max_version_priority}) ]]; then
+            if [[ ($((version)) -ge ${max_version} && ${current_version_priority} -ge ${max_version_priority}) ]]; then
                 max_version=$((version))
                 max_version_dir=${dir}
                 max_version_priority=${current_version_priority}
