@@ -26,7 +26,7 @@ gradle/**
 # ApiException from core library should be used (avoid multiple ApiException imports in case different services are used at the same time)
 **/ApiException.java
 
-# Authentication classes are not required because the KeyFlowAuth is attached as interceptor
+# Authentication classes are not required because the KeyFlowAuth is attached as authenticator
 **/auth/**
 
 # Service Configuration is not required. It only stores a defaultApiClient

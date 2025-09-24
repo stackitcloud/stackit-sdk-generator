@@ -1,15 +1,54 @@
+{{>licenseInfo}}
+
 package {{invokerPackage}}.api;
 
 import cloud.stackit.sdk.core.config.CoreConfiguration;
 import java.io.IOException;
+import okhttp3.OkHttpClient;
 
 public class {{serviceName}}Api extends DefaultApi {
+	/**
+	 * Basic constructor for {{serviceName}}Api
+	 *
+     * For production use consider using the constructor with the OkHttpClient parameter.
+	 *
+	 * @throws IOException
+	 */
     public {{serviceName}}Api() throws IOException {
         super();
     }
 
+	/**
+	 * Basic Constructor for {{serviceName}}Api
+     *
+     * For production use consider using the constructor with the OkHttpClient parameter.
+	 *
+     * @param config your STACKIT SDK CoreConfiguration
+	 * @throws IOException
+	 */
     public {{serviceName}}Api(CoreConfiguration configuration)
             throws IOException {
         super(configuration);
     }
+	
+	/**
+	 * Constructor for {{serviceName}}Api
+	 *
+     * @param httpClient OkHttpClient object
+	 * @throws IOException
+	 */
+    public {{serviceName}}Api(OkHttpClient httpClient) throws IOException {
+		super(httpClient);
+	}
+
+	/**
+	 * Constructor for {{serviceName}}Api
+	 *
+     * @param httpClient OkHttpClient object
+     * @param configuration your STACKIT SDK CoreConfiguration
+	 * @throws IOException
+	 */
+	public {{serviceName}}Api(OkHttpClient httpClient, CoreConfiguration configuration) throws IOException {
+		super(httpClient, configuration);
+	}
 } 

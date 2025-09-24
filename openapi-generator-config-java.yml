@@ -18,3 +18,6 @@ files:
   custom/serviceApi.mustache:
     templateType: API
     destinationFilename: ServiceApi.java
+  custom/serviceApiTest.mustache:
+    templateType: APITests
+    destinationFilename: ServiceApiTest.java
