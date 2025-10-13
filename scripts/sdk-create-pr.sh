@@ -126,13 +126,13 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
 
         if [[ "$branch" != "main" ]]; then
             echo ">> Creating PR for $service"
-            echo "git commit -m \"Generate $service\""
-            echo "git push origin \"$branch\""
-            echo 'gh pr create --title "Generator: Update SDK /services/$service" --body "$COMMIT_INFO" --head "$branch" --base "main"'
+            git commit -m "Generate $service"
+            git push origin "$branch"
+            gh pr create --title "Generator: Update SDK /services/$service" --body "$COMMIT_INFO" --head "$branch" --base "main"
         else
             echo ">> Pushing changes for $service service..."
-            echo 'git commit -m "Generate $service: $COMMIT_INFO"'
-            echo 'git push origin "$branch"'
+            git commit -m "Generate $service: $COMMIT_INFO"
+            git push origin "$branch"
         fi
     fi
 done
