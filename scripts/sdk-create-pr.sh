@@ -98,22 +98,27 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
             go work use -r .
         fi
 
-        # If lint or test fails for a service, we skip it and continue to the next one
-        make lint skip-non-generated-files=true service="$service" || {
-            echo "! Linting failed for $service. THE UPDATE OF THIS SERVICE WILL BE SKIPPED."
-            continue
-        }
-        # Our unit test template fails because it doesn't support fields with validations,
-        # such as the UUID component used by IaaS. We introduce this hardcoded skip until we fix it
-        if [ "${service}" = "iaas" ] || [ "${service}" = "iaasalpha" ]; then
-            echo ">> Skipping tests of $service service"
-        else
-            make test skip-non-generated-files=true service="$service" || {
-                echo "! Testing failed for $service. THE UPDATE OF THIS SERVICE WILL BE SKIPPED."
+        # If the target branch is main, we run the linter and tests in order to have code which can be compiled.
+        # If the target branch is not main, we skip the linter and tests, because in the create PRs the CI pipeline will check run them as well.
+        # This prevents unrecognized api changes, because we will see them within the PR itself.
+        if [[ "$branch" == "main" ]]; then
+            # If lint or test fails for a service, we skip it and continue to the next one
+            make lint skip-non-generated-files=true service="$service" || {
+                echo "! Linting failed for $service. THE UPDATE OF THIS SERVICE WILL BE SKIPPED."
                 continue
             }
+            # Our unit test template fails because it doesn't support fields with validations,
+            # such as the UUID component used by IaaS. We introduce this hardcoded skip until we fix it
+            if [ "${service}" = "iaas" ] || [ "${service}" = "iaasalpha" ]; then
+                echo ">> Skipping tests of $service service"
+            else
+                make test skip-non-generated-files=true service="$service" || {
+                    echo "! Testing failed for $service. THE UPDATE OF THIS SERVICE WILL BE SKIPPED."
+                    continue
+                }
+            fi
         fi
-        
+
         git add "services/${service}/"
         if [ "${LANGUAGE}" == "go" ] && [ ! -d "${work_dir}/sdk_backup/services/${service}/" ]; then # Check if it is a newly added SDK module
             git add go.work

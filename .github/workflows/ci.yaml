@@ -70,6 +70,9 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION_BUILD }}
+      - name: Remove waiters
+        working-directory: ./sdk-repo-updated
+        run: rm -r services/*/wait
       - name: Lint
         working-directory: ./sdk-repo-updated
         run: make lint skip-non-generated-files=true
