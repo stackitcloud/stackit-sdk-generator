@@ -256,9 +256,9 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{#isDate}}
 {{! special handling for date}}
 // isDate
-type {{classname}}{{getter}}AttributeType = *time.Time
-type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}time.Time
-type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}time.Time
+type {{classname}}{{getter}}AttributeType = *string
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}string
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}string
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
 		{{#isNullable}}
