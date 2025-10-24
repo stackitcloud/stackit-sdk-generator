@@ -4,3 +4,4 @@ featuretoggle
 workflows
 openstack
 notebooks
+observability
