@@ -78,6 +78,8 @@ generate_python_sdk() {
     # Remove old contents of services dir (services/)
     rm -rf ${SERVICES_FOLDER}
 
+    warning=""
+
     # Generate SDK for each service
     for service_json in ${ROOT_DIR}/oas/*.json; do
         service="${service_json##*/}"
@@ -92,6 +94,7 @@ generate_python_sdk() {
 
         if grep -E "^$service$" ${ROOT_DIR}/blacklist.txt; then
             echo "Skipping blacklisted service ${service}"
+            warning+="Skipping blacklisted service ${service}\n"
             continue
         fi
 
@@ -174,4 +177,8 @@ generate_python_sdk() {
         black .
 
     done
+
+    if [[ -n "$warning" ]]; then
+        echo -e "\nSome of the services were skipped during creation!\n$warning"
+    fi
 }
