@@ -74,6 +74,8 @@ generate_java_sdk() {
     # Remove old contents of services dir (services/)
     rm -rf "${SERVICES_FOLDER}"
 
+    warning=""
+
     # Generate SDK for each service
     for service_json in "${ROOT_DIR}"/oas/*.json; do
         service="${service_json##*/}"
@@ -94,11 +96,13 @@ generate_java_sdk() {
 
         if ! [[ ${INCLUDE_SERVICES[*]} =~ ${service} ]]; then
             echo "Skipping not included service ${service}"
+            warning+="Skipping not included service ${service}\n"
             continue
         fi
 
         if grep -E "^$service$" "${ROOT_DIR}/blacklist.txt"; then
             echo "Skipping blacklisted service ${service}"
+            warning+="Skipping blacklisted service ${service}\n"
             continue
         fi
 
@@ -172,6 +176,10 @@ generate_java_sdk() {
 
     cd "${SDK_REPO_LOCAL_PATH}"
     make fmt
+
+    if [[ -n "$warning" ]]; then
+        echo -e "\nSome of the services were skipped during creation!\n$warning"
+    fi
 }
 
 to_pascal_case() {

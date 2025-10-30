@@ -106,6 +106,8 @@ generate_go_sdk() {
         go work use .
     fi
 
+    warning=""
+
     # Generate SDK for each service
     for service_json in ${ROOT_DIR}/oas/*.json; do
         service="${service_json##*/}"
@@ -132,6 +134,7 @@ generate_go_sdk() {
 
         if grep -E "^$service$" ${ROOT_DIR}/blacklist.txt; then
             echo "Skipping blacklisted service ${service}"
+            warning+="Skipping blacklisted service ${service}\n"
             continue
         fi
 
@@ -238,4 +241,8 @@ generate_go_sdk() {
     cd ${SDK_REPO_LOCAL_PATH}
     goimports -w ${SERVICES_FOLDER}/
     make sync-tidy
+
+    if [[ -n "$warning" ]]; then
+        echo -e "\nSome of the services were skipped during creation!\n$warning"
+    fi
 }

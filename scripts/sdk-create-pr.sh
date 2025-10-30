@@ -74,7 +74,7 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
     # Replace old SDK with new one
     # Removal of pulled data is necessary because the old version may have files
     # that were deleted in the new version
-    rm -rf "./services/${service}/*"
+    rm -rf "./services/${service}"
     cp -a "${work_dir}/sdk_to_push/services/${service}/." "./services/${service}"
 
     # Check for changes in the specific folder compared to main
