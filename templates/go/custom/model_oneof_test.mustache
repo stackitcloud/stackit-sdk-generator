@@ -27,15 +27,23 @@ func Test{{{classname}}}_UnmarshalJSON(t *testing.T) {
             wantErr: false,
         },
     {{/allowableValues.values}}
-    {{^allowableValues.values}}{{^isModel}}
+    {{^allowableValues.values}}{{^isModel}}{{^isContainer}}
         {
-            name: "success - {{dataType}} {{example}}",
+            name: "success - {{dataType}} {{{example}}}",
             args: args{
-                src: []byte(`"{{example}}"`),
+                src: []byte(`"{{{example}}}"`),
             },
             wantErr: false,
         },
-    {{/isModel}}{{/allowableValues.values}}
+        {{/isContainer}}{{#isContainer}}
+        {
+            name: "success - {{dataType}}",
+            args: args{
+                    src: []byte(`{{>custom/helper/container_json_example_value}}`),
+            },
+            wantErr: false,
+        },
+    {{/isContainer}}{{/isModel}}{{/allowableValues.values}}
 {{#-last}}
 	}
 	for _, tt := range tests {
