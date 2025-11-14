@@ -65,7 +65,7 @@ func (dst *{{classname}}) UnmarshalJSON(data []byte) error {
 	dst{{classname}}{{-index}} := &{{classname}}{}
 	err = json.Unmarshal(data, &dst{{classname}}{{-index}}.{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}})
 	if err == nil {
-		json{{{.}}}, _ := json.Marshal(&dst{{classname}}{{-index}}.{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}})
+		json{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}}, _ := json.Marshal(&dst{{classname}}{{-index}}.{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}})
         {{#pattern}}
         regex := `{{.}}`
         regex = regexp.MustCompile("^\\/|\\/$").ReplaceAllString(regex, "$1") // Remove beginning slash and ending slash
@@ -73,7 +73,7 @@ func (dst *{{classname}}) UnmarshalJSON(data []byte) error {
         rawString := regexp.MustCompile(`^"|"$`).ReplaceAllString(*dst{{classname}}{{-index}}.{{#lambda.type-to-name}}{{dataType}}{{/lambda.type-to-name}}, "$1") // Remove quotes
         isMatched, _ := regexp.MatchString(regex, rawString)
         {{/pattern}}
-		if string(json{{{.}}}) != "{}" {{#pattern}}&& isMatched {{/pattern}} { // empty struct
+		if string(json{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}}) != "{}" {{#pattern}}&& isMatched {{/pattern}} { // empty struct
 			dst.{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}} = dst{{classname}}{{-index}}.{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}}
 			match++
 		}
