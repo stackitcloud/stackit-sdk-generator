@@ -147,6 +147,12 @@ generate_java_sdk() {
             echo "Found ${service} \"wait\" package"
             cp -r "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/wait" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/wait"
         fi
+        
+        # If the service has a wait test package, move them inside the service folder
+        if [ -d "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/wait" ]; then
+            echo "Found ${service} \"wait\" test package"
+            cp -r "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/wait" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/wait"
+        fi
 
         # If the service has a CHANGELOG file, move it inside the service folder
         if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then
