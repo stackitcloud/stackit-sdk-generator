@@ -51,14 +51,14 @@ generate_python_sdk() {
     fi
 
     # Clone SDK repo
-    if [ -d ${SDK_REPO_LOCAL_PATH} ]; then
+    if [ -d "${SDK_REPO_LOCAL_PATH}" ]; then
         echo "Old SDK repo clone was found, it will be removed."
-        rm -rf ${SDK_REPO_LOCAL_PATH}
+        rm -rf "${SDK_REPO_LOCAL_PATH}"
     fi
-    git clone --quiet -b ${SDK_BRANCH} ${SDK_REPO_URL} ${SDK_REPO_LOCAL_PATH}
+    git clone --quiet -b "${SDK_BRANCH}" "${SDK_REPO_URL}" "${SDK_REPO_LOCAL_PATH}"
 
     # Install SDK project tools
-    cd ${ROOT_DIR}
+    cd "${ROOT_DIR}"
     make project-tools LANGUAGE=python
 
     # Backup of the current state of the SDK services dir (services/)
@@ -68,15 +68,15 @@ generate_python_sdk() {
         exit 1
     fi
     cleanup() {
-        rm -rf ${sdk_services_backup_dir}
+        rm -rf "${sdk_services_backup_dir}"
     }
-    cp -a "${SERVICES_FOLDER}/." ${sdk_services_backup_dir}
+    cp -a "${SERVICES_FOLDER}/." "${sdk_services_backup_dir}"
 
     # Cleanup after we are done
     trap cleanup EXIT
 
     # Remove old contents of services dir (services/)
-    rm -rf ${SERVICES_FOLDER}
+    rm -rf "${SERVICES_FOLDER}"
 
     warning=""
 
@@ -99,24 +99,24 @@ generate_python_sdk() {
         fi
 
         echo ">> Generating \"${service}\" service..."
-        cd ${ROOT_DIR}
+        cd "${ROOT_DIR}"
 
         mkdir -p "${SERVICES_FOLDER}/${service}/"
         cp "${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore-python" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
 
         # Run the generator
-        java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${jar_path} generate \
+        java -Dlog.level="${GENERATOR_LOG_LEVEL}" -jar "${jar_path}" generate \
             --generator-name python \
             --input-spec "${service_json}" \
             --output "${SERVICES_FOLDER}/${service}" \
             --package-name "stackit.${service}" \
             --template-dir "${ROOT_DIR}/templates/python/" \
-            --git-host ${GIT_HOST} \
-            --git-user-id ${GIT_USER_ID} \
-            --git-repo-id ${GIT_REPO_ID} \
+            --git-host "${GIT_HOST}" \
+            --git-user-id "${GIT_USER_ID}" \
+            --git-repo-id "${GIT_REPO_ID}" \
             --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=false,supportingFiles \
             --additional-properties=pythonPackageName="stackit-${service},removeEnumValuePrefix=false" >/dev/null \
-	    --http-user-agent stackit-sdk-python/${service}
+            --http-user-agent "stackit-sdk-python/${service}"
 
         # Remove unnecessary files
         rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
@@ -129,48 +129,48 @@ generate_python_sdk() {
         mv "${SERVICES_FOLDER}/${service}/stackit/" "${SERVICES_FOLDER}/${service}/src/"
 
         # If the service has a wait package files, move them inside the service folder
-        if [ -d ${sdk_services_backup_dir}/${service}/src/wait ]; then
+        if [ -d "${sdk_services_backup_dir}/${service}/src/wait" ]; then
             echo "Found ${service} \"wait\" package"
-            cp -r ${sdk_services_backup_dir}/${service}/src/wait ${SERVICES_FOLDER}/${service}/src/wait
+            cp -r "${sdk_services_backup_dir}/${service}/src/wait" "${SERVICES_FOLDER}/${service}/src/wait"
         fi
 
         # If the service has a README.md file, move them inside the service folder
-        if [ -f ${sdk_services_backup_dir}/${service}/README.md ]; then
+        if [ -f "${sdk_services_backup_dir}/${service}/README.md" ]; then
             echo "Found ${service} \"README.md\" file"
-            cp -r ${sdk_services_backup_dir}/${service}/README.md ${SERVICES_FOLDER}/${service}/README.md
+            cp -r "${sdk_services_backup_dir}/${service}/README.md" "${SERVICES_FOLDER}/${service}/README.md"
         fi
 
         # If the service has a pyproject.toml file, move them inside the service folder
-        if [ -f ${sdk_services_backup_dir}/${service}/pyproject.toml ]; then
+        if [ -f "${sdk_services_backup_dir}/${service}/pyproject.toml" ]; then
             echo "Found ${service} \"pyproject.toml\" file"
-            cp -r ${sdk_services_backup_dir}/${service}/pyproject.toml ${SERVICES_FOLDER}/${service}/pyproject.toml
+            cp -r "${sdk_services_backup_dir}/${service}/pyproject.toml" "${SERVICES_FOLDER}/${service}/pyproject.toml"
         fi
 
         # If the service has a poetry.lock file, move them inside the service folder
-        if [ -f ${sdk_services_backup_dir}/${service}/poetry.lock ]; then
+        if [ -f "${sdk_services_backup_dir}/${service}/poetry.lock" ]; then
             echo "Found ${service} \"poetry.lock\" file"
-            cp -r ${sdk_services_backup_dir}/${service}/poetry.lock ${SERVICES_FOLDER}/${service}/poetry.lock
+            cp -r "${sdk_services_backup_dir}/${service}/poetry.lock" "${SERVICES_FOLDER}/${service}/poetry.lock"
         fi
 
         # If the service has a CHANGELOG file, move it inside the service folder
-        if [ -f ${sdk_services_backup_dir}/${service}/CHANGELOG.md ]; then
+        if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then
             echo "Found ${service} \"CHANGELOG\" file"
-            cp -r ${sdk_services_backup_dir}/${service}/CHANGELOG.md ${SERVICES_FOLDER}/${service}/CHANGELOG.md
+            cp -r "${sdk_services_backup_dir}/${service}/CHANGELOG.md" "${SERVICES_FOLDER}/${service}/CHANGELOG.md"
         fi
 
         # If the service has a LICENSE file, move it inside the service folder
-        if [ -f ${sdk_services_backup_dir}/${service}/LICENSE.md ]; then
+        if [ -f "${sdk_services_backup_dir}/${service}/LICENSE.md" ]; then
             echo "Found ${service} \"LICENSE\" file"
-            cp -r ${sdk_services_backup_dir}/${service}/LICENSE.md ${SERVICES_FOLDER}/${service}/LICENSE.md
+            cp -r "${sdk_services_backup_dir}/${service}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
         fi
 
         # If the service has a NOTICE file, move it inside the service folder
-        if [ -f ${sdk_services_backup_dir}/${service}/NOTICE.txt ]; then
+        if [ -f "${sdk_services_backup_dir}/${service}/NOTICE.txt" ]; then
             echo "Found ${service} \"NOTICE\" file"
-            cp -r ${sdk_services_backup_dir}/${service}/NOTICE.txt ${SERVICES_FOLDER}/${service}/NOTICE.txt
+            cp -r "${sdk_services_backup_dir}/${service}/NOTICE.txt" "${SERVICES_FOLDER}/${service}/NOTICE.txt"
         fi
 
-        cd ${SERVICES_FOLDER}/${service}
+        cd "${SERVICES_FOLDER}/${service}"
         # Run formatter
         isort .
         autoimport --ignore-init-modules .
