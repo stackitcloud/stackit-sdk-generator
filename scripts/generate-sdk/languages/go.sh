@@ -68,15 +68,15 @@ generate_go_sdk() {
     fi
 
     # Clone SDK repo
-    if [ -d ${SDK_REPO_LOCAL_PATH} ]; then
+    if [ -d "${SDK_REPO_LOCAL_PATH}" ]; then
         echo "Old SDK repo clone was found, it will be removed."
-        rm -rf ${SDK_REPO_LOCAL_PATH}
+        rm -rf "${SDK_REPO_LOCAL_PATH}"
     fi
-    git clone --quiet ${SDK_REPO_URL} ${SDK_REPO_LOCAL_PATH}
+    git clone --quiet "${SDK_REPO_URL}" "${SDK_REPO_LOCAL_PATH}"
 
     # Install SDK project tools
-    cd ${SDK_REPO_LOCAL_PATH}
-    git checkout ${SDK_BRANCH}
+    cd "${SDK_REPO_LOCAL_PATH}"
+    git checkout "${SDK_BRANCH}"
     make project-tools
 
     # Backup of the current state of the SDK services dir (services/)
@@ -86,23 +86,23 @@ generate_go_sdk() {
         exit 1
     fi
     cleanup() {
-        rm -rf ${sdk_services_backup_dir}
+        rm -rf "${sdk_services_backup_dir}"
     }
-    cp -a "${SERVICES_FOLDER}/." ${sdk_services_backup_dir}
+    cp -a "${SERVICES_FOLDER}/." "${sdk_services_backup_dir}"
 
     # Cleanup after we are done
     trap cleanup EXIT
 
     # Remove old contents of services dir (services/)
-    rm -rf ${SERVICES_FOLDER}
-    rm ${SDK_REPO_LOCAL_PATH}/go.work
+    rm -rf "${SERVICES_FOLDER}"
+    rm "${SDK_REPO_LOCAL_PATH}/go.work"
     if [ -f "${SDK_REPO_LOCAL_PATH}/go.work.sum" ]; then
-        rm ${SDK_REPO_LOCAL_PATH}/go.work.sum
+        rm "${SDK_REPO_LOCAL_PATH}/go.work.sum"
     fi
 
     echo "go ${SDK_GO_VERSION}" >${SDK_REPO_LOCAL_PATH}/go.work
     if [ -d ${SDK_REPO_LOCAL_PATH}/core ]; then
-        cd ${SDK_REPO_LOCAL_PATH}/core
+        cd "${SDK_REPO_LOCAL_PATH}/core"
         go work use .
     fi
 
@@ -132,18 +132,18 @@ generate_go_sdk() {
             exit 1
         fi
 
-        if grep -E "^$service$" ${ROOT_DIR}/blacklist.txt; then
+        if grep -E "^$service$" "${ROOT_DIR}/languages/golang/blacklist.txt"; then
             echo "Skipping blacklisted service ${service}"
             warning+="Skipping blacklisted service ${service}\n"
             continue
         fi
 
         echo -e "\n>> Generating \"${service}\" service..."
-        cd ${ROOT_DIR}
+        cd "${ROOT_DIR}"
 
         GO_POST_PROCESS_FILE="gofmt -w" \
-            mkdir -p ${SERVICES_FOLDER}/${service}/
-        cp ${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore-go ${SERVICES_FOLDER}/${service}/.openapi-generator-ignore
+            mkdir -p "${SERVICES_FOLDER}/${service}/"
+        cp "${ROOT_DIR}/languages/golang/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
         regional_api=
         if grep -E "^$service$" ${ROOT_DIR}/regional-whitelist.txt; then
             echo "Generating new regional api"
@@ -153,22 +153,22 @@ generate_go_sdk() {
         # Run the generator for Go
         java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${jar_path} generate \
             --generator-name go \
-            --input-spec ${service_json} \
-            --output ${SERVICES_FOLDER}/${service} \
-            --package-name ${service} \
+            --input-spec "${service_json}" \
+            --output "${SERVICES_FOLDER}/${service}" \
+            --package-name "${service}" \
             --enable-post-process-file \
-            --git-host ${GIT_HOST} \
-            --git-user-id ${GIT_USER_ID} \
-            --git-repo-id ${GIT_REPO_ID} \
+            --git-host "${GIT_HOST}" \
+            --git-user-id "${GIT_USER_ID}" \
+            --git-repo-id "${GIT_REPO_ID}" \
             --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles \
             --additional-properties=isGoSubmodule=true,enumClassPrefix=true,generateInterfaces=true,$regional_api \
-	        --http-user-agent stackit-sdk-go/${service} \
+            --http-user-agent "stackit-sdk-go/${service}" \
             --reserved-words-mappings type=types \
-            --config openapi-generator-config-go.yml
+            --config "${ROOT_DIR}/languages/golang/openapi-generator-config.yml"
             
         # Remove unnecessary files
-        rm ${SERVICES_FOLDER}/${service}/.openapi-generator-ignore
-        rm ${SERVICES_FOLDER}/${service}/.openapi-generator/FILES
+        rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
+        rm "${SERVICES_FOLDER}/${service}/.openapi-generator/FILES"
 
         # If there's a comment at the start of go.mod, copy it
         go_mod_backup_path="${sdk_services_backup_dir}/${service}/go.mod"
@@ -183,40 +183,40 @@ generate_go_sdk() {
         fi
 
         # Move tests to the service folder
-        cp ${SERVICES_FOLDER}/${service}/test/* ${SERVICES_FOLDER}/${service}
-        rm -r ${SERVICES_FOLDER}/${service}/test/
+        cp "${SERVICES_FOLDER}"/"${service}"/test/* "${SERVICES_FOLDER}/${service}"
+        rm -r "${SERVICES_FOLDER}/${service}/test/"
 
         # If the service has a wait package files, move them inside the service folder
-        if [ -d ${sdk_services_backup_dir}/${service}/wait ]; then
+        if [ -d "${sdk_services_backup_dir}/${service}/wait" ]; then
             echo "Found ${service} \"wait\" package"
-            cp -r ${sdk_services_backup_dir}/${service}/wait ${SERVICES_FOLDER}/${service}/wait
+            cp -r "${sdk_services_backup_dir}/${service}/wait" "${SERVICES_FOLDER}/${service}/wait"
         fi
 
         # If the service has a CHANGELOG file, move it inside the service folder
-        if [ -f ${sdk_services_backup_dir}/${service}/CHANGELOG.md ]; then
+        if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then
             echo "Found ${service} \"CHANGELOG\" file"
-            cp -r ${sdk_services_backup_dir}/${service}/CHANGELOG.md ${SERVICES_FOLDER}/${service}/CHANGELOG.md
+            cp -r "${sdk_services_backup_dir}/${service}/CHANGELOG.md" "${SERVICES_FOLDER}/${service}/CHANGELOG.md"
         fi
 
         # If the service has a LICENSE file, move it inside the service folder
-        if [ -f ${sdk_services_backup_dir}/${service}/LICENSE.md ]; then
+        if [ -f "${sdk_services_backup_dir}/${service}/LICENSE.md" ]; then
             echo "Found ${service} \"LICENSE\" file"
-            cp -r ${sdk_services_backup_dir}/${service}/LICENSE.md ${SERVICES_FOLDER}/${service}/LICENSE.md
+            cp -r "${sdk_services_backup_dir}/${service}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
         fi
 
         # If the service has a NOTICE file, move it inside the service folder
-        if [ -f ${sdk_services_backup_dir}/${service}/NOTICE.txt ]; then
+        if [ -f "${sdk_services_backup_dir}/${service}/NOTICE.txt" ]; then
             echo "Found ${service} \"NOTICE\" file"
-            cp -r ${sdk_services_backup_dir}/${service}/NOTICE.txt ${SERVICES_FOLDER}/${service}/NOTICE.txt
+            cp -r "${sdk_services_backup_dir}/${service}/NOTICE.txt" "${SERVICES_FOLDER}/${service}/NOTICE.txt"
         fi
 
         # If the service has a VERSION file, move it inside the service folder
-        if [ -f ${sdk_services_backup_dir}/${service}/VERSION ]; then
+        if [ -f "${sdk_services_backup_dir}/${service}/VERSION" ]; then
             echo "Found ${service} \"VERSION\" file"
-            cp -r ${sdk_services_backup_dir}/${service}/VERSION ${SERVICES_FOLDER}/${service}/VERSION
+            cp -r "${sdk_services_backup_dir}/${service}/VERSION" "${SERVICES_FOLDER}/${service}/VERSION"
         fi
 
-        cd ${SERVICES_FOLDER}/${service}
+        cd "${SERVICES_FOLDER}/${service}"
         go work use .
         # Make sure that dependencies are uptodate
         go get -u ./...
@@ -224,22 +224,22 @@ generate_go_sdk() {
     done
 
     # Add examples to workspace
-    if [ -d ${EXAMPLES_FOLDER} ]; then
+    if [ -d "${EXAMPLES_FOLDER}" ]; then
         for example_dir in ${EXAMPLES_FOLDER}/*; do
-            cd ${example_dir}
+            cd "${example_dir}"
             go work use .
         done
     fi
 
     # Add scripts to workspace
-    if [ -d ${SCRIPTS_FOLDER} ]; then
-        cd ${SCRIPTS_FOLDER}
+    if [ -d "${SCRIPTS_FOLDER}" ]; then
+        cd "${SCRIPTS_FOLDER}"
         go work use .
     fi
 
     # Cleanup after SDK generation
-    cd ${SDK_REPO_LOCAL_PATH}
-    goimports -w ${SERVICES_FOLDER}/
+    cd "${SDK_REPO_LOCAL_PATH}"
+    goimports -w "${SERVICES_FOLDER}/"
     make sync-tidy
 
     if [[ -n "$warning" ]]; then
