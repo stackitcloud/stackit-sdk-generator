@@ -100,7 +100,7 @@ generate_java_sdk() {
             continue
         fi
 
-        if grep -E "^$service$" "${ROOT_DIR}/blacklist.txt"; then
+        if grep -E "^$service$" "${ROOT_DIR}/languages/java/blacklist.txt"; then
             echo "Skipping blacklisted service ${service}"
             warning+="Skipping blacklisted service ${service}\n"
             continue
@@ -110,7 +110,7 @@ generate_java_sdk() {
         cd "${ROOT_DIR}"
 
         mkdir -p "${SERVICES_FOLDER}/${service}/"
-        cp "${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore-java" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
+        cp "${ROOT_DIR}/languages/java/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
 
         SERVICE_DESCRIPTION=$(cat "${service_json}" | jq .info.title --raw-output)
 
@@ -124,8 +124,8 @@ generate_java_sdk() {
             --git-repo-id "${GIT_REPO_ID}" \
             --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=true,supportingFiles \
             --additional-properties="artifactId=${service},artifactDescription=${SERVICE_DESCRIPTION},invokerPackage=cloud.stackit.sdk.${service},modelPackage=cloud.stackit.sdk.${service}.model,apiPackage=cloud.stackit.sdk.${service}.api,serviceName=${service_pascal_case}"  >/dev/null \
-  	        --http-user-agent stackit-sdk-java/"${service}" \
-            --config openapi-generator-config-java.yml
+            --http-user-agent stackit-sdk-java/"${service}" \
+            --config "${ROOT_DIR}/languages/java/openapi-generator-config.yml"
 
         # Rename DefaultApiServiceApi.java to {serviceName}Api.java
         # This approach is a workaround because the file name cannot be set dynamically via --additional-properties or the config file in OpenAPI Generator. 

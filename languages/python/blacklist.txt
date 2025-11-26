@@ -1,0 +1,12 @@
+# Transitional file to disable generation for selected services
+featuretoggle
+workflows
+openstack
+notebooks
+cost
+functionsregistry
+functions
+pim
+smokeapi
+stackitmarketplace
+support

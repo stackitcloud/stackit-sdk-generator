@@ -92,7 +92,7 @@ generate_python_sdk() {
         service=$(echo "${service}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
         service=$(echo "${service}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
 
-        if grep -E "^$service$" ${ROOT_DIR}/blacklist.txt; then
+        if grep -E "^$service$" "${ROOT_DIR}/languages/python/blacklist.txt"; then
             echo "Skipping blacklisted service ${service}"
             warning+="Skipping blacklisted service ${service}\n"
             continue
@@ -102,7 +102,7 @@ generate_python_sdk() {
         cd "${ROOT_DIR}"
 
         mkdir -p "${SERVICES_FOLDER}/${service}/"
-        cp "${ROOT_DIR}/scripts/generate-sdk/.openapi-generator-ignore-python" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
+        cp "${ROOT_DIR}/languages/python/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
 
         # Run the generator
         java -Dlog.level="${GENERATOR_LOG_LEVEL}" -jar "${jar_path}" generate \
@@ -110,7 +110,7 @@ generate_python_sdk() {
             --input-spec "${service_json}" \
             --output "${SERVICES_FOLDER}/${service}" \
             --package-name "stackit.${service}" \
-            --template-dir "${ROOT_DIR}/templates/python/" \
+            --template-dir "${ROOT_DIR}/languages/python/templates/" \
             --git-host "${GIT_HOST}" \
             --git-user-id "${GIT_USER_ID}" \
             --git-repo-id "${GIT_REPO_ID}" \
