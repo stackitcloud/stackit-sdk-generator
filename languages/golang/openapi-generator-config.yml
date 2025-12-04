@@ -1,5 +1,5 @@
 useOneOfDiscriminatorLookup: true
-templateDir: templates/go
+templateDir: languages/golang/templates
 files:
   custom/model_test.mustache:
     # TODO: this should be 'ModelTests' instead of 'Model'
