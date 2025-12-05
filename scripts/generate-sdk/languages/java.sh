@@ -73,6 +73,7 @@ generate_java_sdk() {
 
     # Remove old contents of services dir (services/)
     rm -rf "${SERVICES_FOLDER}"
+    mkdir -p "${SERVICES_FOLDER}"
 
     warning=""
 
@@ -103,6 +104,7 @@ generate_java_sdk() {
         if grep -E "^$service$" "${ROOT_DIR}/languages/java/blacklist.txt"; then
             echo "Skipping blacklisted service ${service}"
             warning+="Skipping blacklisted service ${service}\n"
+            cp -r "${sdk_services_backup_dir}/${service}" "${SERVICES_FOLDER}"
             continue
         fi
 
