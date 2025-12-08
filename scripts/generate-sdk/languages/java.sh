@@ -10,7 +10,7 @@ SERVICES_FOLDER="${SDK_REPO_LOCAL_PATH}/services"
 
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 
-INCLUDE_SERVICES=("resourcemanager" "iaas" "objectstorage" "serverbackup")
+INCLUDE_SERVICES=("resourcemanager" "iaas" "objectstorage" "serverbackup" "loadbalancer")
 
 generate_java_sdk() {
     # Required parameters
