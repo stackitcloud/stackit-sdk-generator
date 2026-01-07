@@ -1,7 +1,6 @@
 git_push.sh
 .travis.yml
 .gitignore
-#utils.go
 README.md
 response.go
 api/openapi.yaml

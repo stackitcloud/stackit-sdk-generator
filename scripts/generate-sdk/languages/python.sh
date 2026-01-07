@@ -80,6 +80,9 @@ generate_python_sdk() {
 
     warning=""
 
+    # TODO: add to generator below when adding multi-API-version support:
+    # --inline-schema-options "SKIP_SCHEMA_REUSE=true"
+
     # Generate SDK for each service
     for service_json in ${ROOT_DIR}/oas/legacy/*.json; do
         service="${service_json##*/}"

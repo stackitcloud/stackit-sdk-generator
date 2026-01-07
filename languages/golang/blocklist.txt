@@ -10,3 +10,6 @@ pim
 smokeapi
 stackitmarketplace
 support
+# CDN beta API versions currently have enums incorrectly defined in the OpenAPI spec
+cdn-v1beta
+cdn-v1beta2

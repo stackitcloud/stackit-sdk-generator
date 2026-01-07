@@ -55,7 +55,7 @@ fi
 case "${LANGUAGE}" in
 go)
 # When the GENERATOR_VERSION changes, migrate also the templates in templates/go
-    GENERATOR_VERSION="v6.6.0" # There are issues with GO SDK generation in version v7
+    GENERATOR_VERSION="v7.20.0" 
     ;;
 python)
 # When the GENERATOR_VERSION changes, migrate also the templates in templates/python

@@ -1,4 +1,5 @@
 {{>partial_header}}
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 package {{packageName}}
 
 {{#operations}}
@@ -16,6 +17,7 @@ import (
 
 {{#generateInterfaces}}
 
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 type {{classname}} interface {
 	{{#operation}}
 	/*
@@ -36,24 +38,21 @@ type {{classname}} interface {
 @param {{paramName}}{{#description}} {{{.}}}{{/description}}{{/pathParams}}
 @return {{{.}}}{{/returnType}}
 
-{{#isDeprecated}}
-Deprecated: {{{unescapedNotes}}}
-{{/isDeprecated}}
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 	*/
 	{{nickname}}Execute(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}} error)
 	{{/operation}}
 }
 
 {{#operation}}
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request interface {
 {{#allParams}}
 {{^isPathParam}}
 {{#description}}
 // {{.}}
 {{/description}}
-{{#isDeprecated}}
-// Deprecated
-{{/isDeprecated}}
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 {{vendorExtensions.x-export-param-name}}({{paramName}} {{{dataType}}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
 {{/isPathParam}}
 {{/allParams}}
@@ -64,9 +63,11 @@ type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/stru
 {{/generateInterfaces}}
 
 // {{classname}}Service {{classname}} service
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 type {{classname}}Service service
 {{#operation}}
 
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request struct {
 	ctx context.Context
 	apiService *{{classname}}Service
@@ -80,10 +81,7 @@ type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request stru
 {{#description}}
 // {{.}}
 {{/description}}
-{{#isDeprecated}}
-// Deprecated
-{{/isDeprecated}}
-
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request) {{vendorExtensions.x-export-param-name}}({{paramName}} {{{dataType}}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request {
     r.{{paramName}} = {{^isFile}}&{{/isFile}}{{paramName}}
 	return r
@@ -92,6 +90,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request) 
 {{/isPathParam}}
 {{/allParams}}
 
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request) Execute() ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}} error) {
     var (
     localVarHTTPMethod   = http.Method{{httpMethod}}
@@ -412,8 +411,8 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request) 
 {{operationId}}: {{{summary}}}{{^summary}}Method for {{operationId}}{{/summary}}
 {{#notes}}
 
-{{#isDeprecated}}Deprecated: {{/isDeprecated}}{{{unescapedNotes}}}
 {{/notes}}
+Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 
  @param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().{{#pathParams}}
  @param {{paramName}}{{#description}} {{{.}}}{{/description}}{{/pathParams}}
@@ -429,11 +428,7 @@ func (a *APIClient) {{{nickname}}}(ctx context.Context{{#pathParams}}, {{paramNa
 	}
 }
 
-{{#isDeprecated}}
-/*
-Deprecated: {{{unescapedNotes}}}
-*/
-{{/isDeprecated}}
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 func (a *APIClient) {{{nickname}}}Execute(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}} error){
 	r := {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request{
 		apiService: a.defaultApi,
