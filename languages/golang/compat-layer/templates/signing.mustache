@@ -1,4 +1,5 @@
 {{>partial_header}}
+// Deprecated: Move to the packages generated for each available API version instead
 package {{packageName}}
 
 import (
@@ -25,24 +26,31 @@ const (
 	// Constants for HTTP signature parameters.
 	// The '(request-target)' parameter concatenates the lowercased :method, an
 	// ASCII space, and the :path pseudo-headers.
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpSignatureParameterRequestTarget string = "(request-target)"
 	// The '(created)' parameter expresses when the signature was
 	// created.  The value MUST be a Unix timestamp integer value.
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpSignatureParameterCreated string = "(created)"
 	// The '(expires)' parameter expresses when the signature ceases to
 	// be valid.  The value MUST be a Unix timestamp integer value.
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpSignatureParameterExpires string = "(expires)"
 )
 
 const (
 	// Constants for HTTP headers.
 	// The 'Host' header, as defined in RFC 2616, section 14.23.
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpHeaderHost string = "Host"
 	// The 'Date' header.
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpHeaderDate string = "Date"
 	// The digest header, as defined in RFC 3230, section 4.3.2.
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpHeaderDigest string = "Digest"
 	// The HTTP Authorization header, as defined in RFC 7235, section 4.2.
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpHeaderAuthorization string = "Authorization"
 )
 
@@ -52,25 +60,32 @@ const (
 	// RSASSA-PSS, and ECDSA.
 	// The hash is SHA-512.
 	// This is the default value.
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpSigningSchemeHs2019 string = "hs2019"
 	// Use RSASSA-PKCS1-v1_5 with SHA-512 hash. Deprecated.
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpSigningSchemeRsaSha512 string = "rsa-sha512"
 	// Use RSASSA-PKCS1-v1_5 with SHA-256 hash. Deprecated.
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpSigningSchemeRsaSha256 string = "rsa-sha256"
 
 	// RFC 8017 section 7.2
 	// Calculate the message signature using RSASSA-PKCS1-V1_5-SIGN from RSA PKCS#1 v1.5.
 	// PKCSV1_5 is deterministic. The same message and key will produce an identical
 	// signature value each time.
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpSigningAlgorithmRsaPKCS1v15 string = "RSASSA-PKCS1-v1_5"
 	// Calculate the message signature using probabilistic signature scheme RSASSA-PSS.
 	// PSS is randomized and will produce a different signature value each time.
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpSigningAlgorithmRsaPSS string = "RSASSA-PSS"
 
 	// HashAlgorithm Sha256 for generating hash
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpHashAlgorithmSha256 string = "sha256"
 
 	// HashAlgorithm Sha512 for generating hash
+	// Deprecated: Move to the packages generated for each available API version instead
 	HttpHashAlgorithmSha512 string = "sha512"
 )
 
@@ -104,6 +119,7 @@ var supportedSigningSchemes = map[string]bool{
 // 1. Calculate a digest of request body, as specified in RFC3230, section 4.3.2.
 // 2. Set the 'Digest' header in the request body.
 // 3. Include the 'Digest' header and value in the HTTP signature.
+// Deprecated: Move to the packages generated for each available API version instead
 type HttpSignatureAuth struct {
 	KeyId             string            // A key identifier.
 	PrivateKeyPath    string            // The path to the private key.
@@ -123,6 +139,7 @@ type HttpSignatureAuth struct {
 }
 
 // SetPrivateKey accepts a private key string and sets it.
+// Deprecated: Move to the packages generated for each available API version instead
 func (h *HttpSignatureAuth) SetPrivateKey(privateKey string) error {
 	return h.parsePrivateKey([]byte(privateKey))
 }
@@ -130,6 +147,7 @@ func (h *HttpSignatureAuth) SetPrivateKey(privateKey string) error {
 // ContextWithValue validates the HttpSignatureAuth configuration parameters and returns a context
 // suitable for HTTP signature. An error is returned if the HttpSignatureAuth configuration parameters
 // are invalid.
+// Deprecated: Move to the packages generated for each available API version instead
 func (h *HttpSignatureAuth) ContextWithValue(ctx context.Context) (context.Context, error) {
 	if h.KeyId == "" {
 		return nil, fmt.Errorf("key ID must be specified")
@@ -160,6 +178,7 @@ func (h *HttpSignatureAuth) ContextWithValue(ctx context.Context) (context.Conte
 }
 
 // GetPublicKey returns the public key associated with this HTTP signature configuration.
+// Deprecated: Move to the packages generated for each available API version instead
 func (h *HttpSignatureAuth) GetPublicKey() (crypto.PublicKey, error) {
 	if h.privateKey == nil {
 		if err := h.loadPrivateKey(); err != nil {
@@ -180,6 +199,7 @@ func (h *HttpSignatureAuth) GetPublicKey() (crypto.PublicKey, error) {
 
 // loadPrivateKey reads the private key from the file specified in the HttpSignatureAuth.
 // The key is loaded only when privateKey is not already set.
+// Deprecated: Move to the packages generated for each available API version instead
 func (h *HttpSignatureAuth) loadPrivateKey() (err error) {
 	if h.privateKey != nil {
 		return nil
@@ -201,6 +221,7 @@ func (h *HttpSignatureAuth) loadPrivateKey() (err error) {
 }
 
 // parsePrivateKey decodes privateKey byte array to crypto.PrivateKey type.
+// Deprecated: Move to the packages generated for each available API version instead
 func (h *HttpSignatureAuth) parsePrivateKey(priv []byte) error {
 	pemBlock, _ := pem.Decode(priv)
 	if pemBlock == nil {
@@ -248,6 +269,7 @@ func (h *HttpSignatureAuth) parsePrivateKey(priv []byte) error {
 // concatenated, separated by a ASCII comma and an ASCII space
 // ', ', and used in the order in which they will appear in the
 // transmitted HTTP message.
+// Deprecated: Move to the packages generated for each available API version instead
 func SignRequest(
 	ctx context.Context,
 	r *http.Request,

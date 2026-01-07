@@ -1,4 +1,5 @@
 // {{classname}} - {{{description}}}{{^description}}struct for {{{classname}}}{{/description}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}} struct {
 	{{#oneOf}}
 	{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}} *{{{.}}}
@@ -7,6 +8,7 @@ type {{classname}} struct {
 
 {{#oneOf}}
 // {{{.}}}As{{classname}} is a convenience function that returns {{{.}}} wrapped in {{classname}}
+// Deprecated: Move to the packages generated for each available API version instead
 func {{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}}As{{classname}}(v *{{{.}}}) {{classname}} {
 	return {{classname}}{
 		{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}}: v,
@@ -16,6 +18,7 @@ func {{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}}As{{classname}}(v *{
 {{/oneOf}}
 
 // Unmarshal JSON data into one of the pointers in the struct
+// Deprecated: Move to the packages generated for each available API version instead
 func (dst *{{classname}}) UnmarshalJSON(data []byte) error {
 	var err error
 	{{#isNullable}}
@@ -129,6 +132,7 @@ func (dst *{{classname}}) UnmarshalJSON(data []byte) error {
 }
 
 // Marshal data from the first non-nil pointers in the struct to JSON
+// Deprecated: Move to the packages generated for each available API version instead
 func (src {{classname}}) MarshalJSON() ([]byte, error) {
 {{#oneOf}}
 	if src.{{#lambda.type-to-name}}{{{.}}}{{/lambda.type-to-name}} != nil {
@@ -140,6 +144,7 @@ func (src {{classname}}) MarshalJSON() ([]byte, error) {
 }
 
 // Get the actual instance
+// Deprecated: Move to the packages generated for each available API version instead
 func (obj *{{classname}}) GetActualInstance() (interface{}) {
 	if obj == nil {
 		return nil

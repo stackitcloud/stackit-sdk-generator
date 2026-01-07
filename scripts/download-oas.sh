@@ -23,6 +23,16 @@ if [[ -z ${OAS_API_VERSIONS} ]]; then
 	OAS_API_VERSIONS="${ROOT_DIR}/api-versions-lock.json"
 fi
 
+if [ -d "${ROOT_DIR}/oas" ]; then
+	echo "OAS folder found. Will be removed"
+	rm -rf "${ROOT_DIR}/oas"
+fi
+
+git clone "${OAS_REPO}" "${ROOT_DIR}/oas" --quiet
+
+# NOTE: Everything below is needed for the "compatibility layer" logic. 
+# It can be completely removed once the compatibility layer isn't needed anymore in the SDK.
+
 # Create temp directory to clone OAS repo
 work_dir=$(mktemp -d)
 if [[ ! ${work_dir} || -d {work_dir} ]]; then
@@ -31,13 +41,8 @@ if [[ ! ${work_dir} || -d {work_dir} ]]; then
 fi
 trap "rm -rf ${work_dir}" EXIT # Delete temp directory on exit
 
-if [ -d "${ROOT_DIR}/oas" ]; then
-	echo "OAS folder found. Will be removed"
-	rm -r "${ROOT_DIR}/oas"
-fi
-
 # Move oas to root level
-mkdir "${ROOT_DIR}/oas"
+mkdir "${ROOT_DIR}/oas/legacy"
 cd "${work_dir}"
 git clone "${OAS_REPO}" --quiet
 
@@ -67,11 +72,6 @@ EOF
 	service_normalized=$(echo "${service_normalized}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
 	service_normalized=$(echo "${service_normalized}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
 	echo "$service_normalized=$(git rev-parse HEAD)" >> oas_commits
-	# To support initial integrations of the IaaS API in an Alpha state, we will temporarily use it to generate an IaaS Alpha SDK module
-	# This check can be removed once the IaaS API moves all endpoints to Beta
-	if [[ ${service_normalized} == "iaas" ]]; then
-		echo "iaasalpha=$(git rev-parse HEAD)" >> oas_commits
-	fi
 
 	cd - >/dev/null
 
@@ -88,12 +88,6 @@ EOF
 			version=${version#v}
 			# Check if version is alpha
 			if [[ ${version} == *alpha* ]]; then
-				# To support initial integrations of the IaaS API in an Alpha state, we will temporarily use it to generate an IaaS Alpha SDK module
-				# This check can be removed once the IaaS API moves all endpoints to Beta
-				if [[ ${service} == "iaas" ]]; then
-					mv -f ${dir}/*.json ${ROOT_DIR}/oas/iaasalpha.json
-					continue
-				fi
 				if [[ ${ALLOW_ALPHA} != "true" ]]; then
 					continue
 				fi
@@ -135,6 +129,6 @@ EOF
 		echo "No elegible OAS found for ${service_dir}"
 		continue
 	fi
-	mv -f ${max_version_dir}/*.json ${ROOT_DIR}/oas
+	mv -f ${max_version_dir}/*.json ${ROOT_DIR}/oas/legacy
 done
-mv -f ${work_dir}/${OAS_REPO_NAME}/oas_commits ${ROOT_DIR}/oas/oas_commits
+mv -f ${work_dir}/${OAS_REPO_NAME}/oas_commits ${ROOT_DIR}/oas/legacy/oas_commits

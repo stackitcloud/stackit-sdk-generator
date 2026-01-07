@@ -1,15 +1,4 @@
+README.md
 git_push.sh
 .travis.yml
 .gitignore
-#utils.go
-README.md
-response.go
-api/openapi.yaml
-.openapi-generator/*
-.gitlab-ci.yml
-setup.cfg
-setup.py
-test-requirements.txt
-requirements.txt
-tox.ini
-*/.github/*

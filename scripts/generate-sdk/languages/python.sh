@@ -81,7 +81,7 @@ generate_python_sdk() {
     warning=""
 
     # Generate SDK for each service
-    for service_json in ${ROOT_DIR}/oas/*.json; do
+    for service_json in ${ROOT_DIR}/oas/legacy/*.json; do
         service="${service_json##*/}"
         service="${service%.json}"
 

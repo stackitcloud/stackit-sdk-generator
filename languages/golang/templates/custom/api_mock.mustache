@@ -1,0 +1,47 @@
+{{>partial_header}}
+package {{packageName}}
+
+{{#operations}}
+import (
+	"context"
+	"net/http"
+)
+
+// assert the implementation matches the interface
+var _ {{classname}} = &{{classname}}ServiceMock{}
+
+// {{classname}}ServiceMock is meant to be used for testing only as a replacement for {{classname}}Service. 
+// By default all FooExecute() implementations are a no-op. Behavior of the mock can be customized by populating the callbacks in this struct.
+type {{classname}}ServiceMock struct {
+	{{#operation}}
+	// {{#isDeprecated}}Deprecated: {{/isDeprecated}}{{nickname}}ExecuteMock can be populated to implement the behavior of the {{nickname}}Execute function of this mock
+	{{nickname}}ExecuteMock *func(r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request) ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}}*http.Response, error)
+	{{/operation}}
+}
+	
+{{#operation}}
+{{#isDeprecated}}
+// Deprecated
+{{/isDeprecated}}
+func (a {{{classname}}}ServiceMock) {{{nickname}}}(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request {
+	return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request{
+		ApiService: a,
+		ctx: ctx,
+		{{#pathParams}}
+		{{paramName}}: {{paramName}},
+		{{/pathParams}}
+	}
+}
+
+// {{#isDeprecated}}Deprecated: {{/isDeprecated}}{{nickname}}Execute is a no-op by default and will return only return nil values. Behavior can be controlled by populating the {{nickname}}ExecuteMock field in the {{classname}}ServiceMock struct.
+func (a {{{classname}}}ServiceMock) {{nickname}}Execute(r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request) ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}}*http.Response, error) {
+	if a.{{nickname}}ExecuteMock == nil {
+		return {{#returnType}}nil, {{/returnType}}&http.Response{}, nil
+	}
+
+	return (*a.{{nickname}}ExecuteMock)(r)
+}
+
+{{/operation}}
+
+{{/operations}}

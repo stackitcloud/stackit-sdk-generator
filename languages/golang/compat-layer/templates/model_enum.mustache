@@ -1,4 +1,5 @@
 // {{{classname}}} {{{description}}}{{^description}}the model '{{{classname}}}'{{/description}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{{classname}}} {{dataType}}
 
 // List of {{{name}}}
@@ -7,12 +8,14 @@ const (
 	{{#enumVars}}
 	{{^-first}}
 	{{/-first}}
+	// Deprecated: Move to the packages generated for each available API version instead
 	{{{classname.toUpperCase}}}_{{name}} {{{classname}}} = {{{value}}}
 	{{/enumVars}}
 	{{/allowableValues}}
 )
 
 // All allowed values of {{{classname}}} enum
+// Deprecated: Move to the packages generated for each available API version instead
 var Allowed{{{classname}}}EnumValues = []{{{classname}}}{
 	{{#allowableValues}}
 	{{#enumVars}}
@@ -21,6 +24,7 @@ var Allowed{{{classname}}}EnumValues = []{{{classname}}}{
 	{{/allowableValues}}
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v *{{{classname}}}) UnmarshalJSON(src []byte) error {
 	var value {{dataType}}
 	err := json.Unmarshal(src, &value)
@@ -45,6 +49,7 @@ func (v *{{{classname}}}) UnmarshalJSON(src []byte) error {
 
 // New{{{classname}}}FromValue returns a pointer to a valid {{{classname}}}
 // for the value passed as argument, or an error if the value passed is not allowed by the enum
+// Deprecated: Move to the packages generated for each available API version instead
 func New{{{classname}}}FromValue(v {{dataType}}) (*{{{classname}}}, error) {
 	ev := {{{classname}}}(v)
 	if ev.IsValid() {
@@ -55,6 +60,7 @@ func New{{{classname}}}FromValue(v {{dataType}}) (*{{{classname}}}, error) {
 }
 
 // IsValid return true if the value is valid for the enum, false otherwise
+// Deprecated: Move to the packages generated for each available API version instead
 func (v {{{classname}}}) IsValid() bool {
 	for _, existing := range Allowed{{{classname}}}EnumValues {
 		if existing == v {
@@ -65,41 +71,50 @@ func (v {{{classname}}}) IsValid() bool {
 }
 
 // Ptr returns reference to {{{name}}} value
+// Deprecated: Move to the packages generated for each available API version instead
 func (v {{{classname}}}) Ptr() *{{{classname}}} {
 	return &v
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 type Nullable{{{classname}}} struct {
 	value *{{{classname}}}
 	isSet bool
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v Nullable{{classname}}) Get() *{{classname}} {
 	return v.value
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v *Nullable{{classname}}) Set(val *{{classname}}) {
 	v.value = val
 	v.isSet = true
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v Nullable{{classname}}) IsSet() bool {
 	return v.isSet
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v *Nullable{{classname}}) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func NewNullable{{classname}}(val *{{classname}}) *Nullable{{classname}} {
 	return &Nullable{{classname}}{value: val, isSet: true}
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v Nullable{{{classname}}}) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v *Nullable{{{classname}}}) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)

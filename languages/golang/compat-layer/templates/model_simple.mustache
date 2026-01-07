@@ -29,8 +29,11 @@ var _ MappedNullable = &{{classname}}{}
 {{^isEnum}}
 {{#isNumber}}
 // isNumber
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *float64
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}float64
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}float64
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -50,9 +53,13 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{/isNumber}}
 {{#isFloat}}
 // isFloat
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *float64
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}float64
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}float64
+// Deprecated: Move to the packages generated for each available API version instead
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
 		{{#isNullable}}
@@ -71,8 +78,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{/isFloat}}
 {{#isDouble}}
 // isDouble
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *float64
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}float64
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}float64
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -94,8 +104,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{! isShort and isInteger may be true at the same time, so select one}}
 {{^isInteger}}
 // isShort
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *int64
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}int64
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}int64
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -116,8 +129,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{/isShort}}
 {{#isInteger}}
 // isInteger
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *int64
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}int64
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}int64
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -137,8 +153,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{/isInteger}}
 {{#isLong}}
 // isLong
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *int64
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}int64
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}int64
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -163,6 +182,7 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{#isNullable}}
 {{! nullable strings have a special type}}
 // isNullableString
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *NullableString
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -187,6 +207,7 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{^isNullable}}
 {{! non nullable strings are plain string pointers}}
 // isNotNullableString
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *string
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -204,14 +225,19 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 	*arg={{^isNullable}}&{{/isNullable}}val
 }
 {{/isNullable}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}string
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}string
 {{/isArray}}
 {{/isString}}
 {{#isAnyType}}
 // isAny
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = any
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = any
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = any
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -234,8 +260,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{#isDateTime}}
 {{! special handling for date-time}}
 // isDateTime
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *time.Time
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}time.Time
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}time.Time
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -256,8 +285,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{#isDate}}
 {{! special handling for date}}
 // isDate
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *string
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}string
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}string
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -290,12 +322,14 @@ const (
 	{{#enumVars}}
 	{{^-first}}
 	{{/-first}}
+	// Deprecated: Move to the packages generated for each available API version instead
 	{{{classname.toUpperCase}}}{{{enumName}}}_{{name}} {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} = {{{value}}}
 	{{/enumVars}}
 	{{/allowableValues}}
 )
 
 // All allowed values of {{{classname}}} enum
+// Deprecated: Move to the packages generated for each available API version instead
 var Allowed{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}EnumValues = []{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}{
 	{{#allowableValues}}
 	{{#enumVars}}
@@ -304,6 +338,7 @@ var Allowed{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titl
 	{{/allowableValues}}
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v *{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) UnmarshalJSON(src []byte) error {
 	// use a type alias to prevent infinite recursion during unmarshal, 
 	// see https://biscuit.ninja/posts/go-avoid-an-infitine-loop-with-custom-json-unmarshallers
@@ -331,6 +366,7 @@ func (v *{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlec
 
 // New{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}FromValue returns a pointer to a valid {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
 // for the value passed as argument, or an error if the value passed is not allowed by the enum
+// Deprecated: Move to the packages generated for each available API version instead
 func New{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}FromValue(v {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) (*{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}, error) {
 	ev := {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}(v)
 	if ev.IsValid() {
@@ -341,6 +377,7 @@ func New{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titleca
 }
 
 // IsValid return true if the value is valid for the enum, false otherwise
+// Deprecated: Move to the packages generated for each available API version instead
 func (v {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) IsValid() bool {
 	for _, existing := range Allowed{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}EnumValues {
 		if existing == v {
@@ -351,48 +388,60 @@ func (v {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titleca
 }
 
 // Ptr returns reference to {{{name}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} value
+// Deprecated: Move to the packages generated for each available API version instead
 func (v {{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) Ptr() *{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} {
 	return &v
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 type Nullable{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} struct {
 	value *{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
 	isSet bool
 }
 
 func (v Nullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) Get() *{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} {
+// Deprecated: Move to the packages generated for each available API version instead
 	return v.value
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v *Nullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) Set(val *{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) {
 	v.value = val
 	v.isSet = true
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v Nullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) IsSet() bool {
 	return v.isSet
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v *Nullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func NewNullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}(val *{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) *Nullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}} {
 	return &Nullable{{classname}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}{value: val, isSet: true}
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v Nullable{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (v *Nullable{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
 
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{{classname}}}{{#lambda.titlecase}}{{nameInCamelCase}}{{/lambda.titlecase}}
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -412,8 +461,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{/isEnum}}
 {{^isEnum}}
 // isEnumRef
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *{{^isNumeric}}{{dataType}}{{/isNumeric}}{{#isNumeric}}int64{{/isNumeric}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{^isNumeric}}{{dataType}}{{/isNumeric}}{{#isNumeric}}int64{{/isNumeric}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{^isNumeric}}{{dataType}}{{/isNumeric}}{{#isNumeric}}int64{{/isNumeric}}
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -435,8 +487,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{#isModel}}
 {{! special handling for recursive datatypes}}
 // isModel
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *{{dataType}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -462,8 +517,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{^isEnumRef}}
 // fallback
 {{! everything else will end up here}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *{{dataType}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -488,8 +546,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{/isPrimitiveType}}
 {{#isArray}}
 // isArray
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *{{dataType}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -511,8 +572,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 
 {{#isFreeFormObject}}
 // isFreeform
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *{{dataType}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -534,8 +598,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{^isFreeFormObject}}
 {{^isArray}}
 // isContainer
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *{{dataType}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -557,8 +624,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{/isContainer}}
 {{#isByteArray}}
 // isByteArray
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *[]byte
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}[]byte
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}[]byte
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -578,8 +648,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{/isByteArray}}
 {{#isBoolean}}
 // isBoolean
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}AttributeType = *bool
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}bool
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}bool
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
@@ -601,6 +674,7 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{/vars}}
 
 // {{classname}} {{{description}}}{{^description}}struct for {{{classname}}}{{/description}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}} struct {
 {{#parent}}
 {{^isMap}}
@@ -645,11 +719,13 @@ type {{classname}} struct {
 
 
 {{#isAdditionalPropertiesTrue}}
+// Deprecated: Move to the packages generated for each available API version instead
 type _{{{classname}}} {{{classname}}}
 
 {{/isAdditionalPropertiesTrue}}
 {{^isAdditionalPropertiesTrue}}
 {{#hasRequired}}
+// Deprecated: Move to the packages generated for each available API version instead
 type _{{{classname}}} {{{classname}}}
 
 {{/hasRequired}}
@@ -658,6 +734,7 @@ type _{{{classname}}} {{{classname}}}
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
+// Deprecated: Move to the packages generated for each available API version instead
 func New{{classname}}({{#requiredVars}}{{nameInCamelCase}} {{classname}}{{getter}}ArgType{{^-last}}, {{/-last}}{{/requiredVars}}) *{{classname}} {
 	this := {{classname}}{}
 {{#allVars}}
@@ -671,6 +748,7 @@ func New{{classname}}({{#requiredVars}}{{nameInCamelCase}} {{classname}}{{getter
 // New{{classname}}WithDefaults instantiates a new {{classname}} object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
+// Deprecated: Move to the packages generated for each available API version instead
 func New{{classname}}WithDefaults() *{{classname}} {
 	this := {{classname}}{}
 {{#vars}}
@@ -703,9 +781,7 @@ func New{{classname}}WithDefaults() *{{classname}} {
 {{#isNullable}}
 // If the value is explicit nil, the zero value for {{vendorExtensions.x-go-base-type}} will be returned
 {{/isNullable}}
-{{#deprecated}}
-// Deprecated
-{{/deprecated}}
+// Deprecated: Move to the packages generated for each available API version instead
 func (o *{{classname}}) Get{{name}}() (ret {{classname}}{{getter}}RetType) {
 	ret,_ = o.Get{{name}}Ok()
 	return ret
@@ -716,17 +792,13 @@ func (o *{{classname}}) Get{{name}}() (ret {{classname}}{{getter}}RetType) {
 {{#isNullable}}
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 {{/isNullable}}
-{{#deprecated}}
-// Deprecated
-{{/deprecated}}
+// Deprecated: Move to the packages generated for each available API version instead
 func (o *{{classname}}) Get{{name}}Ok() (ret {{classname}}{{getter}}RetType, ok bool) {
 	return get{{classname}}{{getter}}AttributeTypeOk(o.{{name}})
 }
 
 // Set{{name}} sets field value
-{{#deprecated}}
-// Deprecated
-{{/deprecated}}
+// Deprecated: Move to the packages generated for each available API version instead
 func (o *{{classname}}) Set{{name}}(v {{classname}}{{getter}}RetType) {
 	set{{classname}}{{getter}}AttributeType(&o.{{name}},v)
 }
@@ -734,9 +806,7 @@ func (o *{{classname}}) Set{{name}}(v {{classname}}{{getter}}RetType) {
 {{/required}}
 {{^required}}
 // Get{{name}} returns the {{name}} field value if set, zero value otherwise{{#isNullable}} (both if not set or set to explicit null){{/isNullable}}.
-{{#deprecated}}
-// Deprecated
-{{/deprecated}}
+// Deprecated: Move to the packages generated for each available API version instead
 func (o *{{classname}}) Get{{name}}() (res {{classname}}{{getter}}RetType) {
 	res,_ = o.Get{{name}}Ok()
 	return
@@ -747,23 +817,20 @@ func (o *{{classname}}) Get{{name}}() (res {{classname}}{{getter}}RetType) {
 {{#isNullable}}
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
 {{/isNullable}}
-{{#deprecated}}
-// Deprecated
-{{/deprecated}}
+// Deprecated: Move to the packages generated for each available API version instead
 func (o *{{classname}}) Get{{name}}Ok() (ret {{classname}}{{getter}}RetType, ok bool) {
 	return get{{classname}}{{getter}}AttributeTypeOk(o.{{name}})
 }
 
 // Has{{name}} returns a boolean if a field has been set.
+// Deprecated: Move to the packages generated for each available API version instead
 func (o *{{classname}}) Has{{name}}() bool {
 	_,ok:=o.Get{{name}}Ok()
 	return ok
 }
 
 // Set{{name}} gets a reference to the given {{#isNumber}}float64{{/isNumber}}{{#isFloat}}float64{{/isFloat}}{{#isDouble}}float64{{/isDouble}}{{#isInteger}}int64{{/isInteger}}{{#isLong}}int64{{/isLong}}{{^isNumeric}}{{vendorExtensions.x-go-base-type}}{{/isNumeric}} and assigns it to the {{name}} field.
-{{#deprecated}}
-// Deprecated
-{{/deprecated}}
+// Deprecated: Move to the packages generated for each available API version instead
 func (o *{{classname}}) Set{{name}}(v {{classname}}{{getter}}RetType) {
 	set{{classname}}{{getter}}AttributeType(&o.{{name}},v)
 }
@@ -772,11 +839,13 @@ func (o *{{classname}}) Set{{name}}(v {{classname}}{{getter}}RetType) {
 {{#isNullable}}
 {{^vendorExtensions.x-golang-is-container}}
 // Set{{name}}Nil sets the value for {{name}} to be an explicit nil
+// Deprecated: Move to the packages generated for each available API version instead
 func (o *{{classname}}) Set{{name}}Nil() {
 	o.{{name}} = nil
 }
 
 // Unset{{name}} ensures that no value is present for {{name}}, not even an explicit nil
+// Deprecated: Move to the packages generated for each available API version instead
 func (o *{{classname}}) Unset{{name}}() {
 	o.{{name}} = nil
 }
@@ -786,6 +855,7 @@ func (o *{{classname}}) Unset{{name}}() {
 {{/required}}
 {{/vars}}
 {{#vendorExtensions.x-go-generate-marshal-json}}
+// Deprecated: Move to the packages generated for each available API version instead
 func (o {{classname}}) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -795,6 +865,7 @@ func (o {{classname}}) MarshalJSON() ([]byte, error) {
 }
 
 {{/vendorExtensions.x-go-generate-marshal-json}}
+// Deprecated: Move to the packages generated for each available API version instead
 func (o {{classname}}) ToMap() (map[string]interface{}, error) {
 	toSerialize := {{#isArray}}make([]interface{}, len(o.Items)){{/isArray}}{{^isArray}}map[string]interface{}{}{{/isArray}}
 	{{#parent}}
@@ -835,10 +906,12 @@ func (o {{classname}}) ToMap() (map[string]interface{}, error) {
 
 {{#vendorExtensions.x-go-generate-unmarshal-json}}
 {{#isAdditionalPropertiesTrue}}
+// Deprecated: Move to the packages generated for each available API version instead
 func (o *{{{classname}}}) UnmarshalJSON(data []byte) (err error) {
 {{/isAdditionalPropertiesTrue}}
 {{^isAdditionalPropertiesTrue}}
 {{#hasRequired}}
+// Deprecated: Move to the packages generated for each available API version instead
 func (o *{{{classname}}}) UnmarshalJSON(data []byte) (err error) {
 {{/hasRequired}}
 {{/isAdditionalPropertiesTrue}}

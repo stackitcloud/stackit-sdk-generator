@@ -127,8 +127,8 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
           echo "old commit: ${old_commit}"
         fi
         new_commit=""
-        if [[ -f "${ROOT_DIR}/oas/oas_commits" ]]; then
-          new_commit=$(grep "${service}=" "${ROOT_DIR}/oas/oas_commits" | cut -d = -f 2)
+        if [[ -f "${ROOT_DIR}/oas/legacy/oas_commits" ]]; then
+          new_commit=$(grep "${service}=" "${ROOT_DIR}/oas/legacy/oas_commits" | cut -d = -f 2)
           echo "new commit: ${new_commit}"
         fi
         compare_link=""

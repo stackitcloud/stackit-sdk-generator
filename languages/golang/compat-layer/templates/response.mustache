@@ -1,4 +1,5 @@
 {{>partial_header}}
+// Deprecated: Move to the packages generated for each available API version instead
 package {{packageName}}
 
 import (
@@ -6,6 +7,7 @@ import (
 )
 
 // APIResponse stores the API response returned by the server.
+// Deprecated: Move to the packages generated for each available API version instead
 type APIResponse struct {
 	*http.Response `json:"-"`
 	Message        string `json:"message,omitempty"`
@@ -24,6 +26,7 @@ type APIResponse struct {
 }
 
 // NewAPIResponse returns a new APIResponse object.
+// Deprecated: Move to the packages generated for each available API version instead
 func NewAPIResponse(r *http.Response) *APIResponse {
 
 	response := &APIResponse{Response: r}
@@ -31,6 +34,7 @@ func NewAPIResponse(r *http.Response) *APIResponse {
 }
 
 // NewAPIResponseWithError returns a new APIResponse object with the provided error message.
+// Deprecated: Move to the packages generated for each available API version instead
 func NewAPIResponseWithError(errorMessage string) *APIResponse {
 
 	response := &APIResponse{Message: errorMessage}

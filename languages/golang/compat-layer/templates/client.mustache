@@ -1,5 +1,5 @@
-{{! This template was customized to support the custom configuration options from the core module. See https://github.com/OpenAPITools/openapi-generator/blob/v7.20.0/modules/openapi-generator/src/main/resources/go/client.mustache for the original template }}
 {{>partial_header}}
+// Deprecated: Move to the packages generated for each available API version instead
 package {{packageName}}
 
 import (
@@ -7,7 +7,6 @@ import (
 	"context"
 	"encoding/json"
 	"encoding/xml"
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -23,56 +22,37 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
-
-	{{! TEMPLATE CUSTOMIZATION - BEGIN }}
 	"github.com/stackitcloud/stackit-sdk-go/core/config"
 	"github.com/stackitcloud/stackit-sdk-go/core/auth"
-	{{! TEMPLATE CUSTOMIZATION - END }}
 
 	{{#hasOAuthMethods}}
 	"golang.org/x/oauth2"
 	{{/hasOAuthMethods}}
-	{{#withAWSV4Signature}}
-	awsv4 "github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	awscredentials "github.com/aws/aws-sdk-go-v2/credentials"
-	"crypto/sha256"
-	"encoding/hex"
-	{{/withAWSV4Signature}}
 )
 
 var (
-	JsonCheck       = regexp.MustCompile(`(?i:(?:application|text)/(?:[^;]+\+)?json)`)
-	XmlCheck        = regexp.MustCompile(`(?i:(?:application|text)/(?:[^;]+\+)?xml)`)
+	jsonCheck = regexp.MustCompile(`(?i:(?:application|text)/(?:vnd\.[^;]+\+)?json)`)
+	xmlCheck  = regexp.MustCompile(`(?i:(?:application|text)/xml)`)
 	queryParamSplit = regexp.MustCompile(`(^|&)([^&]+)`)
 	queryDescape    = strings.NewReplacer( "%5B", "[", "%5D", "]" )
 )
 
 // APIClient manages communication with the {{appName}} API v{{version}}
 // In most cases there should be only one, shared, APIClient.
+// Deprecated: Move to the packages generated for each available API version instead
 type APIClient struct {
-	{{! TEMPLATE CUSTOMIZATION - BEGIN - use the configuration type from the STACKIT SDK core module instead of the one provided by OpenAPI generator }}
 	cfg    *config.Configuration
-	{{! TEMPLATE CUSTOMIZATION - END }}
 	common service // Reuse a single struct instead of allocating one for each service on the heap.
-
-	// API Services
-{{#apiInfo}}
-{{#apis}}
-{{#operations}}
-
-	{{classname}} {{#generateInterfaces}}{{classname}}{{/generateInterfaces}}{{^generateInterfaces}}*{{classname}}Service{{/generateInterfaces}}
-{{/operations}}
-{{/apis}}
-{{/apiInfo}}
+    defaultApi *DefaultApiService
 }
 
 type service struct {
-	client *APIClient
+	client DefaultApi
 }
 
-// NewAPIClient creates a new API client. Requires a userAgent string describing your application.
-// optionally a custom http.Client to allow for advanced features such as caching.
-{{! TEMPLATE CUSTOMIZATION - BEGIN - use the configuration type from the STACKIT SDK core module instead of the one provided by OpenAPI generator }}
+// NewAPIClient creates a new API client.
+// Optionally receives configuration options
+// Deprecated: Move to the packages generated for each available API version instead
 func NewAPIClient(opts ...config.ConfigurationOption) (*APIClient, error) {
 	cfg := NewConfiguration()
 	
@@ -83,10 +63,15 @@ func NewAPIClient(opts ...config.ConfigurationOption) (*APIClient, error) {
 		}
 	}
 
+	{{#regional_api}}
+	// using new regional api, so no region is set here
+	{{/regional_api}}
+	{{^regional_api}}
 	err := config.ConfigureRegion(cfg)
 	if err != nil {
 		return nil, fmt.Errorf("configuring region: %w", err)
 	}
+	{{/regional_api}}
 
 	if cfg.HTTPClient == nil {
 		cfg.HTTPClient = &http.Client{}
@@ -103,20 +88,11 @@ func NewAPIClient(opts ...config.ConfigurationOption) (*APIClient, error) {
 	}
 
 	cfg.HTTPClient.Transport = roundTripper
-{{! TEMPLATE CUSTOMIZATION - END }}
 
 	c := &APIClient{}
 	c.cfg = cfg
 	c.common.client = c
-
-{{#apiInfo}}
-	// API Services
-{{#apis}}
-{{#operations}}
-	c.{{classname}} = (*{{classname}}Service)(&c.common)
-{{/operations}}
-{{/apis}}
-{{/apiInfo}}
+    c.defaultApi = (*DefaultApiService)(&c.common)
 
 	return c, nil
 }
@@ -173,12 +149,9 @@ func typeCheckParameter(obj interface{}, expected string, name string) error {
 	return nil
 }
 
-func parameterValueToString( obj interface{}, key string ) string {
+// Deprecated: Move to the packages generated for each available API version instead
+func ParameterValueToString( obj interface{}, key string ) string {
 	if reflect.TypeOf(obj).Kind() != reflect.Ptr {
-		if actualObj, ok := obj.(interface{ GetActualInstanceValue() interface{} }); ok {
-			return fmt.Sprintf("%v", actualObj.GetActualInstanceValue())
-		}
-
 		return fmt.Sprintf("%v", obj)
 	}
 	var param,ok = obj.(MappedNullable)
@@ -194,7 +167,7 @@ func parameterValueToString( obj interface{}, key string ) string {
 
 // parameterAddToHeaderOrQuery adds the provided object to the request header or url query
 // supporting deep object syntax
-func parameterAddToHeaderOrQuery(headerOrQueryParams interface{}, keyPrefix string, obj interface{}, style string, collectionType string) {
+func parameterAddToHeaderOrQuery(headerOrQueryParams interface{}, keyPrefix string, obj interface{}, collectionType string) {
 	var v = reflect.ValueOf(obj)
 	var value = ""
 	if v == reflect.ValueOf(nil) {
@@ -210,11 +183,11 @@ func parameterAddToHeaderOrQuery(headerOrQueryParams interface{}, keyPrefix stri
 					if err != nil {
 						return
 					}
-					parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, dataMap, style, collectionType)
+					parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, dataMap, collectionType)
 					return
 				}
 				if t, ok := obj.(time.Time); ok {
-					parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, t.Format(time.RFC3339Nano), style, collectionType)
+					parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, t.Format(time.RFC3339), collectionType)
 					return
 				}
 				value = v.Type().String() + " value"
@@ -226,11 +199,7 @@ func parameterAddToHeaderOrQuery(headerOrQueryParams interface{}, keyPrefix stri
 				var lenIndValue = indValue.Len()
 				for i:=0;i<lenIndValue;i++ {
 					var arrayValue = indValue.Index(i)
-					var keyPrefixForCollectionType = keyPrefix
-					if style == "deepObject" {
-						keyPrefixForCollectionType = keyPrefix + "[" + strconv.Itoa(i) + "]"
-					}
-					parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefixForCollectionType, arrayValue.Interface(), style, collectionType)
+					parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, arrayValue.Interface(), collectionType)
 				}
 				return
 
@@ -242,14 +211,14 @@ func parameterAddToHeaderOrQuery(headerOrQueryParams interface{}, keyPrefix stri
 				iter := indValue.MapRange()
 				for iter.Next() {
 					k,v := iter.Key(), iter.Value()
-					parameterAddToHeaderOrQuery(headerOrQueryParams, fmt.Sprintf("%s[%s]", keyPrefix, k.String()), v.Interface(), style, collectionType)
+					parameterAddToHeaderOrQuery(headerOrQueryParams, fmt.Sprintf("%s[%s]", keyPrefix, k.String()), v.Interface(), collectionType)
 				}
 				return
 
 			case reflect.Interface:
 				fallthrough
 			case reflect.Ptr:
-				parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, v.Elem().Interface(), style, collectionType)
+				parameterAddToHeaderOrQuery(headerOrQueryParams, keyPrefix, v.Elem().Interface(), collectionType)
 				return
 
 			case reflect.Int, reflect.Int8, reflect.Int16,
@@ -319,9 +288,8 @@ func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
 
 // Allow modification of underlying config for alternate implementations and testing
 // Caution: modifying the configuration while live can cause data races and potentially unwanted behavior
-{{! TEMPLATE CUSTOMIZATION - BEGIN - use the configuration type from the STACKIT SDK core module instead of the one provided by OpenAPI generator }}
+// Deprecated: Move to the packages generated for each available API version instead
 func (c *APIClient) GetConfig() *config.Configuration {
-{{! TEMPLATE CUSTOMIZATION - END }}
 	return c.cfg
 }
 
@@ -344,7 +312,7 @@ func (c *APIClient) prepareRequest(
 	var body *bytes.Buffer
 
 	// Detect postBody type and post.
-	if postBody != nil {
+	if !IsNil(postBody) {
 		contentType := headerParams["Content-Type"]
 		if contentType == "" {
 			contentType = detectContentType(postBody)
@@ -360,7 +328,7 @@ func (c *APIClient) prepareRequest(
 	// add form parameters and file if available.
 	if strings.HasPrefix(headerParams["Content-Type"], "multipart/form-data") && len(formParams) > 0 || (len(formFiles) > 0) {
 		if body != nil {
-			return nil, errors.New("Cannot specify postBody and multipart form at the same time.")
+			return nil, fmt.Errorf("cannot specify postBody and multipart form at the same time.")
 		}
 		body = &bytes.Buffer{}
 		w := multipart.NewWriter(body)
@@ -401,7 +369,7 @@ func (c *APIClient) prepareRequest(
 
 	if strings.HasPrefix(headerParams["Content-Type"], "application/x-www-form-urlencoded") && len(formParams) > 0 {
 		if body != nil {
-			return nil, errors.New("Cannot specify postBody and x-www-form-urlencoded form at the same time.")
+			return nil, fmt.Errorf("cannot specify postBody and x-www-form-urlencoded form at the same time.")
 		}
 		body = &bytes.Buffer{}
 		body.WriteString(formParams.Encode())
@@ -490,51 +458,11 @@ func (c *APIClient) prepareRequest(
 		{{/hasHttpBasicMethods}}
 		{{#hasHttpBearerMethods}}
 		// AccessToken Authentication
-		if auth, ok := ctx.Value(ContextAccessToken).(string); ok {
+		if auth, ok := ctx.Value(config.ContextAccessToken).(string); ok {
 			localVarRequest.Header.Add("Authorization", "Bearer "+auth)
 		}
 
 		{{/hasHttpBearerMethods}}
-		{{#withAWSV4Signature}}
-		// AWS Signature v4 Authentication
-		if auth, ok := ctx.Value(ContextAWSv4).(AWSv4); ok {
-			credsProvider := awscredentials.NewStaticCredentialsProvider(auth.AccessKey, auth.SecretKey, auth.SessionToken)
-			creds, err := credsProvider.Retrieve(ctx)
-			if err != nil {
-				return nil, err
-			}
-
-			// Define default values for region and service to maintain backward compatibility
-			region := auth.Region
-			if region == "" {
-				region = "eu-west-2"
-			}
-			service := auth.Service
-			if service == "" {
-				service = "oapi"
-			}
-
-			// Compute payload hash from the request body
-			var payloadHash string
-			if body == nil {
-				// Empty body
-				hash := sha256.Sum256([]byte(""))
-				payloadHash = hex.EncodeToString(hash[:])
-			} else {
-				// Hash the actual body content
-				bodyBytes := []byte(body.String())
-				hash := sha256.Sum256(bodyBytes)
-				payloadHash = hex.EncodeToString(hash[:])
-			}
-
-			// Sign the request with the computed payload hash
-			signer := awsv4.NewSigner()
-			err = signer.SignHTTP(ctx, creds, localVarRequest, payloadHash, service, region, time.Now())
-			if err != nil {
-				return nil, err
-			}
-		}
-		{{/withAWSV4Signature}}
 	}
 
 	for header, value := range c.cfg.DefaultHeader {
@@ -544,13 +472,6 @@ func (c *APIClient) prepareRequest(
 
 	if c.cfg.Middleware != nil {
 		c.cfg.Middleware(localVarRequest)
-	}
-
-	if c.cfg.MiddlewareWithError != nil {
-		err = c.cfg.MiddlewareWithError(localVarRequest)
-		if err != nil {
-			return nil, err
-		}
 	}
 
 {{/withCustomMiddlewareFunction}}
@@ -601,27 +522,27 @@ func (c *APIClient) decode(v interface{}, b []byte, contentType string) (err err
 		_, err = (*f).Seek(0, io.SeekStart)
 		return
 	}
-	if XmlCheck.MatchString(contentType) {
+	if xmlCheck.MatchString(contentType) {
 		if err = xml.Unmarshal(b, v); err != nil {
 			return err
 		}
 		return nil
 	}
-	if JsonCheck.MatchString(contentType) {
+	if jsonCheck.MatchString(contentType) {
 		if actualObj, ok := v.(interface{ GetActualInstance() interface{} }); ok { // oneOf, anyOf schemas
 			if unmarshalObj, ok := actualObj.(interface{ UnmarshalJSON([]byte) error }); ok { // make sure it has UnmarshalJSON defined
 				if err = unmarshalObj.UnmarshalJSON(b); err != nil {
 					return err
 				}
 			} else {
-				return errors.New("Unknown type with GetActualInstance but no unmarshalObj.UnmarshalJSON defined")
+				return fmt.Errorf("unknown type with GetActualInstance but no unmarshalObj.UnmarshalJSON defined")
 			}
 		} else if err = json.Unmarshal(b, v); err != nil { // simple model
 			return err
 		}
 		return nil
 	}
-	return errors.New("undefined response type")
+	return fmt.Errorf("undefined response type")
 }
 
 // Add a file to the multipart request
@@ -630,7 +551,7 @@ func addFile(w *multipart.Writer, fieldName, path string) error {
 	if err != nil {
 		return err
 	}
-	defer file.Close()
+    defer file.Close()
 
 	part, err := w.CreateFormFile(fieldName, filepath.Base(path))
 	if err != nil {
@@ -639,6 +560,13 @@ func addFile(w *multipart.Writer, fieldName, path string) error {
 	_, err = io.Copy(part, file)
 
 	return err
+}
+
+// A wrapper for strict JSON decoding
+func newStrictDecoder(data []byte) *json.Decoder {
+	dec := json.NewDecoder(bytes.NewBuffer(data))
+	dec.DisallowUnknownFields()
+	return dec
 }
 
 // Set request body from an interface{}
@@ -657,14 +585,10 @@ func setBody(body interface{}, contentType string) (bodyBuf *bytes.Buffer, err e
 		_, err = bodyBuf.WriteString(s)
 	} else if s, ok := body.(*string); ok {
 		_, err = bodyBuf.WriteString(*s)
-	} else if JsonCheck.MatchString(contentType) {
+	} else if jsonCheck.MatchString(contentType) {
 		err = json.NewEncoder(bodyBuf).Encode(body)
-	} else if XmlCheck.MatchString(contentType) {
-		var bs []byte
-		bs, err = xml.Marshal(body)
-		if err == nil {
-			bodyBuf.Write(bs)
-		}
+	} else if xmlCheck.MatchString(contentType) {
+		err = xml.NewEncoder(bodyBuf).Encode(body)
 	}
 
 	if err != nil {
@@ -672,7 +596,7 @@ func setBody(body interface{}, contentType string) (bodyBuf *bytes.Buffer, err e
 	}
 
 	if bodyBuf.Len() == 0 {
-		err = fmt.Errorf("invalid body type %s\n", contentType)
+		err = fmt.Errorf("invalid body type %s", contentType)
 		return nil, err
 	}
 	return bodyBuf, nil
@@ -721,6 +645,7 @@ func parseCacheControl(headers http.Header) cacheControl {
 }
 
 // CacheExpires helper function to determine remaining time before repeating a request.
+// Deprecated: Move to the packages generated for each available API version instead
 func CacheExpires(r *http.Response) time.Time {
 	// Figure out when the cache expires.
 	var expires time.Time
@@ -751,46 +676,4 @@ func CacheExpires(r *http.Response) time.Time {
 
 func strlen(s string) int {
 	return utf8.RuneCountInString(s)
-}
-
-// GenericOpenAPIError Provides access to the body, error and model on returned errors.
-type GenericOpenAPIError struct {
-	body  []byte
-	error string
-	model interface{}
-}
-
-// Error returns non-empty string if there was an error.
-func (e GenericOpenAPIError) Error() string {
-	return e.error
-}
-
-// Body returns the raw bytes of the response
-func (e GenericOpenAPIError) Body() []byte {
-	return e.body
-}
-
-// Model returns the unpacked model of the error
-func (e GenericOpenAPIError) Model() interface{} {
-	return e.model
-}
-
-// format error message using title and detail when model implements rfc7807
-func formatErrorMessage(status string, v interface{}) string {
-	str := ""
-	metaValue := reflect.ValueOf(v).Elem()
-
-	if metaValue.Kind() == reflect.Struct {
-		field := metaValue.FieldByName("Title")
-		if field != (reflect.Value{}) {
-			str = fmt.Sprintf("%s", field.Interface())
-		}
-
-		field = metaValue.FieldByName("Detail")
-		if field != (reflect.Value{}) {
-			str = fmt.Sprintf("%s (%s)", str, field.Interface())
-		}
-	}
-
-	return strings.TrimSpace(fmt.Sprintf("%s %s", status, str))
 }

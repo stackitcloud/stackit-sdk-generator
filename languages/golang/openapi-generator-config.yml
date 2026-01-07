@@ -1,8 +1,11 @@
 useOneOfDiscriminatorLookup: true
-templateDir: languages/golang/templates
+additionalProperties:
+  withGoMod: false
+  isGoSubmodule: true
+  enumClassPrefix: true
+  generateInterfaces: true
 files:
-  custom/model_test.mustache:
-    # TODO: this should be 'ModelTests' instead of 'Model'
-    # 'Model' was used because 'ModelTests' didn't stick to golangs file naming conventions
-    templateType: Model
-    destinationFilename: _test.go
+  custom/api_mock.mustache:
+    templateType: API
+    destinationFilename: _mock.go
+

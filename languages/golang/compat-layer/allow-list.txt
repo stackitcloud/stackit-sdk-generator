@@ -1,0 +1,36 @@
+# Transitional file to enable compatibility layer generation for selected services. 
+# Note: It shouldn't be needed to add any services here!
+alb
+auditlog
+authorization
+cdn
+certificates
+dns
+edge
+git
+iaas
+intake
+kms
+loadbalancer
+logme
+logs
+mariadb
+modelserving
+mongodbflex
+objectstorage
+observability
+opensearch
+postgresflex
+rabbitmq
+redis
+resourcemanager
+runcommand
+scf
+secretsmanager
+serverbackup
+serverupdate
+serviceaccount
+serviceenablement
+sfs
+ske
+sqlserverflex

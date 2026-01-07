@@ -1,13 +1,13 @@
-{{! This template was ENTIRELY overwritten to support the custom configuration type and options from the STACKIT SDK core module. See https://github.com/OpenAPITools/openapi-generator/blob/v7.20.0/modules/openapi-generator/src/main/resources/go/configuration.mustache for the original template }}
 {{>partial_header}}
+// Deprecated: Move to the packages generated for each available API version instead
 package {{packageName}}
 
 import (
 	"github.com/stackitcloud/stackit-sdk-go/core/config"
 )
-{{! TEMPLATE CUSTOMIZATION - Template was entirely customized, see above. }}
 
 // NewConfiguration returns a new Configuration object
+// Deprecated: Move to the packages generated for each available API version instead
 func NewConfiguration() *config.Configuration {
 	cfg := &config.Configuration{
 		DefaultHeader:    make(map[string]string),

@@ -1,4 +1,5 @@
 {{>partial_header}}
+// Deprecated: Move to the packages generated for each available API version instead
 package {{packageName}}
 
 {{#operations}}
@@ -10,12 +11,14 @@ import (
 	"net/url"
 	"github.com/stackitcloud/stackit-sdk-go/core/config"
     "github.com/stackitcloud/stackit-sdk-go/core/oapierror"
+    "fmt"
 {{#imports}}	"{{import}}"
 {{/imports}}
 )
 
 {{#generateInterfaces}}
 
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}} interface {
 	{{#operation}}
 	/*
@@ -45,15 +48,14 @@ Deprecated: {{{unescapedNotes}}}
 }
 
 {{#operation}}
+// Deprecated: Move to the packages generated for each available API version instead
 type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request interface {
 {{#allParams}}
 {{^isPathParam}}
 {{#description}}
 // {{.}}
 {{/description}}
-{{#isDeprecated}}
-// Deprecated
-{{/isDeprecated}}
+// Deprecated: Move to the packages generated for each available API version instead
 {{vendorExtensions.x-export-param-name}}({{paramName}} {{{dataType}}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
 {{/isPathParam}}
 {{/allParams}}
@@ -64,6 +66,7 @@ type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/stru
 {{/generateInterfaces}}
 
 // {{classname}}Service {{classname}} service
+// Deprecated: Move to the packages generated for each available API version instead
 type {{classname}}Service service
 {{#operation}}
 
@@ -84,6 +87,7 @@ type {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request stru
 // Deprecated
 {{/isDeprecated}}
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request) {{vendorExtensions.x-export-param-name}}({{paramName}} {{{dataType}}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request {
     r.{{paramName}} = {{^isFile}}&{{/isFile}}{{paramName}}
 	return r
@@ -92,6 +96,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request) 
 {{/isPathParam}}
 {{/allParams}}
 
+// Deprecated: Move to the packages generated for each available API version instead
 func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request) Execute() ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}} error) {
     var (
     localVarHTTPMethod   = http.Method{{httpMethod}}
@@ -419,6 +424,7 @@ func (r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request) 
  @param {{paramName}}{{#description}} {{{.}}}{{/description}}{{/pathParams}}
  @return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request
 */
+// Deprecated: Move to the packages generated for each available API version instead
 func (a *APIClient) {{{nickname}}}(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request {
 	return {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request{
 		apiService: a.defaultApi,
@@ -434,6 +440,7 @@ func (a *APIClient) {{{nickname}}}(ctx context.Context{{#pathParams}}, {{paramNa
 Deprecated: {{{unescapedNotes}}}
 */
 {{/isDeprecated}}
+// Deprecated: Move to the packages generated for each available API version instead
 func (a *APIClient) {{{nickname}}}Execute(ctx context.Context{{#pathParams}}, {{paramName}} {{{dataType}}}{{/pathParams}}) ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}} error){
 	r := {{#structPrefix}}{{&classname}}{{/structPrefix}}{{operationId}}Request{
 		apiService: a.defaultApi,
