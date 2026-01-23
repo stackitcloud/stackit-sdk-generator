@@ -130,7 +130,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: ["11", "17", "21"]
+        java-version: ["17", "21", "25"]
     steps:
       - name: Install SSH Key
         uses: shimataro/ssh-key-action@v2
