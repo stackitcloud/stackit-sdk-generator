@@ -119,6 +119,17 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
             fi
         fi
 
+        # write OAS commit hash of service into source tree, create compare link
+        old_commit=$(cat "services/${service}/oas_commit")
+        new_commit=$(grep "${service}=" "${ROOT_DIR}/oas/oas_commits" | cut -d = -f 2)
+        compare_link=""
+        if [[ -n "${old_commit}" ]] && [[ -n "${new_commit}" ]]; then
+          compare_link=https://github.com/stackitcloud/stackit-api-specifications/compare/${old_commit}...${new_commit}
+        fi
+        if [[ -n "${new_commit}" ]]; then
+          echo "${new_commit}" > "services/${service}/oas_commit"
+        fi
+
         git add "services/${service}/"
         if [ "${LANGUAGE}" == "go" ] && [ ! -d "${work_dir}/sdk_backup/services/${service}/" ]; then # Check if it is a newly added SDK module
             git add go.work
@@ -128,7 +139,7 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
             echo ">> Creating PR for $service"
             git commit -m "Generate $service"
             git push origin "$branch"
-            gh pr create --title "Generator: Update SDK /services/$service" --body "$COMMIT_INFO" --head "$branch" --base "main"
+            echo -e "$COMMIT_INFO\nspec comparison: ${compare_link}" | gh pr create --title "Generator: Update SDK /services/$service" --body-file - --head "$branch" --base "main"
         else
             echo ">> Pushing changes for $service service..."
             git commit -m "Generate $service: $COMMIT_INFO"
