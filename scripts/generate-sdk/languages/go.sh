@@ -216,6 +216,12 @@ generate_go_sdk() {
             cp -r "${sdk_services_backup_dir}/${service}/VERSION" "${SERVICES_FOLDER}/${service}/VERSION"
         fi
 
+        # If the service has oas_commit file, move it inside the service folder
+        if [ -f "${sdk_services_backup_dir}/${service}/oas_commit" ]; then
+            echo "Found ${service} \"oas_commit\" file"
+            cp -r "${sdk_services_backup_dir}/${service}/oas_commit" "${SERVICES_FOLDER}/${service}/oas_commit"
+        fi
+
         cd "${SERVICES_FOLDER}/${service}"
         go work use .
         # Make sure that dependencies are uptodate
