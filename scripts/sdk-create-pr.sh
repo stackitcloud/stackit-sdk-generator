@@ -120,8 +120,14 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
         fi
 
         # write OAS commit hash of service into source tree, create compare link
-        old_commit=$(cat "services/${service}/oas_commit")
-        new_commit=$(grep "${service}=" "${ROOT_DIR}/oas/oas_commits" | cut -d = -f 2)
+        old_commit=""
+        if [[ -f "services/${service}/oas_commit" ]]; then
+          old_commit=$(cat "services/${service}/oas_commit")
+        fi
+        new_commit=""
+        if [[ -f "${ROOT_DIR}/oas/oas_commits" ]]; then
+          new_commit=$(grep "${service}=" "${ROOT_DIR}/oas/oas_commits" | cut -d = -f 2)
+        fi
         compare_link=""
         if [[ -n "${old_commit}" ]] && [[ -n "${new_commit}" ]]; then
           compare_link=https://github.com/stackitcloud/stackit-api-specifications/compare/${old_commit}...${new_commit}
