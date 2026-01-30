@@ -1,5 +1,5 @@
 {{! This template was customized to allow the services to be a subprojects in one big gradle project. }}
-{{! Original template: https://github.com/OpenAPITools/openapi-generator/blob/v7.14.0/modules/openapi-generator/src/main/resources/Java/libraries/okhttp-gson/build.gradle.mustache }}
+{{! Original template: https://github.com/OpenAPITools/openapi-generator/blob/v7.19.0/modules/openapi-generator/src/main/resources/Java/libraries/okhttp-gson/build.gradle.mustache }}
 
 ext {
     {{#swagger1AnnotationLibrary}}
@@ -36,7 +36,7 @@ dependencies {
     {{#hasOAuthMethods}}
     implementation group: 'org.apache.oltu.oauth2', name: 'org.apache.oltu.oauth2.client', version: '1.0.2'
     {{/hasOAuthMethods}}
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.17.0'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.18.0'
     {{#joda}}
     implementation 'joda-time:joda-time:2.9.9'
     {{/joda}}
