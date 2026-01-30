@@ -60,19 +60,19 @@ EOF
 
 	# write commit hash to oas_commits file, normalize name first to match service name in sdk-create-pr.sh, normalization
 	# occurs in go/java/python.sh when creating the SDK modules
-	service_normalzed=${service}
-  service_normalzed="${service_normalzed//-/}"                                  # remove dashes
-  service_normalzed="${service_normalzed// /}"                                  # remove empty spaces
-  service_normalzed="${service_normalzed//_/}"                                  # remove underscores
-  service_normalzed=$(echo "${service_normalzed}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
-  service_normalzed=$(echo "${service_normalzed}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
-	echo "$service_normalzed=$(git rev-parse HEAD)" >> oas_commits
-  # To support initial integrations of the IaaS API in an Alpha state, we will temporarily use it to generate an IaaS Alpha SDK module
-  # This check can be removed once the IaaS API moves all endpoints to Beta
-	if [[ ${service_normalzed} == "iaas" ]]; then
-	  echo "iaasalpha=$(git rev-parse HEAD)" >> oas_commits
-  fi
-  
+	service_normalized=${service}
+	service_normalized="${service_normalized//-/}"                                  # remove dashes
+	service_normalized="${service_normalized// /}"                                  # remove empty spaces
+	service_normalized="${service_normalized//_/}"                                  # remove underscores
+	service_normalized=$(echo "${service_normalized}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
+	service_normalized=$(echo "${service_normalized}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
+	echo "$service_normalized=$(git rev-parse HEAD)" >> oas_commits
+	# To support initial integrations of the IaaS API in an Alpha state, we will temporarily use it to generate an IaaS Alpha SDK module
+	# This check can be removed once the IaaS API moves all endpoints to Beta
+	if [[ ${service_normalized} == "iaas" ]]; then
+		echo "iaasalpha=$(git rev-parse HEAD)" >> oas_commits
+	fi
+
 	cd - >/dev/null
 
 	# Prioritize GA over Beta over Alpha versions
