@@ -58,6 +58,11 @@ EOF
 	cd ${work_dir}/${OAS_REPO_NAME} >/dev/null
 	git checkout -q $apiVersion || (echo "version ${apiVersion} does not exist, using main instead" && git checkout -q main)
 	echo "$service=$(git rev-parse HEAD)" >> oas_commits
+  # To support initial integrations of the IaaS API in an Alpha state, we will temporarily use it to generate an IaaS Alpha SDK module
+  # This check can be removed once the IaaS API moves all endpoints to Beta
+	if [[ ${service} == "iaas" ]]; then
+	  echo "iaasalpha=$(git rev-parse HEAD)" >> oas_commits
+  fi
 	cd - >/dev/null
 
 	# Prioritize GA over Beta over Alpha versions
