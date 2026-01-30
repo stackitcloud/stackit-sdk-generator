@@ -180,6 +180,12 @@ generate_java_sdk() {
             cp -r "${sdk_services_backup_dir}/${service}/VERSION" "${SERVICES_FOLDER}/${service}/VERSION"
         fi
 
+        # If the service has oas_commit file, move it inside the service folder
+        if [ -f "${sdk_services_backup_dir}/${service}/oas_commit" ]; then
+            echo "Found ${service} \"oas_commit\" file"
+            cp -r "${sdk_services_backup_dir}/${service}/oas_commit" "${SERVICES_FOLDER}/${service}/oas_commit"
+        fi
+
     done
 
     cd "${SDK_REPO_LOCAL_PATH}"

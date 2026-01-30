@@ -57,6 +57,7 @@ EOF
 	fi
 	cd ${work_dir}/${OAS_REPO_NAME} >/dev/null
 	git checkout -q $apiVersion || (echo "version ${apiVersion} does not exist, using main instead" && git checkout -q main)
+	echo "$service=$(git rev-parse HEAD)" >> oas_commits
 	cd - >/dev/null
 
 	# Prioritize GA over Beta over Alpha versions
@@ -121,3 +122,4 @@ EOF
 	fi
 	mv -f ${max_version_dir}/*.json ${ROOT_DIR}/oas
 done
+mv -f ${work_dir}/${OAS_REPO_NAME}/oas_commits ${ROOT_DIR}/oas/oas_commits
