@@ -57,12 +57,22 @@ EOF
 	fi
 	cd ${work_dir}/${OAS_REPO_NAME} >/dev/null
 	git checkout -q $apiVersion || (echo "version ${apiVersion} does not exist, using main instead" && git checkout -q main)
-	echo "$service=$(git rev-parse HEAD)" >> oas_commits
+
+	# write commit hash to oas_commits file, normalize name first to match service name in sdk-create-pr.sh, normalization
+	# occurs in go/java/python.sh when creating the SDK modules
+	service_normalzed=${service}
+  service_normalzed="${service_normalzed//-/}"                                  # remove dashes
+  service_normalzed="${service_normalzed// /}"                                  # remove empty spaces
+  service_normalzed="${service_normalzed//_/}"                                  # remove underscores
+  service_normalzed=$(echo "${service_normalzed}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
+  service_normalzed=$(echo "${service_normalzed}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
+	echo "$service_normalzed=$(git rev-parse HEAD)" >> oas_commits
   # To support initial integrations of the IaaS API in an Alpha state, we will temporarily use it to generate an IaaS Alpha SDK module
   # This check can be removed once the IaaS API moves all endpoints to Beta
-	if [[ ${service} == "iaas" ]]; then
+	if [[ ${service_normalzed} == "iaas" ]]; then
 	  echo "iaasalpha=$(git rev-parse HEAD)" >> oas_commits
   fi
+  
 	cd - >/dev/null
 
 	# Prioritize GA over Beta over Alpha versions
