@@ -1,5 +1,5 @@
 {{! This template was customized to initialize the ApiClient with the CoreConfiguration to easily setup the KeyFlow Authentication and custom endpoints. }}
-{{! Original template: https://github.com/OpenAPITools/openapi-generator/blob/v7.14.0/modules/openapi-generator/src/main/resources/Java/libraries/okhttp-gson/ApiClient.mustache }}
+{{! Original template: https://github.com/OpenAPITools/openapi-generator/blob/v7.19.0/modules/openapi-generator/src/main/resources/Java/libraries/okhttp-gson/ApiClient.mustache }}
 
 {{>licenseInfo}}
 
@@ -75,10 +75,12 @@ import {{invokerPackage}}.auth.OAuthFlow;
 import {{invokerPackage}}.auth.AWS4Auth;
 {{/withAWSV4Signature}}
 
+{{! BEGIN - Added imports for core module }}
 import cloud.stackit.sdk.core.auth.SetupAuth;
 import cloud.stackit.sdk.core.config.CoreConfiguration;
 import cloud.stackit.sdk.core.exception.ApiException;
 import cloud.stackit.sdk.core.KeyFlowAuthenticator;
+{{! END - Added imports for core module }}
 
 /**
  * <p>ApiClient class.</p>
@@ -118,6 +120,10 @@ public class ApiClient {
     protected Map<String, String> defaultCookieMap = new HashMap<String, String>();
     protected String tempFolderPath = null;
 
+    {{! BEGIN - deleted field authentications, we use our own Authenticator
+    protected Map<String, Authentication> authentications;
+    }}
+
     protected DateFormat dateFormat;
     protected DateFormat datetimeFormat;
     protected boolean lenientDatetimeFormat;
@@ -126,22 +132,25 @@ public class ApiClient {
     protected InputStream sslCaCert;
     protected boolean verifyingSsl;
     protected KeyManager[] keyManagers;
+    protected String tlsServerName;
 
     protected OkHttpClient httpClient;
     protected JSON json;
 
     protected HttpLoggingInterceptor loggingInterceptor;
 
+    {{! BEGIN - Added CoreConfiguration field to ApiClient }}
     protected CoreConfiguration configuration;
+    {{! END - Added CoreConfiguration field to ApiClient }}
 
     {{#dynamicOperations}}
     protected Map<String, ApiOperation> operationLookupMap = new HashMap<>();
 
     {{/dynamicOperations}}
     {{! BEGIN - Removed ApiClient constructor and replaced it with a custom constructors which create the ApiClient with the CoreConfiguration }}
-    /** 
-     * Basic constructor for ApiClient. 
-     * 
+    /**
+     * Basic constructor for ApiClient.
+     *
      * Not recommended for production use, use the one with the OkHttpClient parameter instead.
      *
      * @throws IOException thrown when a file can not be found
@@ -151,8 +160,8 @@ public class ApiClient {
     }
 
     /**
-     * Basic constructor for ApiClient 
-     * 
+     * Basic constructor for ApiClient
+     *
      * Not recommended for production use, use the one with the OkHttpClient parameter instead.
      *
      * @param config a {@link cloud.stackit.sdk.core.config.CoreConfiguration} object
@@ -303,6 +312,9 @@ public class ApiClient {
         // Set default User-Agent.
         setUserAgent("{{{httpUserAgent}}}{{^httpUserAgent}}OpenAPI-Generator/{{{artifactVersion}}}/java{{/httpUserAgent}}");
 
+        {{! BEGIN - delete line setting authentications
+        authentications = new HashMap<String, Authentication>();
+        }}
         {{#dynamicOperations}}
 
         OpenAPI openAPI = new OpenAPIV3Parser().read("openapi/openapi.yaml");
@@ -322,8 +334,8 @@ public class ApiClient {
     /**
      * Set base path
      *
-     * @param basePath Base path of the URL (e.g {{{basePath}}}
-     * @return An instance of OkHttpClient
+     * @param basePath Base path of the URL (e.g {{{basePath}}})
+     * @return An instance of ApiClient
      */
     public ApiClient setBasePath(String basePath) {
         this.basePath = basePath;
@@ -457,6 +469,29 @@ public class ApiClient {
     }
 
     /**
+     * Get TLS server name for SNI (Server Name Indication).
+     *
+     * @return The TLS server name
+     */
+    public String getTlsServerName() {
+        return tlsServerName;
+    }
+
+    /**
+     * Set TLS server name for SNI (Server Name Indication).
+     * This is used to verify the server certificate against a specific hostname
+     * instead of the hostname in the URL.
+     *
+     * @param tlsServerName The TLS server name to use for certificate verification
+     * @return ApiClient
+     */
+    public ApiClient setTlsServerName(String tlsServerName) {
+        this.tlsServerName = tlsServerName;
+        applySslSettings();
+        return this;
+    }
+
+    /**
      * <p>Getter for the field <code>dateFormat</code>.</p>
      *
      * @return a {@link java.text.DateFormat} object
@@ -533,6 +568,26 @@ public class ApiClient {
         JSON.setLenientOnJson(lenientOnJson);
         return this;
     }
+    {{! BEGIN - delete authentications getter, we use our own Authenticator
+    /**
+     * Get authentications (key: authentication name, value: authentication).
+     *
+     * @return Map of authentication objects
+     */
+    public Map<String, Authentication> getAuthentications() {
+        return authentications;
+    }
+
+    /**
+     * Get authentication for the given name.
+     *
+     * @param authName The authentication name
+     * @return The authentication, null if not found
+     */
+    public Authentication getAuthentication(String authName) {
+        return authentications.get(authName);
+    }
+    }}
 
     {{#hasHttpBearerMethods}}
     /**
@@ -559,6 +614,15 @@ public class ApiClient {
     }
     {{/hasHttpBearerMethods}}
 
+    {{! BEGIN - delete auth related methods, we use our own Authenticator
+      deleted methods:
+      setUsername
+      setPassword
+      setApiKey
+      setApiKeyPrefix
+      setAccessToken
+      setAWS4Configuration
+    }}
     /**
      * Set the User-Agent header's value (by adding to the default header map).
      *
@@ -791,7 +855,7 @@ public class ApiClient {
      * @param value The value of the parameter.
      * @return A list of {@code Pair} objects.
      */
-    public List<Pair> parameterToPairs(String collectionFormat, String name, Collection value) {
+    public List<Pair> parameterToPairs(String collectionFormat, String name, Collection<?> value) {
         List<Pair> params = new ArrayList<Pair>();
 
         // preconditions
@@ -1060,7 +1124,17 @@ public class ApiClient {
         }
         try {
             if (isJsonMime(contentType)) {
-                return JSON.deserialize(respBody.byteStream(), returnType);
+                if (returnType.equals(String.class)) {
+                    String respBodyString = respBody.string();
+                    if (respBodyString.isEmpty()) {
+                        return null;
+                    }
+                    // Use String-based deserialize for String return type with fallback
+                    return JSON.deserialize(respBodyString, returnType);
+                } else {
+                    // Use InputStream-based deserialize which supports responses > 2GB
+                    return JSON.deserialize(respBody.byteStream(), returnType);
+                }
             } else if (returnType.equals(String.class)) {
                 String respBodyString = respBody.string();
                 if (respBodyString.isEmpty()) {
@@ -1387,6 +1461,10 @@ public class ApiClient {
 
         List<Pair> updatedQueryParams = new ArrayList<>(queryParams);
 
+        {{! BEGIN - delete updateParamsForAuth, we use our own Authenticator
+        // update parameters with authentication settings
+        updateParamsForAuth(authNames, updatedQueryParams, headerParams, cookieParams, requestBodyToString(reqBody), method, URI.create(url));
+        }}
         final Request.Builder reqBuilder = new Request.Builder().url(buildUrl(baseUrl, path, updatedQueryParams, collectionQueryParams));
         processHeaderParams(headerParams, reqBuilder);
         processCookieParams(cookieParams, reqBuilder);
@@ -1425,7 +1503,8 @@ public class ApiClient {
             if (serverIndex != null) {
                 if (serverIndex < 0 || serverIndex >= servers.size()) {
                     throw new ArrayIndexOutOfBoundsException(String.format(
-                    "Invalid index %d when selecting the host settings. Must be less than %d", serverIndex, servers.size()
+                        java.util.Locale.ROOT,
+                        "Invalid index %d when selecting the host settings. Must be less than %d", serverIndex, servers.size()
                     ));
                 }
                 baseURL = servers.get(serverIndex).URL(serverVariables);
@@ -1497,14 +1576,16 @@ public class ApiClient {
      */
     public void processCookieParams(Map<String, String> cookieParams, Request.Builder reqBuilder) {
         for (Entry<String, String> param : cookieParams.entrySet()) {
-            reqBuilder.addHeader("Cookie", String.format("%s=%s", param.getKey(), param.getValue()));
+            reqBuilder.addHeader("Cookie", String.format(java.util.Locale.ROOT, "%s=%s", param.getKey(), param.getValue()));
         }
         for (Entry<String, String> param : defaultCookieMap.entrySet()) {
             if (!cookieParams.containsKey(param.getKey())) {
-                reqBuilder.addHeader("Cookie", String.format("%s=%s", param.getKey(), param.getValue()));
+                reqBuilder.addHeader("Cookie", String.format(java.util.Locale.ROOT, "%s=%s", param.getKey(), param.getValue()));
             }
         }
     }
+
+    {{! BEGIN - delete updateParamsForAuth method, we use our own Authenticator }}
 
     /**
      * Build a form-encoding request body with the given form parameters.
@@ -1567,10 +1648,10 @@ public class ApiClient {
     /**
      * Add a Content-Disposition Header for the given key and file to the MultipartBody Builder.
      *
-     * @param mpBuilder MultipartBody.Builder 
+     * @param mpBuilder MultipartBody.Builder
      * @param key The key of the Header element
      * @param file The file to add to the Header
-     */ 
+     */
     protected void addPartToMultiPartBuilder(MultipartBody.Builder mpBuilder, String key, File file) {
         Headers partHeaders = Headers.of("Content-Disposition", "form-data; name=\"" + key + "\"; filename=\"" + file.getName() + "\"");
         MediaType mediaType = MediaType.parse(guessContentTypeFromFile(file));
@@ -1675,7 +1756,17 @@ public class ApiClient {
                     trustManagerFactory.init(caKeyStore);
                 }
                 trustManagers = trustManagerFactory.getTrustManagers();
-                hostnameVerifier = OkHostnameVerifier.INSTANCE;
+                if (tlsServerName != null && !tlsServerName.isEmpty()) {
+                    hostnameVerifier = new HostnameVerifier() {
+                        @Override
+                        public boolean verify(String hostname, SSLSession session) {
+                            // Verify the certificate against tlsServerName instead of the actual hostname
+                            return OkHostnameVerifier.INSTANCE.verify(tlsServerName, session);
+                        }
+                    };
+                } else {
+                    hostnameVerifier = OkHostnameVerifier.INSTANCE;
+                }
             }
 
             SSLContext sslContext = SSLContext.getInstance("TLS");
