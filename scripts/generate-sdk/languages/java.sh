@@ -10,7 +10,7 @@ SERVICES_FOLDER="${SDK_REPO_LOCAL_PATH}/services"
 
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 
-INCLUDE_SERVICES=("alb" "resourcemanager" "iaas" "objectstorage" "serverbackup" "loadbalancer" "serverupdate")
+INCLUDE_SERVICES=("alb" "iaas" "loadbalancer" "objectstorage" "resourcemanager" "serverbackup" "serverupdate" "sfs")
 
 generate_java_sdk() {
     # Required parameters
@@ -178,6 +178,12 @@ generate_java_sdk() {
         if [ -f "${sdk_services_backup_dir}/${service}/VERSION" ]; then
             echo "Found ${service} \"VERSION\" file"
             cp -r "${sdk_services_backup_dir}/${service}/VERSION" "${SERVICES_FOLDER}/${service}/VERSION"
+        fi
+
+        # If the service has oas_commit file, move it inside the service folder
+        if [ -f "${sdk_services_backup_dir}/${service}/oas_commit" ]; then
+            echo "Found ${service} \"oas_commit\" file"
+            cp -r "${sdk_services_backup_dir}/${service}/oas_commit" "${SERVICES_FOLDER}/${service}/oas_commit"
         fi
 
     done
