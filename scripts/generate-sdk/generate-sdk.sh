@@ -65,7 +65,7 @@ python)
 java)
 # When the GENERATOR_VERSION changes, migrate also the templates in templates/java
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
-    GENERATOR_VERSION="v7.15.0"
+    GENERATOR_VERSION="v7.19.0"
     ;;
 *)
     echo "SDK language not supported."

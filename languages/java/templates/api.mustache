@@ -1,5 +1,5 @@
 {{! This template was customized to initialize the DefaultApi with the CoreConfiguration to easily setup the KeyFlow Authentication and custom endpoints. }}
-{{! Original template: https://github.com/OpenAPITools/openapi-generator/blob/v7.14.0/modules/openapi-generator/src/main/resources/Java/libraries/okhttp-gson/api.mustache }}
+{{! Original template: https://github.com/OpenAPITools/openapi-generator/blob/v7.19.0/modules/openapi-generator/src/main/resources/Java/libraries/okhttp-gson/api.mustache }}
 
 {{>licenseInfo}}
 
@@ -478,11 +478,11 @@ class {{classname}} {
 
     public class API{{operationId}}Request {
         {{#requiredParams}}
-        {{>nullable_var_annotations}}
+        {{>nullable_var_annotations}}{{! prevent indent}}
         private final {{{dataType}}} {{paramName}};
         {{/requiredParams}}
         {{#optionalParams}}
-        {{>nullable_var_annotations}}
+        {{>nullable_var_annotations}}{{! prevent indent}}
         private {{{dataType}}} {{paramName}};
         {{/optionalParams}}
 
