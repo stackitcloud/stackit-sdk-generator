@@ -160,7 +160,7 @@ generate_go_sdk() {
             --git-host "${GIT_HOST}" \
             --git-user-id "${GIT_USER_ID}" \
             --git-repo-id "${GIT_REPO_ID}" \
-            --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles \
+            --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles,apiTests=false \
             --additional-properties=isGoSubmodule=true,enumClassPrefix=true,generateInterfaces=true,$regional_api \
             --http-user-agent "stackit-sdk-go/${service}" \
             --reserved-words-mappings type=types \
@@ -181,10 +181,6 @@ generate_go_sdk() {
                 echo -e "${go_mod_backup_first_line}\n$(cat ${go_mod_path})" >${go_mod_path}
             fi
         fi
-
-        # Move tests to the service folder
-        cp "${SERVICES_FOLDER}"/"${service}"/test/* "${SERVICES_FOLDER}/${service}"
-        rm -r "${SERVICES_FOLDER}/${service}/test/"
 
         # If the service has a wait package files, move them inside the service folder
         if [ -d "${sdk_services_backup_dir}/${service}/wait" ]; then
