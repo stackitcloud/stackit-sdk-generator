@@ -132,9 +132,9 @@ generate_go_sdk() {
             exit 1
         fi
 
-        if grep -E "^$service$" "${ROOT_DIR}/languages/golang/blacklist.txt"; then
-            echo "Skipping blacklisted service ${service}"
-            warning+="Skipping blacklisted service ${service}\n"
+        if grep -E "^$service$" "${ROOT_DIR}/languages/golang/blocklist.txt"; then
+            echo "Skipping blocklisted service ${service}"
+            warning+="Skipping blocklisted service ${service}\n"
             continue
         fi
 
