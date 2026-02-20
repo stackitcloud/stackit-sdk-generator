@@ -143,9 +143,9 @@ generate_go_sdk() {
 
         GO_POST_PROCESS_FILE="gofmt -w" \
             mkdir -p "${SERVICES_FOLDER}/${service}/"
-        cp "${ROOT_DIR}/languages/golang/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
+        cp "${ROOT_DIR}/languages/golang/compat-layer/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
         regional_api=
-        if grep -E "^$service$" ${ROOT_DIR}/languages/golang/regional-allowlist.txt; then
+        if grep -E "^$service$" ${ROOT_DIR}/languages/golang/compat-layer/regional-allowlist.txt; then
             echo "Generating new regional api"
             regional_api="regional_api"
         fi
@@ -164,7 +164,7 @@ generate_go_sdk() {
             --additional-properties=isGoSubmodule=true,enumClassPrefix=true,generateInterfaces=true,$regional_api \
             --http-user-agent "stackit-sdk-go/${service}" \
             --reserved-words-mappings type=types \
-            --config "${ROOT_DIR}/languages/golang/openapi-generator-config.yml"
+            --config "${ROOT_DIR}/languages/golang/compat-layer/openapi-generator-config.yml"
             
         # Remove unnecessary files
         rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
