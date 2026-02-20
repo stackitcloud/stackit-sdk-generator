@@ -132,9 +132,9 @@ generate_go_sdk() {
             exit 1
         fi
 
-        if grep -E "^$service$" "${ROOT_DIR}/languages/golang/blacklist.txt"; then
-            echo "Skipping blacklisted service ${service}"
-            warning+="Skipping blacklisted service ${service}\n"
+        if grep -E "^$service$" "${ROOT_DIR}/languages/golang/blocklist.txt"; then
+            echo "Skipping blocklisted service ${service}"
+            warning+="Skipping blocklisted service ${service}\n"
             continue
         fi
 
@@ -145,7 +145,7 @@ generate_go_sdk() {
             mkdir -p "${SERVICES_FOLDER}/${service}/"
         cp "${ROOT_DIR}/languages/golang/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
         regional_api=
-        if grep -E "^$service$" ${ROOT_DIR}/regional-whitelist.txt; then
+        if grep -E "^$service$" ${ROOT_DIR}/languages/golang/regional-allowlist.txt; then
             echo "Generating new regional api"
             regional_api="regional_api"
         fi

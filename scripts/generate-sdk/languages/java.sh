@@ -101,9 +101,9 @@ generate_java_sdk() {
             continue
         fi
 
-        if grep -E "^$service$" "${ROOT_DIR}/languages/java/blacklist.txt"; then
-            echo "Skipping blacklisted service ${service}"
-            warning+="Skipping blacklisted service ${service}\n"
+        if grep -E "^$service$" "${ROOT_DIR}/languages/java/blocklist.txt"; then
+            echo "Skipping blocklisted service ${service}"
+            warning+="Skipping blocklisted service ${service}\n"
             cp -r "${sdk_services_backup_dir}/${service}" "${SERVICES_FOLDER}"
             continue
         fi

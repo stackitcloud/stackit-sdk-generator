@@ -92,9 +92,9 @@ generate_python_sdk() {
         service=$(echo "${service}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
         service=$(echo "${service}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
 
-        if grep -E "^$service$" "${ROOT_DIR}/languages/python/blacklist.txt"; then
-            echo "Skipping blacklisted service ${service}"
-            warning+="Skipping blacklisted service ${service}\n"
+        if grep -E "^$service$" "${ROOT_DIR}/languages/python/blocklist.txt"; then
+            echo "Skipping blocklisted service ${service}"
+            warning+="Skipping blocklisted service ${service}\n"
             continue
         fi
 
