@@ -74,7 +74,7 @@ jobs:
           GH_REPO: "stackitcloud/stackit-sdk-python"
           GH_TOKEN: ${{ secrets.SDK_PR_TOKEN }}
         run: |
-          (cd ./sdk-repo-updated && uv install)
+          (cd ./sdk-repo-updated && uv sync)
           scripts/sdk-create-pr.sh "generator-bot-${{ github.run_id }}" "Generated from GitHub run [${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" "git@github.com:stackitcloud/stackit-sdk-python.git" "python"
 
   main-java:
