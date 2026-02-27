@@ -146,10 +146,10 @@ generate_python_sdk() {
             cp -r "${sdk_services_backup_dir}/${service}/pyproject.toml" "${SERVICES_FOLDER}/${service}/pyproject.toml"
         fi
 
-        # If the service has a poetry.lock file, move them inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/poetry.lock" ]; then
-            echo "Found ${service} \"poetry.lock\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/poetry.lock" "${SERVICES_FOLDER}/${service}/poetry.lock"
+        # If the service has a uv.lock file, move them inside the service folder
+        if [ -f "${sdk_services_backup_dir}/${service}/uv.lock" ]; then
+            echo "Found ${service} \"uv.lock\" file"
+            cp -r "${sdk_services_backup_dir}/${service}/uv.lock" "${SERVICES_FOLDER}/${service}/uv.lock"
         fi
 
         # If the service has a CHANGELOG file, move it inside the service folder
