@@ -123,7 +123,6 @@ generate_go_sdk() {
         service=$(echo "${service}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
 
         go_pkg_name_format="^[a-z0-9]+$"
-        echo "${service_dir}"
         if [[ ! ${service} =~ ${go_pkg_name_format} ]]; then # check that it is a single lower case word
             echo "Service ${service} has an invalid Go package name even after removing invalid characters. The generate-sdk.sh script might need to be updated to catch corner case, contact the repo maintainers."
             exit 1
