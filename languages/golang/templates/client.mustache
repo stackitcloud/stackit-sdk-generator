@@ -25,8 +25,9 @@ import (
 	"unicode/utf8"
 
 	{{! TEMPLATE CUSTOMIZATION - BEGIN }}
-	"github.com/stackitcloud/stackit-sdk-go/core/config"
 	"github.com/stackitcloud/stackit-sdk-go/core/auth"
+	"github.com/stackitcloud/stackit-sdk-go/core/config"
+	"github.com/stackitcloud/stackit-sdk-go/core/oapierror"
 	{{! TEMPLATE CUSTOMIZATION - END }}
 
 	{{#hasOAuthMethods}}
@@ -753,27 +754,8 @@ func strlen(s string) int {
 	return utf8.RuneCountInString(s)
 }
 
-// GenericOpenAPIError Provides access to the body, error and model on returned errors.
-type GenericOpenAPIError struct {
-	body  []byte
-	error string
-	model interface{}
-}
-
-// Error returns non-empty string if there was an error.
-func (e GenericOpenAPIError) Error() string {
-	return e.error
-}
-
-// Body returns the raw bytes of the response
-func (e GenericOpenAPIError) Body() []byte {
-	return e.body
-}
-
-// Model returns the unpacked model of the error
-func (e GenericOpenAPIError) Model() interface{} {
-	return e.model
-}
+{{! TEMPLATE CUSTOMIZATION - BEGIN - Remove generation of GenericOpenAPIError struct because we use the one from our core module }}
+{{! TEMPLATE CUSTOMIZATION - END - Remove generation of GenericOpenAPIError struct because we use the one from our core module }}
 
 // format error message using title and detail when model implements rfc7807
 func formatErrorMessage(status string, v interface{}) string {
