@@ -1,34 +1,42 @@
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 type Nullable{{{classname}}} struct {
 	value {{^isArray}}{{^isFreeFormObject}}*{{/isFreeFormObject}}{{/isArray}}{{{classname}}}
 	isSet bool
 }
 
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 func (v Nullable{{classname}}) Get() {{^isArray}}{{^isFreeFormObject}}*{{/isFreeFormObject}}{{/isArray}}{{classname}} {
 	return v.value
 }
 
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 func (v *Nullable{{classname}}) Set(val {{^isArray}}{{^isFreeFormObject}}*{{/isFreeFormObject}}{{/isArray}}{{classname}}) {
 	v.value = val
 	v.isSet = true
 }
 
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 func (v Nullable{{classname}}) IsSet() bool {
 	return v.isSet
 }
 
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 func (v *Nullable{{classname}}) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 func NewNullable{{classname}}(val {{^isArray}}{{^isFreeFormObject}}*{{/isFreeFormObject}}{{/isArray}}{{classname}}) *Nullable{{classname}} {
 	return &Nullable{{classname}}{value: val, isSet: true}
 }
 
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 func (v Nullable{{{classname}}}) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
+// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 func (v *Nullable{{{classname}}}) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)

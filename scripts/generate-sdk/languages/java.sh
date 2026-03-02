@@ -116,6 +116,9 @@ generate_java_sdk() {
 
         SERVICE_DESCRIPTION=$(cat "${service_json}" | jq .info.title --raw-output)
 
+        # TODO: add to generator below when adding multi-API-version support:
+        # --inline-schema-options "SKIP_SCHEMA_REUSE=true"
+
         # Run the generator
         java -Dlog.level="${GENERATOR_LOG_LEVEL}" -jar "${GENERATOR_JAR_PATH}" generate \
             --generator-name java \
