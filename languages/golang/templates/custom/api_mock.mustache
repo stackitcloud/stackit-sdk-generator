@@ -36,7 +36,10 @@ func (a {{{classname}}}ServiceMock) {{{nickname}}}(ctx context.Context{{#pathPar
 // {{#isDeprecated}}Deprecated: {{/isDeprecated}}{{nickname}}Execute is a no-op by default and will return only return nil values. Behavior can be controlled by populating the {{nickname}}ExecuteMock field in the {{classname}}ServiceMock struct.
 func (a {{{classname}}}ServiceMock) {{nickname}}Execute(r {{#structPrefix}}{{&classname}}{{/structPrefix}}{{^structPrefix}}Api{{/structPrefix}}{{operationId}}Request) ({{#returnType}}{{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}, {{/returnType}}*http.Response, error) {
 	if a.{{nickname}}ExecuteMock == nil {
-		return {{#returnType}}nil, {{/returnType}}&http.Response{}, nil
+		{{#returnType}}
+		var localVarReturnValue  {{^isArray}}{{^returnTypeIsPrimitive}}{{^isResponseFile}}*{{/isResponseFile}}{{/returnTypeIsPrimitive}}{{/isArray}}{{{.}}}
+		{{/returnType}}
+		return {{#returnType}}localVarReturnValue, {{/returnType}}&http.Response{}, nil
 	}
 
 	return (*a.{{nickname}}ExecuteMock)(r)
