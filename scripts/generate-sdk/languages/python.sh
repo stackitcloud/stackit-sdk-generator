@@ -80,8 +80,11 @@ generate_python_sdk() {
 
     warning=""
 
+    # TODO: add to generator below when adding multi-API-version support:
+    # --inline-schema-options "SKIP_SCHEMA_REUSE=true"
+
     # Generate SDK for each service
-    for service_json in ${ROOT_DIR}/oas/*.json; do
+    for service_json in ${ROOT_DIR}/oas/legacy/*.json; do
         service="${service_json##*/}"
         service="${service%.json}"
 
@@ -92,9 +95,9 @@ generate_python_sdk() {
         service=$(echo "${service}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
         service=$(echo "${service}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
 
-        if grep -E "^$service$" "${ROOT_DIR}/languages/python/blacklist.txt"; then
-            echo "Skipping blacklisted service ${service}"
-            warning+="Skipping blacklisted service ${service}\n"
+        if grep -E "^$service$" "${ROOT_DIR}/languages/python/blocklist.txt"; then
+            echo "Skipping blocklisted service ${service}"
+            warning+="Skipping blocklisted service ${service}\n"
             continue
         fi
 
@@ -146,10 +149,10 @@ generate_python_sdk() {
             cp -r "${sdk_services_backup_dir}/${service}/pyproject.toml" "${SERVICES_FOLDER}/${service}/pyproject.toml"
         fi
 
-        # If the service has a poetry.lock file, move them inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/poetry.lock" ]; then
-            echo "Found ${service} \"poetry.lock\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/poetry.lock" "${SERVICES_FOLDER}/${service}/poetry.lock"
+        # If the service has a uv.lock file, move them inside the service folder
+        if [ -f "${sdk_services_backup_dir}/${service}/uv.lock" ]; then
+            echo "Found ${service} \"uv.lock\" file"
+            cp -r "${sdk_services_backup_dir}/${service}/uv.lock" "${SERVICES_FOLDER}/${service}/uv.lock"
         fi
 
         # If the service has a CHANGELOG file, move it inside the service folder

@@ -78,7 +78,7 @@ generate_java_sdk() {
     warning=""
 
     # Generate SDK for each service
-    for service_json in "${ROOT_DIR}"/oas/*.json; do
+    for service_json in "${ROOT_DIR}"/oas/legacy/*.json; do
         service="${service_json##*/}"
         service="${service%.json}"
 
@@ -101,9 +101,9 @@ generate_java_sdk() {
             continue
         fi
 
-        if grep -E "^$service$" "${ROOT_DIR}/languages/java/blacklist.txt"; then
-            echo "Skipping blacklisted service ${service}"
-            warning+="Skipping blacklisted service ${service}\n"
+        if grep -E "^$service$" "${ROOT_DIR}/languages/java/blocklist.txt"; then
+            echo "Skipping blocklisted service ${service}"
+            warning+="Skipping blocklisted service ${service}\n"
             cp -r "${sdk_services_backup_dir}/${service}" "${SERVICES_FOLDER}"
             continue
         fi
@@ -115,6 +115,9 @@ generate_java_sdk() {
         cp "${ROOT_DIR}/languages/java/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
 
         SERVICE_DESCRIPTION=$(cat "${service_json}" | jq .info.title --raw-output)
+
+        # TODO: add to generator below when adding multi-API-version support:
+        # --inline-schema-options "SKIP_SCHEMA_REUSE=true"
 
         # Run the generator
         java -Dlog.level="${GENERATOR_LOG_LEVEL}" -jar "${GENERATOR_JAR_PATH}" generate \

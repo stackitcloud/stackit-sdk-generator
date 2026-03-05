@@ -16,8 +16,6 @@ SCRIPTS_FOLDER="${SDK_REPO_LOCAL_PATH}/scripts"
 
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
 
-SDK_GO_VERSION="1.21"
-
 generate_go_sdk() {
     # Required parameters
     local GENERATOR_JAR_PATH=$1
@@ -105,13 +103,17 @@ generate_go_sdk() {
         cd "${SDK_REPO_LOCAL_PATH}/core"
         go work use .
     fi
+   
+    # see https://openapi-generator.tech/docs/file-post-processing/
+    export GO_POST_PROCESS_FILE="gofmt -w"
 
     warning=""
 
-    # Generate SDK for each service
-    for service_json in ${ROOT_DIR}/oas/*.json; do
-        service="${service_json##*/}"
+    for service_dir in "${ROOT_DIR}/oas/services"/*; do
+        service="${service_dir##*/}"
         service="${service%.json}"
+
+        compat_layer_service_oas_name="${service}"
 
         # Remove invalid characters to ensure a valid Go pkg name
         service="${service//-/}"                                  # remove dashes
@@ -132,28 +134,111 @@ generate_go_sdk() {
             exit 1
         fi
 
-        if grep -E "^$service$" "${ROOT_DIR}/languages/golang/blacklist.txt"; then
-            echo "Skipping blacklisted service ${service}"
-            warning+="Skipping blacklisted service ${service}\n"
+        # check if the whole service is blocklisted
+        if grep -E "^$service$" "${ROOT_DIR}/languages/golang/blocklist.txt"; then
+            echo "Skipping blocklisted service ${service}"
+            warning+="Skipping blocklisted service ${service}\n"
             continue
         fi
+        
+        
+        echo -e "\n>> Generating SDK for \"${service}\" service..."
+        for version_dir in "${service_dir}"/*; do
+            service_version_json="${version_dir}/${service_dir##*/}.json"
+            version="${version_dir##*/}"
+            
+            # check if that specific API version of the service is blocklisted
+            if grep -E "^${service}-${version}$" "${ROOT_DIR}/languages/golang/blocklist.txt"; then
+                echo "Skipping blocklisted API version ${version} of service ${service}"
+                warning+="Skipping blocklisted API version ${version} of service ${service}\n"
+                continue
+            fi
+            
+            echo -e "\n>> Generating SDK package \"${version}api\" for \"${service}\" service..."
+            cd "${ROOT_DIR}"
 
-        echo -e "\n>> Generating \"${service}\" service..."
+            mkdir -p "${SERVICES_FOLDER}/${service}/${version}api"
+            cp "${ROOT_DIR}/languages/golang/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/${version}api/.openapi-generator-ignore"
+
+            # Run the generator for Go
+            java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${jar_path} generate \
+                --generator-name go \
+                --input-spec "${service_version_json}" \
+                --output "${SERVICES_FOLDER}/${service}/${version}api" \
+                --package-name "${version}api" \
+                --enable-post-process-file \
+                --git-host "${GIT_HOST}" \
+                --git-user-id "${GIT_USER_ID}" \
+                --git-repo-id "${GIT_REPO_ID}/services/${service}" \
+                --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles,apiTests=false\
+                --inline-schema-options "SKIP_SCHEMA_REUSE=true" \
+                --http-user-agent "stackit-sdk-go/${service}" \
+                --reserved-words-mappings type=types \
+                --config "${ROOT_DIR}/languages/golang/openapi-generator-config.yml"
+        
+            # Remove unnecessary files
+            rm "${SERVICES_FOLDER}/${service}/${version}api/.openapi-generator-ignore"
+            rm -r "${SERVICES_FOLDER}/${service}/${version}api/.openapi-generator"
+        
+            # If the service version has a wait package files, move them inside the service folder
+            if [ -d "${sdk_services_backup_dir}/${service}/${version}api/wait" ]; then
+                echo "Found ${service} \"wait\" package"
+                cp -r "${sdk_services_backup_dir}/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/${version}api/wait"
+            fi
+        done
+        
+        if ! grep -E "^$service$" "${ROOT_DIR}/languages/golang/compat-layer/allow-list.txt"; then
+            echo "Skipping service ${service}, compatibility layer is not activated for it"
+            warning+="Skipping compatibility layer generation for service ${service}\n"
+
+            cp "${ROOT_DIR}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
+            if [ ! -f "${SERVICES_FOLDER}/${service}/go.mod" ]; then
+                printf "module github.com/stackitcloud/stackit-sdk-go/services/${service}\n\n" > "${SERVICES_FOLDER}/${service}/go.mod" 
+                printf "go ${SDK_GO_VERSION}\n\n" >> "${SERVICES_FOLDER}/${service}/go.mod" 
+                printf "require (\n\tgithub.com/stackitcloud/stackit-sdk-go/core v0.21.1\n)\n" >> "${SERVICES_FOLDER}/${service}/go.mod" 
+            fi
+
+            # generate package.go
+            printf "package ${service}\n" > "${SERVICES_FOLDER}/${service}/package.go" 
+
+
+            cd "${SERVICES_FOLDER}/${service}"
+            go work use .
+            # Make sure that dependencies are uptodate
+            go get -u ./...
+            go mod tidy
+
+            continue
+        fi
+    
+        # COMPAT LAYER - LEGACY !! - START
+        
+        # Download OpenAPI generator if not already downloaded
+        compat_layer_jar_path="${ROOT_DIR}/scripts/bin/openapi-generator-cli-go-compat-layer.jar"
+        if [ -e ${compat_layer_jar_path} ] && [ $(java -jar ${compat_layer_jar_path} version) == "6.6.0" ]; then
+            :
+        else
+            echo "Downloading OpenAPI generator (version 6.6.0) for generating the compatibility layer..."
+            mkdir -p "${ROOT_DIR}/scripts/bin"
+            wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/6.6.0/openapi-generator-cli-6.6.0.jar -O ${compat_layer_jar_path} --quiet
+            echo "Download done."
+        fi
+
+        echo -e "\n>> Generating compatibility layer for \"${service}\" service..."
         cd "${ROOT_DIR}"
 
-        GO_POST_PROCESS_FILE="gofmt -w" \
-            mkdir -p "${SERVICES_FOLDER}/${service}/"
-        cp "${ROOT_DIR}/languages/golang/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
+        mkdir -p "${SERVICES_FOLDER}/${service}"
+        cp "${ROOT_DIR}/languages/golang/compat-layer/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
         regional_api=
-        if grep -E "^$service$" ${ROOT_DIR}/regional-whitelist.txt; then
+        if grep -E "^$service$" ${ROOT_DIR}/languages/golang/compat-layer/regional-allowlist.txt; then
             echo "Generating new regional api"
             regional_api="regional_api"
         fi
-
-        # Run the generator for Go
-        java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${jar_path} generate \
+        
+        # Run the compatibility-layer generator for Go
+        java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${compat_layer_jar_path} generate \
             --generator-name go \
-            --input-spec "${service_json}" \
+            --input-spec "${ROOT_DIR}/oas/legacy/${compat_layer_service_oas_name}.json" \
             --output "${SERVICES_FOLDER}/${service}" \
             --package-name "${service}" \
             --enable-post-process-file \
@@ -164,7 +249,7 @@ generate_go_sdk() {
             --additional-properties=isGoSubmodule=true,enumClassPrefix=true,generateInterfaces=true,$regional_api \
             --http-user-agent "stackit-sdk-go/${service}" \
             --reserved-words-mappings type=types \
-            --config "${ROOT_DIR}/languages/golang/openapi-generator-config.yml"
+            --config "${ROOT_DIR}/languages/golang/compat-layer/openapi-generator-config.yml"
             
         # Remove unnecessary files
         rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
@@ -186,6 +271,8 @@ generate_go_sdk() {
         if [ -d "${sdk_services_backup_dir}/${service}/wait" ]; then
             echo "Found ${service} \"wait\" package"
             cp -r "${sdk_services_backup_dir}/${service}/wait" "${SERVICES_FOLDER}/${service}/wait"
+            # deprecate legacy wait package
+            printf "// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead\npackage wait\n\n" > "${SERVICES_FOLDER}/${service}/wait/deprecation.go"
         fi
 
         # If the service has a CHANGELOG file, move it inside the service folder
@@ -211,18 +298,15 @@ generate_go_sdk() {
             echo "Found ${service} \"VERSION\" file"
             cp -r "${sdk_services_backup_dir}/${service}/VERSION" "${SERVICES_FOLDER}/${service}/VERSION"
         fi
-
-        # If the service has oas_commit file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/oas_commit" ]; then
-            echo "Found ${service} \"oas_commit\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/oas_commit" "${SERVICES_FOLDER}/${service}/oas_commit"
-        fi
-
+        
         cd "${SERVICES_FOLDER}/${service}"
         go work use .
         # Make sure that dependencies are uptodate
         go get -u ./...
         go mod tidy
+    
+        # COMPAT LAYER - LEGACY !! - END
+
     done
 
     # Add examples to workspace

@@ -101,29 +101,22 @@ jobs:
         uses: ./.github/actions/build/python
       - name: Generate SDK
         uses: ./.github/actions/generate-sdk/python
-      - name: Install Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}          
+          python-version: ${{ matrix.python-version }}
+      - name: install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.10.4"
+          python-version: ${{ matrix.python-version }}
       - name: Install sdk
         working-directory: ./sdk-repo-updated
-        run: |
-          pip install poetry
-          poetry config virtualenvs.create false
-          python -m venv .venv          
-          . .venv/bin/activate
-          python -m pip install --upgrade pip
-          make install-dev
+        run: make install-dev
       - name: Lint
         working-directory: ./sdk-repo-updated
-        run: |
-          . .venv/bin/activate
-          make lint
+        run: make lint
       - name: Test
         working-directory: ./sdk-repo-updated
-        run: |
-          . .venv/bin/activate
-          make test
+        run: make test
 
   main-java:
     name: CI [Java]
