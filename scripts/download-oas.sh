@@ -31,7 +31,7 @@ fi
 git clone "${OAS_REPO}" "${ROOT_DIR}/oas" --quiet
 
 # OPTIONAL: Lock to a specific commit
-if [[ "$OAS_REPO_NAME" == "https://github.com/stackitcloud/stackit-api-specifications.git" ]]; then
+if [[ "$OAS_REPO" == "https://github.com/stackitcloud/stackit-api-specifications.git" ]]; then
 	cd "${ROOT_DIR}/oas"
 	git checkout 335aa32af4d6c0d2a036b8567773da2f051f7efb
 fi
