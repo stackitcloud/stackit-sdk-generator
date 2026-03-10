@@ -193,7 +193,7 @@ generate_go_sdk() {
 
             cp "${ROOT_DIR}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
             if [ ! -f "${SERVICES_FOLDER}/${service}/go.mod" ]; then
-                printf "module github.com/stackitcloud/stackit-sdk-go/services/${service}\n\n" > "${SERVICES_FOLDER}/${service}/go.mod" 
+                printf "module ${GIT_HOST}/${GIT_USER_ID}/${GIT_REPO_ID}/services/${service}\n\n" > "${SERVICES_FOLDER}/${service}/go.mod" 
                 printf "go ${SDK_GO_VERSION}\n\n" >> "${SERVICES_FOLDER}/${service}/go.mod" 
                 printf "require (\n\tgithub.com/stackitcloud/stackit-sdk-go/core v0.21.1\n)\n" >> "${SERVICES_FOLDER}/${service}/go.mod" 
             fi
