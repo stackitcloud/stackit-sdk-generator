@@ -1,7 +1,10 @@
+{{! This template was customized to use the GenericOpenAPIError from the core module. See https://github.com/OpenAPITools/openapi-generator/blob/v7.20.0/modules/openapi-generator/src/main/resources/python/model_oneof.mustache for the original template }}
 from __future__ import annotations
 import json
 import pprint
+{{! TEMPLATE CUSTOMIZATION - BEGIN - workaround }}
 import re
+{{! TEMPLATE CUSTOMIZATION - END - workaround }}
 {{#vendorExtensions.x-py-other-imports}}
 {{{.}}}
 {{/vendorExtensions.x-py-other-imports}}
@@ -21,12 +24,14 @@ class {{classname}}({{#parent}}{{{.}}}{{/parent}}{{^parent}}BaseModel{{/parent}}
 {{#composedSchemas.oneOf}}
     # data type: {{{dataType}}}
     {{#isString}}
+{{! TEMPLATE CUSTOMIZATION - BEGIN - workaround }}
     # BEGIN of the workaround until upstream issues are fixed:
     # https://github.com/OpenAPITools/openapi-generator/issues/19034 from Jun 28, 2024
     # and https://github.com/OpenAPITools/openapi-generator/issues/19842 from Oct 11, 2024
     # Tracking issue on our side: https://jira.schwarz/browse/STACKITSDK-227
     {{vendorExtensions.x-py-name}}: Optional[Annotated[{{{dataType}}}, Field(strict=True)]] = Field(default=None, description="{{{description}}}"{{#pattern}}, pattern=re.sub(r'^\/|\/$', '',r"{{.}}"){{/pattern}})
     # END of the workaround
+{{! TEMPLATE CUSTOMIZATION - END - workaround }}
     {{/isString}}
     {{^isString}}
     {{vendorExtensions.x-py-name}}: {{{vendorExtensions.x-py-typing}}}
@@ -94,9 +99,11 @@ class {{classname}}({{#parent}}{{{.}}}{{/parent}}{{^parent}}BaseModel{{/parent}}
         {{/isPrimitiveType}}
         {{/isContainer}}
         {{/composedSchemas.oneOf}}
+{{! TEMPLATE CUSTOMIZATION - BEGIN - accept multiple matches }}
         if match == 0:
             # no match
             raise ValueError("No match found when setting `actual_instance` in {{{classname}}} with oneOf schemas: {{#oneOf}}{{{.}}}{{^-last}}, {{/-last}}{{/oneOf}}. Details: " + ", ".join(error_messages))
+{{! TEMPLATE CUSTOMIZATION - END - accept multiple matches }}
         else:
             return v
 

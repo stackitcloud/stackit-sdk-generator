@@ -4,6 +4,7 @@
 
 {{>partial_header}}
 
+
 __version__ = "{{packageVersion}}"
 
 # Define package exports
@@ -11,7 +12,9 @@ __all__ = [
     {{#apiInfo}}{{#apis}}"{{classname}}",
     {{/apis}}{{/apiInfo}}"ApiResponse",
     "ApiClient",
+{{! TEMPLATE CUSTOMIZATION - BEGIN - custom config }}
     "HostConfiguration",
+{{! TEMPLATE CUSTOMIZATION - END - custom config }}
     "OpenApiException",
     "ApiTypeError",
     "ApiValueError",
@@ -23,6 +26,7 @@ __all__ = [
     {{/-last}}{{#-last}},{{/-last}}{{/model}}{{/models}}
 ]
 
+{{! TEMPLATE CUSTOMIZATION - BEGIN - custom imports }}
 # import apis into sdk package
 {{#apiInfo}}{{#apis}}from {{apiPackage}}.{{classFilename}} import {{classname}} as {{classname}}
 {{/apis}}{{/apiInfo}}
@@ -46,6 +50,7 @@ from {{packageName}}.signing import HttpSigningConfiguration as HttpSigningConfi
 from {{modelPackage}}.{{classFilename}} import {{classname}} as {{classname}}
 {{/model}}
 {{/models}}
+{{! TEMPLATE CUSTOMIZATION - END - custom imports }}
 {{#recursionLimit}}
 
 __import__('sys').setrecursionlimit({{{.}}})

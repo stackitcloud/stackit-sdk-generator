@@ -1,3 +1,4 @@
+{{! This template was customized to use the GenericOpenAPIError from the core module. See https://github.com/OpenAPITools/openapi-generator/blob/v7.20.0/modules/openapi-generator/src/main/resources/python/api_client.mustache for the original template }}
 # coding: utf-8
 
 {{>partial_header}}
@@ -5,17 +6,24 @@
 import datetime
 from dateutil.parser import parse
 from enum import Enum
+import decimal
 import json
 import mimetypes
 import os
 import re
 import tempfile
+import uuid
 
 from urllib.parse import quote
 from typing import Tuple, Optional, List, Dict, Union
 from pydantic import SecretStr
+{{#tornado}}
+import tornado.gen
+{{/tornado}}
 
+{{! TEMPLATE CUSTOMIZATION - BEGIN - custom config }}
 from stackit.core.configuration import Configuration
+{{! TEMPLATE CUSTOMIZATION - END - custom config }}
 from {{packageName}}.configuration import HostConfiguration
 from {{packageName}}.api_response import ApiResponse, T as ApiResponseT
 import {{modelPackage}}
@@ -57,16 +65,21 @@ class ApiClient:
         'bool': bool,
         'date': datetime.date,
         'datetime': datetime.datetime,
+        'decimal': decimal.Decimal,
         'object': object,
     }
+    _pool = None
 
     def __init__(
         self,
+{{! TEMPLATE CUSTOMIZATION - BEGIN - custom config }}
         configuration,
+{{! TEMPLATE CUSTOMIZATION - END - custom config }}
         header_name=None,
         header_value=None,
         cookie=None
     ) -> None:
+{{! TEMPLATE CUSTOMIZATION - BEGIN - custom config }}
         self.config: Configuration = configuration
 
         if self.config.custom_endpoint is None:
@@ -77,6 +90,7 @@ class ApiClient:
             self.host = host_config.host
         else:
             self.host = self.config.custom_endpoint
+{{! TEMPLATE CUSTOMIZATION - END - custom config }}
 
         self.rest_client = rest.RESTClientObject(self.config)
         self.default_headers = {}
@@ -85,6 +99,7 @@ class ApiClient:
         self.cookie = cookie
         # Set default User-Agent.
         self.user_agent = '{{{httpUserAgent}}}{{^httpUserAgent}}OpenAPI-Generator/{{{packageVersion}}}/python{{/httpUserAgent}}'
+{{! TEMPLATE CUSTOMIZATION - DELETE - set client_side_validation from config }}
 
 {{#asyncio}}
     async def __aenter__(self):
@@ -180,6 +195,7 @@ class ApiClient:
             body, post_params, files)
         """
 
+{{! TEMPLATE CUSTOMIZATION - DELETE - set config }}
         # header parameters
         header_params = header_params or {}
         header_params.update(self.default_headers)
@@ -202,7 +218,9 @@ class ApiClient:
                 # specified safe chars, encode everything
                 resource_path = resource_path.replace(
                     '{%s}' % k,
+{{! TEMPLATE CUSTOMIZATION - BEGIN - custom config }}
                     quote(str(v))
+{{! TEMPLATE CUSTOMIZATION - END - custom config }}
                 )
 
         # post parameters
@@ -216,13 +234,16 @@ class ApiClient:
             if files:
                 post_params.extend(self.files_parameters(files))
 
+{{! TEMPLATE CUSTOMIZATION - DELETE - call to update_params_for_auth }}
         # body
         if body:
             body = self.sanitize_for_serialization(body)
 
         # request url
+{{! TEMPLATE CUSTOMIZATION - BEGIN - custom config }}
         if _host is None:
             url = self.host + resource_path
+{{! TEMPLATE CUSTOMIZATION - END - custom config }}
         else:
             # use server/host defined in path or operation instead
             url = _host + resource_path
@@ -285,8 +306,10 @@ class ApiClient:
         """
 
         msg = "RESTResponse.read() must be called before passing it to response_deserialize()"
+{{! TEMPLATE CUSTOMIZATION - BEGIN - ValueError instead of assert }}
         if response_data.data is None:
             raise ValueError(msg)
+{{! TEMPLATE CUSTOMIZATION - END - ValueError instead of assert }}
 
         response_type = response_types_map.get(str(response_data.status), None)
         if not response_type and isinstance(response_data.status, int) and 100 <= response_data.status <= 599:
@@ -303,7 +326,7 @@ class ApiClient:
                 return_data = self.__deserialize_file(response_data)
             elif response_type is not None:
                 match = None
-                content_type = response_data.getheader('content-type')
+                content_type = response_data.headers.get('content-type')
                 if content_type is not None:
                     match = re.search(r"charset=([a-zA-Z\-\d]+)[\s;]?", content_type)
                 encoding = match.group(1) if match else "utf-8"
@@ -320,7 +343,7 @@ class ApiClient:
         return ApiResponse(
             status_code = response_data.status,
             data = return_data,
-            headers = response_data.getheaders(),
+            headers = response_data.headers,
             raw_data = response_data.data
         )
 
@@ -332,6 +355,7 @@ class ApiClient:
         If obj is str, int, long, float, bool, return directly.
         If obj is datetime.datetime, datetime.date
             convert to string in iso8601 format.
+        If obj is decimal.Decimal return string representation.
         If obj is list, sanitize each element in the list.
         If obj is dict, return the dict.
         If obj is OpenAPI model, return the properties dict.
@@ -347,6 +371,8 @@ class ApiClient:
             return obj.get_secret_value()
         elif isinstance(obj, self.PRIMITIVE_TYPES):
             return obj
+        elif isinstance(obj, uuid.UUID):
+            return str(obj)
         elif isinstance(obj, list):
             return [
                 self.sanitize_for_serialization(sub_obj) for sub_obj in obj
@@ -357,6 +383,8 @@ class ApiClient:
             )
         elif isinstance(obj, (datetime.datetime, datetime.date)):
             return obj.isoformat()
+        elif isinstance(obj, decimal.Decimal):
+            return str(obj)
 
         elif isinstance(obj, dict):
             obj_dict = obj
@@ -366,7 +394,7 @@ class ApiClient:
             # and attributes which value is not None.
             # Convert attribute name to json key in
             # model definition for request.
-            if hasattr(obj, 'to_dict') and callable(obj.to_dict):
+            if hasattr(obj, 'to_dict') and callable(getattr(obj, 'to_dict')):
                 obj_dict = obj.to_dict()
             else:
                 obj_dict = obj.__dict__
@@ -397,7 +425,7 @@ class ApiClient:
                 data = json.loads(response_text)
             except ValueError:
                 data = response_text
-        elif re.match(r'^application/(json|[\w!#$&.+-^_]+\+json)\s*(;|$)', content_type, re.IGNORECASE):
+        elif re.match(r'^application/(json|[\w!#$&.+\-^_]+\+json)\s*(;|$)', content_type, re.IGNORECASE):
             if response_text == "":
                 data = ""
             else:
@@ -426,16 +454,20 @@ class ApiClient:
         if isinstance(klass, str):
             if klass.startswith('List['):
                 m = re.match(r'List\[(.*)]', klass)
+{{! TEMPLATE CUSTOMIZATION - BEGIN - ValueError instead of assert }}
                 if m is None:
                     raise ValueError("Malformed List type definition")
+{{! TEMPLATE CUSTOMIZATION - END - ValueError instead of assert }}
                 sub_kls = m.group(1)
                 return [self.__deserialize(sub_data, sub_kls)
                         for sub_data in data]
 
             if klass.startswith('Dict['):
                 m = re.match(r'Dict\[([^,]*), (.*)]', klass)
-                if m is None: 
+{{! TEMPLATE CUSTOMIZATION - BEGIN - ValueError instead of assert }}
+                if m is None:
                     raise ValueError("Malformed Dict type definition")
+{{! TEMPLATE CUSTOMIZATION - END - ValueError instead of assert }}
                 sub_kls = m.group(2)
                 return {k: self.__deserialize(v, sub_kls)
                         for k, v in data.items()}
@@ -448,12 +480,14 @@ class ApiClient:
 
         if klass in self.PRIMITIVE_TYPES:
             return self.__deserialize_primitive(data, klass)
-        elif klass == object:
+        elif klass is object:
             return self.__deserialize_object(data)
-        elif klass == datetime.date:
+        elif klass is datetime.date:
             return self.__deserialize_date(data)
-        elif klass == datetime.datetime:
+        elif klass is datetime.datetime:
             return self.__deserialize_datetime(data)
+        elif klass is decimal.Decimal:
+            return decimal.Decimal(data)
         elif issubclass(klass, Enum):
             return self.__deserialize_enum(data, klass)
         else:
@@ -592,6 +626,7 @@ class ApiClient:
                 return content_type
 
         return content_types[0]
+{{! TEMPLATE CUSTOMIZATION - DELETE - update_params_for_auth and _apply_auth_params }}
 
     def __deserialize_file(self, response):
         """Deserializes body to file
@@ -609,15 +644,19 @@ class ApiClient:
         os.close(fd)
         os.remove(path)
 
-        content_disposition = response.getheader("Content-Disposition")
+        content_disposition = response.headers.get("Content-Disposition")
         if content_disposition:
             m = re.search(
                 r'filename=[\'"]?([^\'"\s]+)[\'"]?',
                 content_disposition
             )
+{{! TEMPLATE CUSTOMIZATION - BEGIN - ValueError instead of assert }}
             if m is None:
                 raise ValueError("Unexpected 'content-disposition' header value")
-            filename = m.group(1)
+{{! TEMPLATE CUSTOMIZATION - END - ValueError instead of assert }}
+            filename = os.path.basename(m.group(1))  # Strip any directory traversal
+            if filename in ("", ".", ".."):  # fall back to tmp filename
+                filename = os.path.basename(path)
             path = os.path.join(os.path.dirname(path), filename)
 
         with open(path, "wb") as f:
