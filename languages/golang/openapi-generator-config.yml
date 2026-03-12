@@ -4,6 +4,7 @@ additionalProperties:
   isGoSubmodule: true
   enumClassPrefix: true
   generateInterfaces: true
+  disallowAdditionalPropertiesIfNotPresent: false
 templateDir: languages/golang/templates
 files:
   custom/api_mock.mustache:
