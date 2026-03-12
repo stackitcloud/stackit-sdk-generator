@@ -193,14 +193,37 @@ generate_go_sdk() {
 
             cp "${ROOT_DIR}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
             if [ ! -f "${SERVICES_FOLDER}/${service}/go.mod" ]; then
-                printf "module github.com/stackitcloud/stackit-sdk-go/services/${service}\n\n" > "${SERVICES_FOLDER}/${service}/go.mod" 
+                printf "module ${GIT_HOST}/${GIT_USER_ID}/${GIT_REPO_ID}/services/${service}\n\n" > "${SERVICES_FOLDER}/${service}/go.mod" 
                 printf "go ${SDK_GO_VERSION}\n\n" >> "${SERVICES_FOLDER}/${service}/go.mod" 
                 printf "require (\n\tgithub.com/stackitcloud/stackit-sdk-go/core v0.21.1\n)\n" >> "${SERVICES_FOLDER}/${service}/go.mod" 
             fi
 
             # generate package.go
             printf "package ${service}\n" > "${SERVICES_FOLDER}/${service}/package.go" 
+        
+            # If the service has a CHANGELOG file, move it inside the service folder
+            if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then
+                echo "Found ${service} \"CHANGELOG\" file"
+                cp -r "${sdk_services_backup_dir}/${service}/CHANGELOG.md" "${SERVICES_FOLDER}/${service}/CHANGELOG.md"
+            fi
 
+            # If the service has a NOTICE file, move it inside the service folder
+            if [ -f "${sdk_services_backup_dir}/${service}/NOTICE.txt" ]; then
+                echo "Found ${service} \"NOTICE\" file"
+                cp -r "${sdk_services_backup_dir}/${service}/NOTICE.txt" "${SERVICES_FOLDER}/${service}/NOTICE.txt"
+            fi
+
+            # If the service has a VERSION file, move it inside the service folder
+            if [ -f "${sdk_services_backup_dir}/${service}/VERSION" ]; then
+                echo "Found ${service} \"VERSION\" file"
+                cp -r "${sdk_services_backup_dir}/${service}/VERSION" "${SERVICES_FOLDER}/${service}/VERSION"
+            fi
+
+            # If the service has oas_commit file, move it inside the service folder
+            if [ -f "${sdk_services_backup_dir}/${service}/oas_commit" ]; then
+                echo "Found ${service} \"oas_commit\" file"
+                cp -r "${sdk_services_backup_dir}/${service}/oas_commit" "${SERVICES_FOLDER}/${service}/oas_commit"
+            fi
 
             cd "${SERVICES_FOLDER}/${service}"
             go work use .
@@ -297,6 +320,12 @@ generate_go_sdk() {
         if [ -f "${sdk_services_backup_dir}/${service}/VERSION" ]; then
             echo "Found ${service} \"VERSION\" file"
             cp -r "${sdk_services_backup_dir}/${service}/VERSION" "${SERVICES_FOLDER}/${service}/VERSION"
+        fi
+
+        # If the service has oas_commit file, move it inside the service folder
+        if [ -f "${sdk_services_backup_dir}/${service}/oas_commit" ]; then
+            echo "Found ${service} \"oas_commit\" file"
+            cp -r "${sdk_services_backup_dir}/${service}/oas_commit" "${SERVICES_FOLDER}/${service}/oas_commit"
         fi
         
         cd "${SERVICES_FOLDER}/${service}"
