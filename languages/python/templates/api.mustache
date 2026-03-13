@@ -1,3 +1,4 @@
+{{! This template was customized. See https://github.com/OpenAPITools/openapi-generator/blob/v7.20.0/modules/openapi-generator/src/main/resources/python/api.mustache for the original template }}
 # coding: utf-8
 
 {{>partial_header}}
@@ -10,7 +11,9 @@ from typing_extensions import Annotated
 {{import}}
 {{/imports}}
 
+{{! TEMPLATE CUSTOMIZATION - BEGIN - custom config }}
 from stackit.core.configuration import Configuration
+{{! TEMPLATE CUSTOMIZATION - END - custom config }}
 from {{packageName}}.api_client import ApiClient, RequestSerialized
 from {{packageName}}.api_response import ApiResponse
 from {{packageName}}.rest import RESTResponseType
@@ -24,22 +27,25 @@ class {{classname}}:
     Do not edit the class manually.
     """
 
+{{! TEMPLATE CUSTOMIZATION - BEGIN - custom config }}
     def __init__(self, configuration: Configuration = None) -> None:
         if configuration is None:
             configuration = Configuration()
         self.configuration = configuration
         self.api_client = ApiClient(self.configuration)
+{{! TEMPLATE CUSTOMIZATION - END - custom config }}
 {{#operation}}
 
 
     @validate_call
-    {{#asyncio}}async {{/asyncio}}def {{operationId}}{{>partial_api_args}} -> {{{returnType}}}{{^returnType}}None{{/returnType}}:
+    {{#async}}async {{/async}}def {{operationId}}{{>partial_api_args}} -> {{{returnType}}}{{^returnType}}None{{/returnType}}:
 {{>partial_api}}
-        response_data = {{#asyncio}}await {{/asyncio}}self.api_client.call_api(
+
+        response_data = {{#async}}await {{/async}}self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        {{#asyncio}}await {{/asyncio}}response_data.read()
+        {{#async}}await {{/async}}response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -47,13 +53,14 @@ class {{classname}}:
 
 
     @validate_call
-    {{#asyncio}}async {{/asyncio}}def {{operationId}}_with_http_info{{>partial_api_args}} -> ApiResponse[{{{returnType}}}{{^returnType}}None{{/returnType}}]:
+    {{#async}}async {{/async}}def {{operationId}}_with_http_info{{>partial_api_args}} -> ApiResponse[{{{returnType}}}{{^returnType}}None{{/returnType}}]:
 {{>partial_api}}
-        response_data = {{#asyncio}}await {{/asyncio}}self.api_client.call_api(
+
+        response_data = {{#async}}await {{/async}}self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
-        {{#asyncio}}await {{/asyncio}}response_data.read()
+        {{#async}}await {{/async}}response_data.read()
         return self.api_client.response_deserialize(
             response_data=response_data,
             response_types_map=_response_types_map,
@@ -61,9 +68,10 @@ class {{classname}}:
 
 
     @validate_call
-    {{#asyncio}}async {{/asyncio}}def {{operationId}}_without_preload_content{{>partial_api_args}} -> RESTResponseType:
+    {{#async}}async {{/async}}def {{operationId}}_without_preload_content{{>partial_api_args}} -> RESTResponseType:
 {{>partial_api}}
-        response_data = {{#asyncio}}await {{/asyncio}}self.api_client.call_api(
+
+        response_data = {{#async}}await {{/async}}self.api_client.call_api(
             *_param,
             _request_timeout=_request_timeout
         )
@@ -183,7 +191,7 @@ class {{classname}}:
         {{#constantParams}}
         {{#isQueryParam}}
         # Set client side default value of Query Param "{{baseName}}".
-        _query_params['{{baseName}}'] = {{#_enum}}'{{{.}}}'{{/_enum}}
+        _query_params.append(('{{baseName}}', {{#_enum}}'{{{.}}}'{{/_enum}}))
         {{/isQueryParam}}
         {{#isHeaderParam}}
         # Set client side default value of Header Param "{{baseName}}".

@@ -1,3 +1,4 @@
+{{! This template was customized. See https://github.com/OpenAPITools/openapi-generator/blob/v7.20.0/modules/openapi-generator/src/main/resources/python/rest.mustache for the original template }}
 # coding: utf-8
 
 {{>partial_header}}
@@ -6,42 +7,61 @@ import io
 import json
 import re
 
+{{! TEMPLATE CUSTOMIZATION - BEGIN - requests instead of urllib3 }}
 import requests
+{{! TEMPLATE CUSTOMIZATION - END - requests instead of urllib3 }}
 
+{{! TEMPLATE CUSTOMIZATION - BEGIN - custom config, auth, errors }}
 from stackit.core.configuration import Configuration
 from stackit.core.authorization import Authorization
 from {{packageName}}.exceptions import ApiException, ApiValueError
+{{! TEMPLATE CUSTOMIZATION - END - custom config, auth, errors }}
 
+{{! TEMPLATE CUSTOMIZATION - DELETE - SUPPORTED_SOCKS_PROXIES and is_socks_proxy_url function }}
+
+{{! TEMPLATE CUSTOMIZATION - BEGIN - requests instead of urllib3 }}
 RESTResponseType = requests.Response
+{{! TEMPLATE CUSTOMIZATION - END - requests instead of urllib3 }}
 
 
 class RESTResponse(io.IOBase):
 
     def __init__(self, resp) -> None:
         self.response = resp
+{{! TEMPLATE CUSTOMIZATION - BEGIN - requests instead of urllib3 }}
         self.status = resp.status_code
+{{! TEMPLATE CUSTOMIZATION - END - requests instead of urllib3 }}
         self.reason = resp.reason
         self.data = None
 
     def read(self):
         if self.data is None:
+{{! TEMPLATE CUSTOMIZATION - BEGIN - requests instead of urllib3 }}
             self.data = self.response.content
+{{! TEMPLATE CUSTOMIZATION - END - requests instead of urllib3 }}
         return self.data
 
+    @property
+    def headers(self):
+        """Returns a dictionary of response headers."""
+        return self.response.headers
+
     def getheaders(self):
-        """Returns a dictionary of the response headers."""
+        """Returns a dictionary of the response headers; use ``headers`` instead."""
         return self.response.headers
 
     def getheader(self, name, default=None):
-        """Returns a given response header."""
+        """Returns a given response header; use ``headers.get()`` instead."""
         return self.response.headers.get(name, default)
 
 
 class RESTClientObject:
     def __init__(self, config: Configuration) -> None:
+{{! TEMPLATE CUSTOMIZATION - BEGIN - requests instead of urllib3 }}
         self.session = config.custom_http_session if config.custom_http_session else requests.Session()
         authorization = Authorization(config)
         self.session.auth = authorization.auth_method
+{{! TEMPLATE CUSTOMIZATION - END - requests instead of urllib3 }}
 
     def request(
         self,
@@ -67,6 +87,7 @@ class RESTClientObject:
                                  (connection, read) timeouts.
         """
         method = method.upper()
+{{! TEMPLATE CUSTOMIZATION - BEGIN - ValueError instead of assert }}
         if method not in [
             'GET',
             'HEAD',
@@ -77,6 +98,7 @@ class RESTClientObject:
             'OPTIONS'
         ]:
             raise ValueError("Method %s not allowed", method)
+{{! TEMPLATE CUSTOMIZATION - END - ValueError instead of assert }}
 
         if post_params and body:
             raise ApiValueError(
@@ -86,6 +108,7 @@ class RESTClientObject:
         post_params = post_params or {}
         headers = headers or {}
 
+{{! TEMPLATE CUSTOMIZATION - DELETE - urllib3 timeout handling }}
         try:
             # For `POST`, `PUT`, `PATCH`, `OPTIONS`, `DELETE`
             if method in ['POST', 'PUT', 'PATCH', 'OPTIONS', 'DELETE']:
@@ -99,6 +122,7 @@ class RESTClientObject:
                     request_body = None
                     if body is not None:
                         request_body = json.dumps(body{{#setEnsureAsciiToFalse}}, ensure_ascii=False{{/setEnsureAsciiToFalse}})
+{{! TEMPLATE CUSTOMIZATION - BEGIN - requests instead of urllib3 }}
                     r = self.session.request(
                         method,
                         url,
@@ -166,5 +190,6 @@ class RESTClientObject:
         except requests.exceptions.SSLError as e:
             msg = "\n".join([type(e).__name__, str(e)])
             raise ApiException(status=0, reason=msg)
+{{! TEMPLATE CUSTOMIZATION - END - requests instead of urllib3 }}
 
         return RESTResponse(r)
