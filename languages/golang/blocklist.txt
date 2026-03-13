@@ -3,7 +3,6 @@ featuretoggle
 workflows
 openstack
 notebooks
-cost
 functionsregistry
 functions
 pim
