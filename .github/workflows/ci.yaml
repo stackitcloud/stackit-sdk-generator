@@ -82,6 +82,10 @@ jobs:
           java-version: ${{ env.JAVA_VERSION }}
       - name: Checkout
         uses: actions/checkout@v4
+      - name: install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "0.10.4"
       - name: Build
         uses: ./.github/actions/build/python
       - name: Generate SDK
