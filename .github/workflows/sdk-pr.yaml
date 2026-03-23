@@ -63,12 +63,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Build
         uses: ./.github/actions/build/python
-      - name: Generate SDK
-        uses: ./.github/actions/generate-sdk/python
       - name: install uv
         uses: astral-sh/setup-uv@v7
         with:
           version: "0.10.4"
+      - name: Generate SDK
+        uses: ./.github/actions/generate-sdk/python
       - name: Push SDK
         env:
           GH_REPO: "stackitcloud/stackit-sdk-python"
