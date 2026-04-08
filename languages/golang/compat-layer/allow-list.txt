@@ -5,6 +5,7 @@ auditlog
 authorization
 cdn
 certificates
+consumption
 dns
 edge
 git
