@@ -75,12 +75,12 @@ import {{invokerPackage}}.auth.OAuthFlow;
 import {{invokerPackage}}.auth.AWS4Auth;
 {{/withAWSV4Signature}}
 
-{{! BEGIN - Added imports for core module }}
+{{! TEMPLATE CUSTOMIZATION - BEGIN - Added imports for core module }}
 import cloud.stackit.sdk.core.auth.SetupAuth;
 import cloud.stackit.sdk.core.config.CoreConfiguration;
 import cloud.stackit.sdk.core.exception.ApiException;
 import cloud.stackit.sdk.core.KeyFlowAuthenticator;
-{{! END - Added imports for core module }}
+{{! TEMPLATE CUSTOMIZATION - END - Added imports for core module }}
 
 /**
  * <p>ApiClient class.</p>
@@ -120,7 +120,7 @@ public class ApiClient {
     protected Map<String, String> defaultCookieMap = new HashMap<String, String>();
     protected String tempFolderPath = null;
 
-    {{! BEGIN - deleted field authentications, we use our own Authenticator
+    {{! TEMPLATE CUSTOMIZATION - BEGIN - deleted field authentications, we use our own Authenticator
     protected Map<String, Authentication> authentications;
     }}
 
@@ -139,15 +139,15 @@ public class ApiClient {
 
     protected HttpLoggingInterceptor loggingInterceptor;
 
-    {{! BEGIN - Added CoreConfiguration field to ApiClient }}
+    {{! TEMPLATE CUSTOMIZATION - BEGIN - Added CoreConfiguration field to ApiClient }}
     protected CoreConfiguration configuration;
-    {{! END - Added CoreConfiguration field to ApiClient }}
+    {{! TEMPLATE CUSTOMIZATION - END - Added CoreConfiguration field to ApiClient }}
 
     {{#dynamicOperations}}
     protected Map<String, ApiOperation> operationLookupMap = new HashMap<>();
 
     {{/dynamicOperations}}
-    {{! BEGIN - Removed ApiClient constructor and replaced it with a custom constructors which create the ApiClient with the CoreConfiguration }}
+    {{! TEMPLATE CUSTOMIZATION - BEGIN - Removed ApiClient constructor and replaced it with a custom constructors which create the ApiClient with the CoreConfiguration }}
     /**
      * Basic constructor for ApiClient.
      *
@@ -208,7 +208,7 @@ public class ApiClient {
             this.httpClient = httpClient;
         }
     }
-    {{! END - Removed ApiClient constructor and replaced it with a custom constructors which create the ApiClient with the CoreConfiguration }}
+    {{! TEMPLATE CUSTOMIZATION - END - Removed ApiClient constructor and replaced it with a custom constructors which create the ApiClient with the CoreConfiguration }}
 
     {{#hasOAuthMethods}}
     {{#oauthMethods}}
@@ -312,7 +312,7 @@ public class ApiClient {
         // Set default User-Agent.
         setUserAgent("{{{httpUserAgent}}}{{^httpUserAgent}}OpenAPI-Generator/{{{artifactVersion}}}/java{{/httpUserAgent}}");
 
-        {{! BEGIN - delete line setting authentications
+        {{! TEMPLATE CUSTOMIZATION - BEGIN - delete line setting authentications
         authentications = new HashMap<String, Authentication>();
         }}
         {{#dynamicOperations}}
@@ -568,7 +568,7 @@ public class ApiClient {
         JSON.setLenientOnJson(lenientOnJson);
         return this;
     }
-    {{! BEGIN - delete authentications getter, we use our own Authenticator
+    {{! TEMPLATE CUSTOMIZATION - BEGIN - delete authentications getter, we use our own Authenticator
     /**
      * Get authentications (key: authentication name, value: authentication).
      *
@@ -614,7 +614,7 @@ public class ApiClient {
     }
     {{/hasHttpBearerMethods}}
 
-    {{! BEGIN - delete auth related methods, we use our own Authenticator
+    {{! TEMPLATE CUSTOMIZATION - BEGIN - delete auth related methods, we use our own Authenticator
       deleted methods:
       setUsername
       setPassword
@@ -1461,7 +1461,7 @@ public class ApiClient {
 
         List<Pair> updatedQueryParams = new ArrayList<>(queryParams);
 
-        {{! BEGIN - delete updateParamsForAuth, we use our own Authenticator
+        {{! TEMPLATE CUSTOMIZATION - BEGIN - delete updateParamsForAuth, we use our own Authenticator
         // update parameters with authentication settings
         updateParamsForAuth(authNames, updatedQueryParams, headerParams, cookieParams, requestBodyToString(reqBody), method, URI.create(url));
         }}
@@ -1585,7 +1585,7 @@ public class ApiClient {
         }
     }
 
-    {{! BEGIN - delete updateParamsForAuth method, we use our own Authenticator }}
+    {{! TEMPLATE CUSTOMIZATION - BEGIN - delete updateParamsForAuth method, we use our own Authenticator }}
 
     /**
      * Build a form-encoding request body with the given form parameters.
