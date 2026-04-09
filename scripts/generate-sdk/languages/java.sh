@@ -128,9 +128,6 @@ generate_java_sdk() {
 
             SERVICE_DESCRIPTION=$(cat "${service_version_json}" | jq .info.title --raw-output)
 
-            # TODO: add to generator below when adding multi-API-version support:
-            # --inline-schema-options "SKIP_SCHEMA_REUSE=true"
-
             # Run the generator
             java -Dlog.level="${GENERATOR_LOG_LEVEL}" -jar "${GENERATOR_JAR_PATH}" generate \
                 --generator-name java \
@@ -171,7 +168,7 @@ generate_java_sdk() {
                 cp -r "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/${version}api/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait"
             fi
             
-            # If the service has a wait test package, move them inside the service folder
+            # If the service version has a wait test package, move them inside the service folder
             if [ -d "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait" ]; then
                 echo "Found ${service} \"wait\" test package"
                 cp -r "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/${version}api/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait"
