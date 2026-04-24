@@ -165,13 +165,13 @@ generate_java_sdk() {
             # If the service version has a wait package, move them inside the service folder
             if [ -d "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait" ]; then
                 echo "Found ${service} \"wait\" package"
-                cp -r "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/${version}api/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait"
+                cp -r "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait"
             fi
             
             # If the service version has a wait test package, move them inside the service folder
             if [ -d "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait" ]; then
                 echo "Found ${service} \"wait\" test package"
-                cp -r "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/${version}api/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait"
+                cp -r "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait"
             fi
         done
 
