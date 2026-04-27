@@ -76,10 +76,10 @@ generate_java_sdk() {
     mkdir -p "${SERVICES_FOLDER}"
 
     warning=""
-
+    
     # Generate SDK for each service
-    for service_json in "${ROOT_DIR}"/oas/legacy/*.json; do
-        service="${service_json##*/}"
+    for service_dir in "${ROOT_DIR}/oas/services"/*; do
+        service="${service_dir##*/}"
         service="${service%.json}"
 
         service_pascal_case=$(to_pascal_case "${service}")
@@ -101,63 +101,79 @@ generate_java_sdk() {
             continue
         fi
 
+        # check if the whole service is blocklisted
         if grep -E "^$service$" "${ROOT_DIR}/languages/java/blocklist.txt"; then
             echo "Skipping blocklisted service ${service}"
             warning+="Skipping blocklisted service ${service}\n"
-            cp -r "${sdk_services_backup_dir}/${service}" "${SERVICES_FOLDER}"
             continue
         fi
-
-        echo ">> Generating \"${service}\" service..."
-        cd "${ROOT_DIR}"
-
-        mkdir -p "${SERVICES_FOLDER}/${service}/"
-        cp "${ROOT_DIR}/languages/java/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
-
-        SERVICE_DESCRIPTION=$(cat "${service_json}" | jq .info.title --raw-output)
-
-        # TODO: add to generator below when adding multi-API-version support:
-        # --inline-schema-options "SKIP_SCHEMA_REUSE=true"
-
-        # Run the generator
-        java -Dlog.level="${GENERATOR_LOG_LEVEL}" -jar "${GENERATOR_JAR_PATH}" generate \
-            --generator-name java \
-            --input-spec "${service_json}" \
-            --output "${SERVICES_FOLDER}/${service}" \
-            --git-host "${GIT_HOST}" \
-            --git-user-id "${GIT_USER_ID}" \
-            --git-repo-id "${GIT_REPO_ID}" \
-            --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=true,supportingFiles \
-            --additional-properties="artifactId=${service},artifactDescription=${SERVICE_DESCRIPTION},invokerPackage=cloud.stackit.sdk.${service},modelPackage=cloud.stackit.sdk.${service}.model,apiPackage=cloud.stackit.sdk.${service}.api,serviceName=${service_pascal_case}"  >/dev/null \
-            --http-user-agent stackit-sdk-java/"${service}" \
-            --config "${ROOT_DIR}/languages/java/openapi-generator-config.yml"
-
-        # Rename DefaultApiServiceApi.java to {serviceName}Api.java
-        # This approach is a workaround because the file name cannot be set dynamically via --additional-properties or the config file in OpenAPI Generator. 
-        api_file="${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/api/DefaultApiServiceApi.java"
-        if [ -f "$api_file" ]; then
-            mv "$api_file" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/api/${service_pascal_case}Api.java"
-        fi
-        api_test_file="${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/api/DefaultApiTestServiceApiTest.java"
-        if [ -f "$api_test_file" ]; then
-            mv "$api_test_file" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/api/${service_pascal_case}ApiTest.java"
-        fi
-
-        # Remove unnecessary files
-        rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
-        rm -r "${SERVICES_FOLDER}/${service}/.openapi-generator/"
-
-        # If the service has a wait package, move them inside the service folder
-        if [ -d "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/wait" ]; then
-            echo "Found ${service} \"wait\" package"
-            cp -r "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/wait" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/wait"
-        fi
         
-        # If the service has a wait test package, move them inside the service folder
-        if [ -d "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/wait" ]; then
-            echo "Found ${service} \"wait\" test package"
-            cp -r "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/wait" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/wait"
-        fi
+        echo -e "\n>> Generating SDK for \"${service}\" service..."
+        for version_dir in "${service_dir}"/*; do
+            service_version_json="${version_dir}/${service_dir##*/}.json"
+            version="${version_dir##*/}"
+            
+            # check if that specific API version of the service is blocklisted
+            if grep -E "^${service}-${version}$" "${ROOT_DIR}/languages/java/blocklist.txt"; then
+                echo "Skipping blocklisted API version ${version} of service ${service}"
+                warning+="Skipping blocklisted API version ${version} of service ${service}\n"
+                continue
+            fi
+
+            echo -e "\n>> Generating SDK package \"${version}api\" for \"${service}\" service..."
+            cd "${ROOT_DIR}"
+
+            mkdir -p "${SERVICES_FOLDER}/${service}"
+            cp "${ROOT_DIR}/languages/java/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
+
+            SERVICE_DESCRIPTION=$(cat "${service_version_json}" | jq .info.title --raw-output)
+
+            # Run the generator
+            java -Dlog.level="${GENERATOR_LOG_LEVEL}" -jar "${GENERATOR_JAR_PATH}" generate \
+                --generator-name java \
+                --input-spec "${service_version_json}" \
+                --output "${SERVICES_FOLDER}/${service}" \
+                --git-host "${GIT_HOST}" \
+                --git-user-id "${GIT_USER_ID}" \
+                --git-repo-id "${GIT_REPO_ID}" \
+                --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=true,supportingFiles \
+                --additional-properties="artifactId=${service},artifactDescription=${SERVICE_DESCRIPTION},invokerPackage=cloud.stackit.sdk.${service}.${version}api,modelPackage=cloud.stackit.sdk.${service}.${version}api.model,apiPackage=cloud.stackit.sdk.${service}.${version}api.api,serviceName=${service_pascal_case}" \
+                --inline-schema-options "SKIP_SCHEMA_REUSE=true" \
+                --http-user-agent stackit-sdk-java/"${service}" \
+                --config "${ROOT_DIR}/languages/java/openapi-generator-config.yml"
+
+            # Rename DefaultApiServiceApi.java to {serviceName}Api.java
+            # This approach is a workaround because the file name cannot be set dynamically via --additional-properties or the config file in OpenAPI Generator. 
+            api_file="${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/api/DefaultApiServiceApi.java"
+            if [ -f "$api_file" ]; then
+                mv "$api_file" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/api/${service_pascal_case}Api.java"
+            fi
+            api_test_file="${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/api/DefaultApiTestServiceApiTest.java"
+            if [ -f "$api_test_file" ]; then
+                mv "$api_test_file" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/api/${service_pascal_case}ApiTest.java"
+            fi
+            
+            build_gradle="${SERVICES_FOLDER}/${service}/${version}api/build.gradle"
+            if [ -f "$build_gradle" ]; then
+                mv "$build_gradle" "${SERVICES_FOLDER}/${service}/build.gradle"
+            fi
+
+            # Remove unnecessary files
+            rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
+            rm -r "${SERVICES_FOLDER}/${service}/.openapi-generator/"
+
+            # If the service version has a wait package, move them inside the service folder
+            if [ -d "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait" ]; then
+                echo "Found ${service} \"wait\" package"
+                cp -r "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait"
+            fi
+            
+            # If the service version has a wait test package, move them inside the service folder
+            if [ -d "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait" ]; then
+                echo "Found ${service} \"wait\" test package"
+                cp -r "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait"
+            fi
+        done
 
         # If the service has a CHANGELOG file, move it inside the service folder
         if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then

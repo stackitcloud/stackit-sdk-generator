@@ -63,7 +63,7 @@ class {{classname}} {
     private int localHostIndex;
     private String localCustomBaseUrl;
 
-{{! BEGIN - Remove default constructor and replaced with constructor which uses CoreConfiguration }}
+{{! TEMPLATE CUSTOMIZATION - BEGIN - Remove default constructor and replaced with constructor which uses CoreConfiguration }}
 	/**
 	 * Basic constructor for DefaultApi
 	 *
@@ -110,7 +110,7 @@ class {{classname}} {
 		}
 		this.localVarApiClient = new ApiClient(httpClient, config);
 	}
-{{! END - Remove default constructor and replaced with constructor which uses CoreConfiguration }}
+{{! TEMPLATE CUSTOMIZATION - END - Remove default constructor and replaced with constructor which uses CoreConfiguration }}
 
     public ApiClient getApiClient() {
         return localVarApiClient;
