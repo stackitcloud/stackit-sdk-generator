@@ -3,7 +3,7 @@ name: CI Workflow
 on: [pull_request, workflow_dispatch]
 
 env:
-  GO_VERSION_BUILD: "1.22"
+  GO_VERSION_BUILD: "1.25"
   JAVA_VERSION: "11"
 
 jobs:
@@ -20,18 +20,27 @@ jobs:
         with:
           distribution: "temurin"
           java-version: ${{ env.JAVA_VERSION }}
+      
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build
-        uses: ./.github/actions/build/go
-        with:
-          go-version: ${{ env.GO_VERSION_BUILD }}
-      - name: Generate SDK
-        uses: ./.github/actions/generate-sdk/go
-      - name: Install Go ${{ matrix.go-version }}
+      
+      - name: Install Go
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
+      
+      - name: Install project tools and dependencies
+        shell: bash
+        run: make project-tools
+      
+      - name: Download OAS
+        shell: bash
+        run: make download-oas
+      
+      - name: Generate SDK
+        shell: bash
+        run: make generate-go-sdk
+      
       - name: Test
         working-directory: ./sdk-repo-updated
         run: make test skip-non-generated-files=true
@@ -48,21 +57,35 @@ jobs:
         with:
           distribution: "temurin"
           java-version: ${{ env.JAVA_VERSION }}
+      
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Build
-        uses: ./.github/actions/build/go
-        with:
-          go-version: ${{ env.GO_VERSION_BUILD }}
-      - name: Generate SDK
-        uses: ./.github/actions/generate-sdk/go
-      - name: Install Go ${{ env.GO_VERSION_BUILD }}
+      
+      - name: Install Go
         uses: actions/setup-go@v5
         with:
           go-version: ${{ env.GO_VERSION_BUILD }}
+      
+      - name: Install project tools and dependencies
+        shell: bash
+        run: make project-tools
+      
+      - name: Download OAS
+        shell: bash
+        run: make download-oas
+      
+      - name: Generate SDK
+        shell: bash
+        run: make generate-go-sdk
+      
       - name: Remove waiters
         working-directory: ./sdk-repo-updated
         run: rm -r services/*/wait
+      
+      - name: Install SDK project tools and dependencies 
+        working-directory: ./sdk-repo-updated
+        run: make project-tools
+      
       - name: Lint
         working-directory: ./sdk-repo-updated
         run: make lint skip-non-generated-files=true
@@ -80,29 +103,45 @@ jobs:
         with:
           distribution: "temurin"
           java-version: ${{ env.JAVA_VERSION }}
+      
       - name: Checkout
         uses: actions/checkout@v4
+      
       - name: install uv
         uses: astral-sh/setup-uv@v7
         with:
           version: "0.10.4"
-      - name: Build
-        uses: ./.github/actions/build/python
+      
+      - name: Install project tools and dependencies
+        shell: bash
+        run: |
+          python -m venv .venv
+          . .venv/bin/activate
+          python -m pip install --upgrade pip
+          make project-tools LANGUAGE=python
+      
+      - name: Download OAS
+        shell: bash
+        run: make download-oas
+      
       - name: Generate SDK
-        uses: ./.github/actions/generate-sdk/python
-        with:
-          python-version: ${{ matrix.python-version }}
+        shell: bash
+        run: make generate-python-sdk
+      
       - name: install uv
         uses: astral-sh/setup-uv@v7
         with:
           version: "0.10.4"
           python-version: ${{ matrix.python-version }}
-      - name: Install sdk
+      
+      - name: Install SDK
         working-directory: ./sdk-repo-updated
         run: make install-dev
+      
       - name: Lint
         working-directory: ./sdk-repo-updated
         run: make lint
+      
       - name: Test
         working-directory: ./sdk-repo-updated
         run: make test
@@ -119,17 +158,20 @@ jobs:
         with:
           distribution: "temurin"
           java-version: ${{ matrix.java-version }}
+      
       - name: Checkout
         uses: actions/checkout@v5
+      
       - name: Download OAS
         run: make download-oas
+      
       - name: Generate SDK
-        run: make generate-sdk
-        env:
-          LANGUAGE: java
+        run: make generate-java-sdk
+     
       - name: Lint
         working-directory: ./sdk-repo-updated
         run: make lint
+      
       - name: Test
         working-directory: ./sdk-repo-updated
         run: make test
