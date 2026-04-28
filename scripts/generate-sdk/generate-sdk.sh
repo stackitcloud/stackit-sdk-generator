@@ -55,7 +55,8 @@ fi
 case "${LANGUAGE}" in
 go)
 # When the GENERATOR_VERSION changes, migrate also the templates in templates/go
-    GENERATOR_VERSION="v7.20.0" 
+# Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
+    GENERATOR_VERSION="v7.22.0"
     ;;
 python)
 # When the GENERATOR_VERSION changes, migrate also the templates in templates/python
