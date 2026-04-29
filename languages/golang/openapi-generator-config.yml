@@ -5,6 +5,7 @@ additionalProperties:
   enumClassPrefix: true
   generateInterfaces: true
   disallowAdditionalPropertiesIfNotPresent: false
+  enumUnknownDefaultCase: true
 templateDir: languages/golang/templates
 files:
   custom/api_mock.mustache:
