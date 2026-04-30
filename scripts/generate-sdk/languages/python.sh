@@ -80,6 +80,13 @@ generate_python_sdk() {
 
     warning=""
 
+    # There is no core in the internal python sdk, therefore the generation of pyproject.toml
+    # needs some adjustment.
+    local extra_props_internal="useLocalCore=true"
+    if [[ "${GIT_REPO_ID}" == "stackit-sdk-python-beta" ]]; then
+        extra_props_internal=""
+    fi
+
     # TODO: add to generator below when adding multi-API-version support:
     # --inline-schema-options "SKIP_SCHEMA_REUSE=true"
 
@@ -118,7 +125,7 @@ generate_python_sdk() {
             --git-user-id "${GIT_USER_ID}" \
             --git-repo-id "${GIT_REPO_ID}" \
             --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=false,supportingFiles \
-            --additional-properties=pythonPackageName="stackit-${service},removeEnumValuePrefix=false" >/dev/null \
+            --additional-properties=pythonPackageName="stackit-${service},removeEnumValuePrefix=false,${extra_props_internal}" >/dev/null \
             --http-user-agent "stackit-sdk-python/${service}"
 
         # Remove unnecessary files
