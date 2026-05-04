@@ -47,8 +47,10 @@ dev = [
 [tool.uv]
 default-groups = "all"
 
+{{#useLocalCore}}
 [tool.uv.sources]
 stackit-core = { path = "../../core" }
+{{/useLocalCore}}
 
 [tool.hatch.build.targets.sdist]
 include = ["src/stackit"]
