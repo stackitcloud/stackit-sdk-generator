@@ -150,11 +150,13 @@ generate_python_sdk() {
             cp -r "${sdk_services_backup_dir}/${service}/README.md" "${SERVICES_FOLDER}/${service}/README.md"
         fi
 
+        # temp disable - create all new to match the new structure
+
         # If the service has a pyproject.toml file, move them inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/pyproject.toml" ]; then
-            echo "Found ${service} \"pyproject.toml\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/pyproject.toml" "${SERVICES_FOLDER}/${service}/pyproject.toml"
-        fi
+        #if [ -f "${sdk_services_backup_dir}/${service}/pyproject.toml" ]; then
+        #    echo "Found ${service} \"pyproject.toml\" file"
+        #    cp -r "${sdk_services_backup_dir}/${service}/pyproject.toml" "${SERVICES_FOLDER}/${service}/pyproject.toml"
+        #fi
 
         # If the service has a uv.lock file, move them inside the service folder
         if [ -f "${sdk_services_backup_dir}/${service}/uv.lock" ]; then
