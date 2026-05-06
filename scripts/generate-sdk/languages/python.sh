@@ -159,12 +159,12 @@ generate_python_sdk() {
         #fi
 
         # If the service has a uv.lock file, move them inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/uv.lock" ]; then
-            echo "Found ${service} \"uv.lock\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/uv.lock" "${SERVICES_FOLDER}/${service}/uv.lock"
-        else 
+        #if [ -f "${sdk_services_backup_dir}/${service}/uv.lock" ]; then
+        #    echo "Found ${service} \"uv.lock\" file"
+        #    cp -r "${sdk_services_backup_dir}/${service}/uv.lock" "${SERVICES_FOLDER}/${service}/uv.lock"
+        #else 
             uv lock --directory "${SERVICES_FOLDER}/${service}"
-        fi
+        #fi
 
         # If the service has a CHANGELOG file, move it inside the service folder
         if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then
