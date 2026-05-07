@@ -633,11 +633,11 @@ func set{{classname}}{{getter}}AttributeType(arg *{{classname}}{{getter}}Attribu
 {{^isArray}}
 // isContainer
 // Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
-type {{classname}}{{getter}}AttributeType = *{{dataType}}
+type {{classname}}{{getter}}AttributeType = *{{>field_type}}
 // Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
-type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+type {{classname}}{{getter}}ArgType = {{#isNullable}}*{{/isNullable}}{{>field_type}}
 // Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
-type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{dataType}}
+type {{classname}}{{getter}}RetType = {{#isNullable}}*{{/isNullable}}{{>field_type}}
 // Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead
 func get{{classname}}{{getter}}AttributeTypeOk(arg {{classname}}{{getter}}AttributeType) (ret {{classname}}{{getter}}RetType, ok bool) {
 	if arg == nil {
