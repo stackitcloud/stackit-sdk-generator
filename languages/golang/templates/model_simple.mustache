@@ -96,14 +96,14 @@ func New{{classname}}WithDefaults() *{{classname}} {
 {{#required}}
 // Get{{name}} returns the {{name}} field value
 {{#isNullable}}
-// If the value is explicit nil, the zero value for {{>field_type}} will be returned
+// If the value is explicit nil, the zero value for {{>field_type_base}} will be returned
 {{/isNullable}}
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}() {{>field_type}} {
+func (o *{{classname}}) Get{{name}}() {{>field_type_base}} {
 	if o == nil{{#isNullable}}{{^vendorExtensions.x-golang-is-container}} || o.{{name}}.Get() == nil{{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
-		var ret {{>field_type}}
+		var ret {{>field_type_base}}
 		return ret
 	}
 
@@ -128,13 +128,13 @@ func (o *{{classname}}) Get{{name}}() {{>field_type}} {
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}Ok() ({{^isArray}}{{^isFreeFormObject}}*{{/isFreeFormObject}}{{/isArray}}{{>field_type}}, bool) {
+func (o *{{classname}}) Get{{name}}Ok() ({{^isArray}}{{^isFreeFormObject}}*{{/isFreeFormObject}}{{/isArray}}{{>field_type_base}}, bool) {
 	if o == nil{{#isNullable}}{{#vendorExtensions.x-golang-is-container}} || IsNil(o.{{name}}){{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
 {{^isFreeFormObject}}
 		return nil, false
 	{{/isFreeFormObject}}
 	{{#isFreeFormObject}}
-		return {{vendorExtensions.x-go-base-type}}{}, false
+		return {{>field_type_base}}{}, false
 	{{/isFreeFormObject}}
 	}
 {{#isNullable}}
@@ -154,7 +154,7 @@ func (o *{{classname}}) Get{{name}}Ok() ({{^isArray}}{{^isFreeFormObject}}*{{/is
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Set{{name}}(v {{>field_type}}) {
+func (o *{{classname}}) Set{{name}}(v {{>field_type_base}}) {
 {{#isNullable}}
 {{#vendorExtensions.x-golang-is-container}}
 	o.{{name}} = v
@@ -185,9 +185,9 @@ func (o *{{classname}}) GetDefault{{nameInPascalCase}}() interface{}  {
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}() {{>field_type}} {
+func (o *{{classname}}) Get{{name}}() {{>field_type_base}} {
 	if o == nil{{^isNullable}} || IsNil(o.{{name}}){{/isNullable}}{{#isNullable}}{{^vendorExtensions.x-golang-is-container}} || IsNil(o.{{name}}.Get()){{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
-		var ret {{>field_type}}
+		var ret {{>field_type_base}}
 		return ret
 	}
 {{#isNullable}}
@@ -211,13 +211,13 @@ func (o *{{classname}}) Get{{name}}() {{>field_type}} {
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Get{{name}}Ok() ({{^isArray}}{{^isFreeFormObject}}*{{/isFreeFormObject}}{{/isArray}}{{>field_type}}, bool) {
+func (o *{{classname}}) Get{{name}}Ok() ({{^isArray}}{{^isFreeFormObject}}*{{/isFreeFormObject}}{{/isArray}}{{>field_type_base}}, bool) {
 	if o == nil{{^isNullable}} || IsNil(o.{{name}}){{/isNullable}}{{#isNullable}}{{#vendorExtensions.x-golang-is-container}} || IsNil(o.{{name}}){{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
 	{{^isFreeFormObject}}
 		return nil, false
 	{{/isFreeFormObject}}
 	{{#isFreeFormObject}}
-		return {{vendorExtensions.x-go-base-type}}{}, false
+		return {{>field_type_base}}{}, false
 	{{/isFreeFormObject}}
 	}
 {{#isNullable}}
@@ -242,11 +242,11 @@ func (o *{{classname}}) Has{{name}}() bool {
 	return false
 }
 
-// Set{{name}} gets a reference to the given {{>field_type}} and assigns it to the {{name}} field.
+// Set{{name}} gets a reference to the given {{dataType}} and assigns it to the {{name}} field.
 {{#deprecated}}
 // Deprecated
 {{/deprecated}}
-func (o *{{classname}}) Set{{name}}(v {{>field_type}}) {
+func (o *{{classname}}) Set{{name}}(v {{>field_type_base}}) {
 {{#isNullable}}
 {{#vendorExtensions.x-golang-is-container}}
 	o.{{name}} = v
