@@ -82,7 +82,9 @@ if [ -e ${jar_path} ] && [ $(java -jar ${jar_path} version) == ${GENERATOR_VERSI
 else
     echo "Downloading OpenAPI generator (version ${GENERATOR_VERSION})..."
     mkdir -p ${GENERATOR_PATH}
-    wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/${GENERATOR_VERSION_NUMBER}/openapi-generator-cli-${GENERATOR_VERSION_NUMBER}.jar -O ${jar_path} --quiet
+    wget --tries=5 --waitretry=10 --retry-connrefused --retry-on-http-error=429,500,502,503,504 \
+        https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/${GENERATOR_VERSION_NUMBER}/openapi-generator-cli-${GENERATOR_VERSION_NUMBER}.jar \
+        -O ${jar_path} --quiet
     echo "Download done."
 fi
 

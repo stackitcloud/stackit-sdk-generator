@@ -243,7 +243,9 @@ generate_go_sdk() {
         else
             echo "Downloading OpenAPI generator (version 6.6.0) for generating the compatibility layer..."
             mkdir -p "${ROOT_DIR}/scripts/bin"
-            wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/6.6.0/openapi-generator-cli-6.6.0.jar -O ${compat_layer_jar_path} --quiet
+            wget --tries=5 --waitretry=10 --retry-connrefused --retry-on-http-error=429,500,502,503,504 \
+                https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/6.6.0/openapi-generator-cli-6.6.0.jar \
+                -O ${compat_layer_jar_path} --quiet
             echo "Download done."
         fi
 
