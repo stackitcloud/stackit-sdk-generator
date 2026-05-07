@@ -1,8 +1,11 @@
 {{!
   Renders the Go base (unwrapped) type for a property, accounting for nullable
   additionalProperties. Used in getter/setter signatures where upstream emits
-  the vendor base type. For map types whose additionalProperties schema is
+  the vendor base type. For typed maps whose additionalProperties schema is
   nullable, upstream ignores nullable=true and produces map[string]string
-  instead of map[string]*string. This partial restores the missing pointer
-  in that case, and otherwise emits the upstream base type unchanged.
-}}{{#isMap}}{{#additionalProperties.isNullable}}map[string]*{{{additionalProperties.dataType}}}{{/additionalProperties.isNullable}}{{^additionalProperties.isNullable}}{{vendorExtensions.x-go-base-type}}{{/additionalProperties.isNullable}}{{/isMap}}{{^isMap}}{{vendorExtensions.x-go-base-type}}{{/isMap}}
+  instead of map[string]*string. This partial restores the missing pointer in
+  that case. Free-form objects (`additionalProperties: true` -> dataType
+  `map[string]interface{}`) are excluded so we don't produce
+  `map[string]*interface{}`. Otherwise the upstream base type is emitted
+  unchanged.
+}}{{#isMap}}{{^isFreeFormObject}}{{#additionalProperties.isNullable}}map[string]*{{{additionalProperties.dataType}}}{{/additionalProperties.isNullable}}{{^additionalProperties.isNullable}}{{vendorExtensions.x-go-base-type}}{{/additionalProperties.isNullable}}{{/isFreeFormObject}}{{#isFreeFormObject}}{{vendorExtensions.x-go-base-type}}{{/isFreeFormObject}}{{/isMap}}{{^isMap}}{{vendorExtensions.x-go-base-type}}{{/isMap}}

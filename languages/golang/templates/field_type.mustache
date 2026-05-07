@@ -3,6 +3,8 @@
   Upstream Go codegen ignores `nullable: true` inside additionalProperties when
   computing the map value type, producing `map[string]string` instead of
   `map[string]*string`. This partial restores the missing `*` on the map value
-  when the additionalProperties schema is nullable, and otherwise emits
-  the upstream-computed dataType unchanged.
-}}{{#isMap}}{{#additionalProperties.isNullable}}map[string]*{{{additionalProperties.dataType}}}{{/additionalProperties.isNullable}}{{^additionalProperties.isNullable}}{{{dataType}}}{{/additionalProperties.isNullable}}{{/isMap}}{{^isMap}}{{{dataType}}}{{/isMap}}
+  when the additionalProperties schema is nullable AND the schema is a typed map
+  (not a free-form object, where dataType is already `map[string]interface{}`
+  and pointer-wrapping the value would produce `map[string]*interface{}`).
+  Otherwise it emits the upstream-computed dataType unchanged.
+}}{{#isMap}}{{^isFreeFormObject}}{{#additionalProperties.isNullable}}map[string]*{{{additionalProperties.dataType}}}{{/additionalProperties.isNullable}}{{^additionalProperties.isNullable}}{{{dataType}}}{{/additionalProperties.isNullable}}{{/isFreeFormObject}}{{#isFreeFormObject}}{{{dataType}}}{{/isFreeFormObject}}{{/isMap}}{{^isMap}}{{{dataType}}}{{/isMap}}
