@@ -61,7 +61,7 @@ go)
 python)
 # When the GENERATOR_VERSION changes, migrate also the templates in templates/python
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
-    GENERATOR_VERSION="v7.20.0"
+    GENERATOR_VERSION="v7.22.0"
     ;;
 java)
 # When the GENERATOR_VERSION changes, migrate also the templates in templates/java
