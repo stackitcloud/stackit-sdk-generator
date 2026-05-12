@@ -191,7 +191,6 @@ generate_go_sdk() {
             echo "Skipping service ${service}, compatibility layer is not activated for it"
             warning+="Skipping compatibility layer generation for service ${service}\n"
 
-            cp "${ROOT_DIR}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
             if [ ! -f "${SERVICES_FOLDER}/${service}/go.mod" ]; then
                 printf "module ${GIT_HOST}/${GIT_USER_ID}/${GIT_REPO_ID}/services/${service}\n\n" > "${SERVICES_FOLDER}/${service}/go.mod" 
                 printf "go ${SDK_GO_VERSION}\n\n" >> "${SERVICES_FOLDER}/${service}/go.mod" 
@@ -201,6 +200,14 @@ generate_go_sdk() {
             # generate package.go
             printf "package ${service}\n" > "${SERVICES_FOLDER}/${service}/package.go" 
         
+            # If the service has a LICENSE file, move it inside the service folder
+            if [ -f "${sdk_services_backup_dir}/${service}/LICENSE.md" ]; then
+                echo "Found ${service} \"LICENSE\" file"
+                cp -r "${sdk_services_backup_dir}/${service}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
+            else
+                cp "${ROOT_DIR}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
+            fi
+
             # If the service has a CHANGELOG file, move it inside the service folder
             if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then
                 echo "Found ${service} \"CHANGELOG\" file"
