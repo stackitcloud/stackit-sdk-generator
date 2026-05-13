@@ -171,7 +171,7 @@ generate_go_sdk() {
                 --git-user-id "${GIT_USER_ID}" \
                 --git-repo-id "${GIT_REPO_ID}/services/${service}" \
                 --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles,apiTests=false\
-                --inline-schema-options "SKIP_SCHEMA_REUSE=true" \
+                --inline-schema-options "SKIP_SCHEMA_REUSE=true,RESOLVE_INLINE_ENUMS=true" \
                 --http-user-agent "stackit-sdk-go/${service}" \
                 --reserved-words-mappings type=types \
                 --config "${ROOT_DIR}/languages/golang/openapi-generator-config.yml"
