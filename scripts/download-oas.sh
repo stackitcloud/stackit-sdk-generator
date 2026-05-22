@@ -61,6 +61,8 @@ EOF
 	fi
 	cd ${work_dir}/${OAS_REPO_NAME} >/dev/null
 	git checkout -q $apiVersion || (echo "version ${apiVersion} does not exist, using main instead" && git checkout -q main)
+	# overwrite main checkout with version locked checkout
+	cp -r ${service_dir} ${ROOT_DIR}/oas/services/
 
 	# write commit hash to oas_commits file, normalize name first to match service name in sdk-create-pr.sh, normalization
 	# occurs in go/java/python.sh when creating the SDK modules
