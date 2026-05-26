@@ -161,14 +161,14 @@ generate_go_sdk() {
             cp "${ROOT_DIR}/languages/golang/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/${version}api/.openapi-generator-ignore"
 
             # compile custom generator
-            mkdir -p custom/com/mycompany/codegen
+            mkdir -p custom/cloud/stackit/codegen
             javac -cp "${GENERATOR_JAR_PATH}" CustomRegionGenerator.java
-            mv CustomRegionGenerator.class custom/com/mycompany/codegen/CustomRegionGenerator.class
+            mv CustomRegionGenerator.class custom/cloud/stackit/codegen/CustomRegionGenerator.class
 
             # Run the generator for Go
             java -Dlog.level=${GENERATOR_LOG_LEVEL} -cp "custom:scripts/bin/openapi-generator-cli.jar" \
                 org.openapitools.codegen.OpenAPIGenerator generate \
-                -g com.mycompany.codegen.CustomRegionGenerator \
+                -g cloud.stackit.codegen.CustomRegionGenerator \
                 --input-spec "${service_version_json}" \
                 --output "${SERVICES_FOLDER}/${service}/${version}api" \
                 --package-name "${version}api" \
