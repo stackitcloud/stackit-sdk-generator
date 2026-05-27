@@ -3,3 +3,5 @@ git_push.sh
 .travis.yml
 .gitignore
 api/openapi.yaml
+*_region_id_parameter.go
+*_region_parameter.go

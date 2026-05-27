@@ -107,6 +107,12 @@ generate_go_sdk() {
     # see https://openapi-generator.tech/docs/file-post-processing/
     export GO_POST_PROCESS_FILE="gofmt -w"
 
+    # compile custom generator
+    cd ${ROOT_DIR}
+    mkdir -p custom/cloud/stackit/codegen
+    javac -cp "${GENERATOR_JAR_PATH}" CustomRegionGenerator.java
+    mv CustomRegionGenerator.class custom/cloud/stackit/codegen/CustomRegionGenerator.class
+
     warning=""
 
     for service_dir in "${ROOT_DIR}/oas/services"/*; do
@@ -161,8 +167,9 @@ generate_go_sdk() {
             cp "${ROOT_DIR}/languages/golang/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/${version}api/.openapi-generator-ignore"
 
             # Run the generator for Go
-            java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${jar_path} generate \
-                --generator-name go \
+            java -Dlog.level=${GENERATOR_LOG_LEVEL} -cp "custom:scripts/bin/openapi-generator-cli.jar" \
+                org.openapitools.codegen.OpenAPIGenerator generate \
+                -g cloud.stackit.codegen.CustomRegionGenerator \
                 --input-spec "${service_version_json}" \
                 --output "${SERVICES_FOLDER}/${service}/${version}api" \
                 --package-name "${version}api" \
@@ -171,7 +178,7 @@ generate_go_sdk() {
                 --git-user-id "${GIT_USER_ID}" \
                 --git-repo-id "${GIT_REPO_ID}/services/${service}" \
                 --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles,apiTests=false\
-                --inline-schema-options "SKIP_SCHEMA_REUSE=true" \
+                --inline-schema-options "SKIP_SCHEMA_REUSE=true,RESOLVE_INLINE_ENUMS=true" \
                 --http-user-agent "stackit-sdk-go/${service}" \
                 --reserved-words-mappings type=types \
                 --config "${ROOT_DIR}/languages/golang/openapi-generator-config.yml"

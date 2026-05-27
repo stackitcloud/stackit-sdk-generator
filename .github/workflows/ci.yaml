@@ -28,7 +28,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: ${{ matrix.go-version }}
-      
+
       - name: Install project tools and dependencies
         shell: bash
         run: make project-tools
