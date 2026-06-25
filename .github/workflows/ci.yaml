@@ -4,7 +4,7 @@ on: [pull_request, workflow_dispatch]
 
 env:
   GO_VERSION_BUILD: "1.25"
-  JAVA_VERSION: "11"
+  JAVA_VERSION: "25"
 
 jobs:
   main-go:
