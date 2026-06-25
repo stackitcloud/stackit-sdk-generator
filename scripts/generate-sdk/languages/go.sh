@@ -111,7 +111,8 @@ generate_go_sdk() {
     cd ${ROOT_DIR}
     mkdir -p custom/cloud/stackit/codegen
     javac -cp "${GENERATOR_JAR_PATH}" CustomRegionGenerator.java
-    mv CustomRegionGenerator.class custom/cloud/stackit/codegen/CustomRegionGenerator.class
+    mv ./*.class custom/cloud/stackit/codegen
+    cp languages/golang/overrides/* custom/cloud/stackit/codegen
 
     warning=""
 
