@@ -28,9 +28,9 @@ if [ ! -d "${SDK_REPO_LOCAL_PATH}" ]; then
 fi
 
 if [[ -z $3 ]]; then
-    REPO_URL_SSH="git@github.com:stackitcloud/stackit-sdk-go.git"
+    REPO_URL="git@github.com:stackitcloud/stackit-sdk-go.git"
 else
-    REPO_URL_SSH=$3
+    REPO_URL=$3
 fi
 
 if [[ -z $4 ]]; then
@@ -61,7 +61,7 @@ rm -rf "${work_dir}/sdk_to_push/.git"
 
 # Initialize git repo
 cd "${work_dir}/git_repo"
-git clone "${REPO_URL_SSH}" ./ --quiet
+git clone "${REPO_URL}" ./ --quiet
 git config user.name "${COMMIT_NAME}"
 git config user.email "${COMMIT_EMAIL}"
 
