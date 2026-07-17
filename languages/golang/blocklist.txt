@@ -1,8 +1,6 @@
 # Transitional file to disable generation for selected services
-customer
 featuretoggle
 functions
 functionsregistry
 notebooks
 pim
-stackitmarketplace

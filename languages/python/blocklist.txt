@@ -7,5 +7,4 @@ functionsregistry
 functions
 pim
 smokeapi
-stackitmarketplace
 support
