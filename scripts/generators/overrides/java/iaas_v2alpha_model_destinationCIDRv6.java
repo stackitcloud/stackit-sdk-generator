@@ -222,6 +222,7 @@ public class DestinationCIDRv6 {
       if (!jsonObj.get("type").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `type` to be a primitive type in the JSON string but got `%s`", jsonObj.get("type").toString()));
       }
+      // OVERRIDE: this if block fixes oneOf issues
       if (!"cidrv6".equals(jsonObj.get("type").getAsString())) {
         throw new IllegalArgumentException(
                 String.format(

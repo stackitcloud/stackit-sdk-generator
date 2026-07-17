@@ -71,4 +71,5 @@ How to configure an override:
 - `<name>` has to be equal for all 3 properties
 - `path` is used to match the generated file, which should be replaced
 - `hash` is used to check that the generated file still has the same content as when the override was configured
-- `replacementPaht` specifies the file in resources, that should be used as replacemen
+- `replacementPath` specifies the file in resources, that should be used as replacement
+- mark adjusted sections in the replacement file in resources with an `OVERRIDE:` comment

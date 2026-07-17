@@ -58,6 +58,7 @@ func (dst *AreaId) UnmarshalJSON(data []byte) error {
 	err = json.Unmarshal(data, &dst.String)
 	if err == nil {
 		jsonString, _ := json.Marshal(dst.String)
+		// OVERRIDE: this pattern match is custom
 		regex := `^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`
 		isMatched, _ := regexp.MatchString(regex, *dst.String)
 		if string(jsonString) != "{}" && isMatched { // empty struct
