@@ -85,7 +85,7 @@ public class PostProcessFileReplace {
             overrideProps.stringPropertyNames().forEach(key -> {
                 var prefixLen = key.indexOf('.');
                 var prefix = key.substring(0, prefixLen);
-                var config = byName.computeIfAbsent(prefix, (_) -> new OverrideConfig());
+                var config = byName.computeIfAbsent(prefix, (name) -> new OverrideConfig());
                 config.name = prefix;
                 var suffix = key.substring(prefixLen + 1);
                 switch (suffix) {
