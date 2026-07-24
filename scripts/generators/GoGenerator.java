@@ -1,31 +1,46 @@
-package cloud.stackit.codegen;
-
-import org.openapitools.codegen.CodegenProperty;
-import org.openapitools.codegen.languages.GoClientCodegen;
-
-import org.openapitools.codegen.CodegenParameter;
-
-import java.util.Set;
 import io.swagger.v3.oas.models.media.Schema;
 import io.swagger.v3.oas.models.parameters.Parameter;
+import org.openapitools.codegen.CodegenParameter;
+import org.openapitools.codegen.CodegenProperty;
+import org.openapitools.codegen.languages.GoClientCodegen;
+import shared.PostProcessFileReplace;
 
-public class CustomRegionGenerator extends GoClientCodegen {
+import java.io.File;
+import java.util.Set;
+
+public class GoGenerator extends GoClientCodegen {
+    private static RegionFix regionFix = new RegionFix();
+    private static PostProcessFileReplace postProcessFileReplace = new PostProcessFileReplace("overrides/go");
 
     @Override
     public String getName() {
-        // This is the name you will pass to the -g flag
-        return "cloud.stackit.codegen.CustomRegionGenerator";
+        return "GoClientCodegen";
     }
 
-    public CustomRegionGenerator() {
+    public GoGenerator(){
         super();
-        System.out.println("=== CUSTOM GO CLIENT GENERATOR INITIALIZED ===");
+        System.out.println("=== Custom Go Generator initialized ===");
     }
 
     @Override
     public CodegenProperty fromProperty(String name, Schema p, boolean required) {
-        CodegenProperty property = super.fromProperty(name, p, required);
+        return regionFix.fromProperty(super.fromProperty(name, p, required));
+    }
 
+    @Override
+    public CodegenParameter fromParameter(Parameter parameter, Set<String> imports) {
+        return regionFix.fromParameter(super.fromParameter(parameter, imports));
+    }
+
+    @Override
+    public void postProcessFile(File file, String fileType) {
+        postProcessFileReplace.process(file);
+        super.postProcessFile(file, fileType);
+    }
+}
+
+class RegionFix {
+    CodegenProperty fromProperty(CodegenProperty property) {
         if (isRegionField(property.name)) {
             property.dataType = "string";
             property.datatypeWithEnum = "string";
@@ -41,13 +56,7 @@ public class CustomRegionGenerator extends GoClientCodegen {
         return property;
     }
 
-    /**
-     * Intercepts operation parameters (query, path, header, body).
-     */
-    @Override
-    public CodegenParameter fromParameter(Parameter param, Set<String> imports) {
-        CodegenParameter parameter = super.fromParameter(param, imports);
-
+    CodegenParameter fromParameter(CodegenParameter parameter) {
         if (isRegionField(parameter.paramName)) {
             parameter.dataType = "string";
 
@@ -62,7 +71,7 @@ public class CustomRegionGenerator extends GoClientCodegen {
         return parameter;
     }
 
-    private boolean isRegionField(String name) {
+    private static boolean isRegionField(String name) {
         if (name == null) {
             return false;
         }
