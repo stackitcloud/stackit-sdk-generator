@@ -56,17 +56,17 @@ case "${LANGUAGE}" in
 go)
 # When the GENERATOR_VERSION changes, migrate also the templates in templates/go
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
-    GENERATOR_VERSION="v7.22.0"
+    GENERATOR_VERSION="v7.24.0"
     ;;
 python)
 # When the GENERATOR_VERSION changes, migrate also the templates in templates/python
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
-    GENERATOR_VERSION="v7.22.0"
+    GENERATOR_VERSION="v7.24.0"
     ;;
 java)
 # When the GENERATOR_VERSION changes, migrate also the templates in templates/java
 # Renovate: datasource=github-tags depName=OpenAPITools/openapi-generator versioning=semver
-    GENERATOR_VERSION="v7.19.0"
+    GENERATOR_VERSION="v7.24.0"
     ;;
 *)
     echo "SDK language not supported."
