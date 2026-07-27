@@ -192,7 +192,7 @@ generate_python_sdk() {
         # Run formatter
         isort .
         autoimport --ignore-init-modules .
-        black .
+        uv run black --config pyproject.toml .
 
     done
 

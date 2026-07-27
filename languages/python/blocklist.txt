@@ -4,7 +4,6 @@ workflows
 openstack
 notebooks
 functionsregistry
-functions
 pim
 smokeapi
 support
