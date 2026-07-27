@@ -178,6 +178,7 @@ generate_go_sdk() {
                 --git-repo-id "${GIT_REPO_ID}/services/${service}" \
                 --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles,apiTests=false\
                 --inline-schema-options "SKIP_SCHEMA_REUSE=true,RESOLVE_INLINE_ENUMS=true" \
+                --openapi-normalizer "SIMPLIFY_ONEOF_ANYOF=false" \
                 --http-user-agent "stackit-sdk-go/${service}" \
                 --reserved-words-mappings type=types \
                 --config "${ROOT_DIR}/languages/golang/openapi-generator-config.yml"
@@ -190,6 +191,12 @@ generate_go_sdk() {
             if [ -d "${sdk_services_backup_dir}/${service}/${version}api/wait" ]; then
                 echo "Found ${service} \"wait\" package"
                 cp -r "${sdk_services_backup_dir}/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/${version}api/wait"
+            fi
+
+            # If the service version has a handwritten.go file, move them inside the service folder
+            if [ -f "${sdk_services_backup_dir}/${service}/${version}api/handwritten.go" ]; then
+                echo "Found ${service} \"handwritten.go\" file"
+                cp -r "${sdk_services_backup_dir}/${service}/${version}api/handwritten.go" "${SERVICES_FOLDER}/${service}/${version}api/handwritten.go"
             fi
         done
         

@@ -147,6 +147,7 @@ generate_java_sdk() {
                 --additional-properties="artifactId=${service},artifactDescription=${SERVICE_DESCRIPTION},invokerPackage=cloud.stackit.sdk.${service}.${version}api,modelPackage=cloud.stackit.sdk.${service}.${version}api.model,apiPackage=cloud.stackit.sdk.${service}.${version}api.api,serviceName=${service_pascal_case}" \
                 --inline-schema-options "SKIP_SCHEMA_REUSE=true" \
                 --http-user-agent stackit-sdk-java/"${service}" \
+                --openapi-normalizer "SIMPLIFY_ONEOF_ANYOF=false" \
                 --config "${ROOT_DIR}/languages/java/openapi-generator-config.yml"
 
             # Rename DefaultApiServiceApi.java to {serviceName}Api.java
