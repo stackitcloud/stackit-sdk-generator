@@ -75,6 +75,11 @@ generate_java_sdk() {
     rm -rf "${SERVICES_FOLDER}"
     mkdir -p "${SERVICES_FOLDER}"
 
+    # compile custom generator
+    cd ${ROOT_DIR}
+    mkdir -p custom
+    javac -cp "${GENERATOR_JAR_PATH}" -d custom $(find ./scripts/generators -type f -name '*.java' | grep -v overrides)
+
     warning=""
     
     # Generate SDK for each service
@@ -129,13 +134,15 @@ generate_java_sdk() {
             SERVICE_DESCRIPTION=$(cat "${service_version_json}" | jq .info.title --raw-output)
 
             # Run the generator
-            java -Dlog.level="${GENERATOR_LOG_LEVEL}" -jar "${GENERATOR_JAR_PATH}" generate \
-                --generator-name java \
+            java  -Dlog.level="${GENERATOR_LOG_LEVEL}" -cp "custom:${GENERATOR_JAR_PATH}:scripts/generators" \
+                org.openapitools.codegen.OpenAPIGenerator generate \
+                --generator-name JavaGenerator \
                 --input-spec "${service_version_json}" \
                 --output "${SERVICES_FOLDER}/${service}" \
                 --git-host "${GIT_HOST}" \
                 --git-user-id "${GIT_USER_ID}" \
                 --git-repo-id "${GIT_REPO_ID}" \
+                --enable-post-process-file \
                 --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=true,supportingFiles \
                 --additional-properties="artifactId=${service},artifactDescription=${SERVICE_DESCRIPTION},invokerPackage=cloud.stackit.sdk.${service}.${version}api,modelPackage=cloud.stackit.sdk.${service}.${version}api.model,apiPackage=cloud.stackit.sdk.${service}.${version}api.api,serviceName=${service_pascal_case}" \
                 --inline-schema-options "SKIP_SCHEMA_REUSE=true" \
