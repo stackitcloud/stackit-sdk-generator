@@ -20,7 +20,7 @@ import (
 // AreaId - The identifier (ID) of an area.
 type AreaId struct {
 	StaticAreaID *StaticAreaID
-	String       *string
+	String *string
 }
 
 // StaticAreaIDAsAreaId is a convenience function that returns StaticAreaID wrapped in AreaId
@@ -36,6 +36,7 @@ func StringAsAreaId(v *string) AreaId {
 		String: v,
 	}
 }
+
 
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *AreaId) UnmarshalJSON(data []byte) error {
@@ -97,7 +98,7 @@ func (src AreaId) MarshalJSON() ([]byte, error) {
 }
 
 // Get the actual instance
-func (obj *AreaId) GetActualInstance() interface{} {
+func (obj *AreaId) GetActualInstance() (interface{}) {
 	if obj == nil {
 		return nil
 	}
@@ -114,7 +115,7 @@ func (obj *AreaId) GetActualInstance() interface{} {
 }
 
 // Get the actual instance value
-func (obj AreaId) GetActualInstanceValue() interface{} {
+func (obj AreaId) GetActualInstanceValue() (interface{}) {
 	if obj.StaticAreaID != nil {
 		return *obj.StaticAreaID
 	}
