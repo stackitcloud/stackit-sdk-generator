@@ -57,6 +57,20 @@ generate_java_sdk() {
     fi
     git clone --quiet -b "${SDK_BRANCH}" "${SDK_REPO_URL}" "${SDK_REPO_LOCAL_PATH}"
 
+    plan_include_args=()
+    for service in "${INCLUDE_SERVICES[@]}"; do
+        plan_include_args+=(--include-service "${service}")
+    done
+    (
+        cd "${ROOT_DIR}"
+        "${ROOT_DIR}/scripts/bin/build" --language java plan \
+            --spec-dir "oas/services" \
+            --service-dir "sdk-repo-updated/services" \
+            --blocklist "languages/java/blocklist.txt" \
+            --output "sdk-repo-updated/generation-plan.json" \
+            "${plan_include_args[@]}"
+    )
+
     # Backup of the current state of the SDK services dir (services/)
     sdk_services_backup_dir=$(mktemp -d)
     if [[ ! "${sdk_services_backup_dir}" || -d {sdk_services_backup_dir} ]]; then

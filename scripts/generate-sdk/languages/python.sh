@@ -57,6 +57,15 @@ generate_python_sdk() {
     fi
     git clone --quiet -b "${SDK_BRANCH}" "${SDK_REPO_URL}" "${SDK_REPO_LOCAL_PATH}"
 
+    (
+        cd "${ROOT_DIR}"
+        "${ROOT_DIR}/scripts/bin/build" --language python plan \
+            --spec-dir "oas/services" \
+            --service-dir "sdk-repo-updated/services" \
+            --blocklist "languages/python/blocklist.txt" \
+            --output "sdk-repo-updated/generation-plan.json"
+    )
+
     # Install SDK project tools
     cd "${ROOT_DIR}"
     make project-tools LANGUAGE=python

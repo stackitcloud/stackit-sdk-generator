@@ -77,6 +77,15 @@ generate_go_sdk() {
     git checkout "${SDK_BRANCH}"
     make project-tools
 
+    (
+        cd "${ROOT_DIR}"
+        "${ROOT_DIR}/scripts/bin/build" --language go plan \
+            --spec-dir "oas/services" \
+            --service-dir "sdk-repo-updated/services" \
+            --blocklist "languages/golang/blocklist.txt" \
+            --output "generation-plan.json"
+    )
+
     # Backup of the current state of the SDK services dir (services/)
     sdk_services_backup_dir=$(mktemp -d)
     if [[ ! ${sdk_services_backup_dir} || -d {sdk_services_backup_dir} ]]; then
