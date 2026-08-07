@@ -1,4 +1,4 @@
-{{! This template was customized to support the custom configuration options from the core module. See https://github.com/OpenAPITools/openapi-generator/blob/v7.22.0/modules/openapi-generator/src/main/resources/go/client.mustache for the original template }}
+{{! This template was customized to support the custom configuration options from the core module. See https://github.com/OpenAPITools/openapi-generator/blob/v7.24.0/modules/openapi-generator/src/main/resources/go/client.mustache for the original template }}
 {{>partial_header}}
 package {{packageName}}
 
@@ -576,6 +576,15 @@ func (c *APIClient) decode(v interface{}, b []byte, contentType string) (err err
 	}
 	if s, ok := v.(*string); ok {
 		*s = string(b)
+		return nil
+	}
+	if r, ok := v.(*io.Reader); ok {
+		*r = bytes.NewReader(b)
+		return nil
+	}
+	// Must stay before the JSON branch: json.Unmarshal would base64-decode into *[]byte.
+	if p, ok := v.(*[]byte); ok {
+		*p = b
 		return nil
 	}
 	if f, ok := v.(*os.File); ok {
