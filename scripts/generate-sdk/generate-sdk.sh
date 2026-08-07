@@ -46,6 +46,18 @@ else
     exit 1
 fi
 
+# The generation plan is produced by scripts/build before SDK generation starts.
+if type -p go >/dev/null; then
+    :
+else
+    echo "Go not installed, unable to create the generation plan."
+    exit 1
+fi
+
+# build build tool
+mkdir -p "${GENERATOR_PATH}"
+go build -C "${ROOT_DIR}/scripts/build" -o "${GENERATOR_PATH}/build"
+
 if [ ! -d ${ROOT_DIR}/oas ]; then
     echo "\"oas\" folder not found in root. Please add it manually or run \"make download-oas\"."
     exit 1
