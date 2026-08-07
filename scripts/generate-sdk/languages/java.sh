@@ -95,7 +95,7 @@ generate_java_sdk() {
     javac -cp "${GENERATOR_JAR_PATH}" -d custom $(find ./scripts/generators -type f -name '*.java' | grep -v overrides)
 
     warning=""
-    
+
     # Generate SDK for each service
     for service_dir in "${ROOT_DIR}/oas/services"/*; do
         service="${service_dir##*/}"
@@ -126,107 +126,8 @@ generate_java_sdk() {
             warning+="Skipping blocklisted service ${service}\n"
             continue
         fi
-        
-        echo -e "\n>> Generating SDK for \"${service}\" service..."
-        for version_dir in "${service_dir}"/*; do
-            service_version_json="${version_dir}/${service_dir##*/}.json"
-            version="${version_dir##*/}"
-            
-            # check if that specific API version of the service is blocklisted
-            if grep -E "^${service}-${version}$" "${ROOT_DIR}/languages/java/blocklist.txt"; then
-                echo "Skipping blocklisted API version ${version} of service ${service}"
-                warning+="Skipping blocklisted API version ${version} of service ${service}\n"
-                continue
-            fi
 
-            echo -e "\n>> Generating SDK package \"${version}api\" for \"${service}\" service..."
-            cd "${ROOT_DIR}"
-
-            mkdir -p "${SERVICES_FOLDER}/${service}"
-            cp "${ROOT_DIR}/languages/java/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
-
-            SERVICE_DESCRIPTION=$(cat "${service_version_json}" | jq .info.title --raw-output)
-
-            # Run the generator
-            java  -Dlog.level="${GENERATOR_LOG_LEVEL}" -cp "custom:${GENERATOR_JAR_PATH}:scripts/generators" \
-                org.openapitools.codegen.OpenAPIGenerator generate \
-                --generator-name JavaGenerator \
-                --input-spec "${service_version_json}" \
-                --output "${SERVICES_FOLDER}/${service}" \
-                --git-host "${GIT_HOST}" \
-                --git-user-id "${GIT_USER_ID}" \
-                --git-repo-id "${GIT_REPO_ID}" \
-                --enable-post-process-file \
-                --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=true,supportingFiles \
-                --additional-properties="artifactId=${service},artifactDescription=${SERVICE_DESCRIPTION},invokerPackage=cloud.stackit.sdk.${service}.${version}api,modelPackage=cloud.stackit.sdk.${service}.${version}api.model,apiPackage=cloud.stackit.sdk.${service}.${version}api.api,serviceName=${service_pascal_case}" \
-                --inline-schema-options "SKIP_SCHEMA_REUSE=true" \
-                --http-user-agent stackit-sdk-java/"${service}" \
-                --openapi-normalizer "SIMPLIFY_ONEOF_ANYOF=false" \
-                --config "${ROOT_DIR}/languages/java/openapi-generator-config.yml"
-
-            # Rename DefaultApiServiceApi.java to {serviceName}Api.java
-            # This approach is a workaround because the file name cannot be set dynamically via --additional-properties or the config file in OpenAPI Generator. 
-            api_file="${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/api/DefaultApiServiceApi.java"
-            if [ -f "$api_file" ]; then
-                mv "$api_file" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/api/${service_pascal_case}Api.java"
-            fi
-            api_test_file="${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/api/DefaultApiTestServiceApiTest.java"
-            if [ -f "$api_test_file" ]; then
-                mv "$api_test_file" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/api/${service_pascal_case}ApiTest.java"
-            fi
-            
-            build_gradle="${SERVICES_FOLDER}/${service}/${version}api/build.gradle"
-            if [ -f "$build_gradle" ]; then
-                mv "$build_gradle" "${SERVICES_FOLDER}/${service}/build.gradle"
-            fi
-
-            # Remove unnecessary files
-            rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
-            rm -r "${SERVICES_FOLDER}/${service}/.openapi-generator/"
-
-            # If the service version has a wait package, move them inside the service folder
-            if [ -d "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait" ]; then
-                echo "Found ${service} \"wait\" package"
-                cp -r "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait"
-            fi
-            
-            # If the service version has a wait test package, move them inside the service folder
-            if [ -d "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait" ]; then
-                echo "Found ${service} \"wait\" test package"
-                cp -r "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait"
-            fi
-        done
-
-        # If the service has a CHANGELOG file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then
-            echo "Found ${service} \"CHANGELOG\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/CHANGELOG.md" "${SERVICES_FOLDER}/${service}/CHANGELOG.md"
-        fi
-
-        # If the service has a LICENSE file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/LICENSE.md" ]; then
-            echo "Found ${service} \"LICENSE\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
-        fi
-
-        # If the service has a NOTICE file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/NOTICE.txt" ]; then
-            echo "Found ${service} \"NOTICE\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/NOTICE.txt" "${SERVICES_FOLDER}/${service}/NOTICE.txt"
-        fi
-
-        # If the service has a VERSION file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/VERSION" ]; then
-            echo "Found ${service} \"VERSION\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/VERSION" "${SERVICES_FOLDER}/${service}/VERSION"
-        fi
-
-        # If the service has oas_commit file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/oas_commit" ]; then
-            echo "Found ${service} \"oas_commit\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/oas_commit" "${SERVICES_FOLDER}/${service}/oas_commit"
-        fi
-
+        generate_java_service "${service_dir}" "${service}" "${service_pascal_case}"
     done
 
     cd "${SDK_REPO_LOCAL_PATH}"
@@ -247,4 +148,109 @@ to_pascal_case() {
         for (i=2; i<=NF; i++) printf "%s", $i
         print ""
     }'
+}
+
+generate_java_service(){
+    local service_dir=$1
+    local service=$2
+    local service_pascal_case=$3
+
+    echo -e "\n>> Generating SDK for \"${service}\" service..."
+    for version_dir in "${service_dir}"/*; do
+        service_version_json="${version_dir}/${service_dir##*/}.json"
+        version="${version_dir##*/}"
+
+        # check if that specific API version of the service is blocklisted
+        if grep -E "^${service}-${version}$" "${ROOT_DIR}/languages/java/blocklist.txt"; then
+            echo "Skipping blocklisted API version ${version} of service ${service}"
+            warning+="Skipping blocklisted API version ${version} of service ${service}\n"
+            continue
+        fi
+
+        echo -e "\n>> Generating SDK package \"${version}api\" for \"${service}\" service..."
+        cd "${ROOT_DIR}"
+
+        mkdir -p "${SERVICES_FOLDER}/${service}"
+        cp "${ROOT_DIR}/languages/java/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
+
+        SERVICE_DESCRIPTION=$(cat "${service_version_json}" | jq .info.title --raw-output)
+
+        # Run the generator
+        java  -Dlog.level="${GENERATOR_LOG_LEVEL}" -cp "custom:${GENERATOR_JAR_PATH}:scripts/generators" \
+            org.openapitools.codegen.OpenAPIGenerator generate \
+            --generator-name JavaGenerator \
+            --input-spec "${service_version_json}" \
+            --output "${SERVICES_FOLDER}/${service}" \
+            --git-host "${GIT_HOST}" \
+            --git-user-id "${GIT_USER_ID}" \
+            --git-repo-id "${GIT_REPO_ID}" \
+            --enable-post-process-file \
+            --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=true,supportingFiles \
+            --additional-properties="artifactId=${service},artifactDescription=${SERVICE_DESCRIPTION},invokerPackage=cloud.stackit.sdk.${service}.${version}api,modelPackage=cloud.stackit.sdk.${service}.${version}api.model,apiPackage=cloud.stackit.sdk.${service}.${version}api.api,serviceName=${service_pascal_case}" \
+            --inline-schema-options "SKIP_SCHEMA_REUSE=true" \
+            --http-user-agent stackit-sdk-java/"${service}" \
+            --config "${ROOT_DIR}/languages/java/openapi-generator-config.yml"
+
+        # Rename DefaultApiServiceApi.java to {serviceName}Api.java
+        # This approach is a workaround because the file name cannot be set dynamically via --additional-properties or the config file in OpenAPI Generator.
+        api_file="${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/api/DefaultApiServiceApi.java"
+        if [ -f "$api_file" ]; then
+            mv "$api_file" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/api/${service_pascal_case}Api.java"
+        fi
+        api_test_file="${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/api/DefaultApiTestServiceApiTest.java"
+        if [ -f "$api_test_file" ]; then
+            mv "$api_test_file" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/api/${service_pascal_case}ApiTest.java"
+        fi
+
+        build_gradle="${SERVICES_FOLDER}/${service}/${version}api/build.gradle"
+        if [ -f "$build_gradle" ]; then
+            mv "$build_gradle" "${SERVICES_FOLDER}/${service}/build.gradle"
+        fi
+
+        # Remove unnecessary files
+        rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
+        rm -r "${SERVICES_FOLDER}/${service}/.openapi-generator/"
+
+        # If the service version has a wait package, move them inside the service folder
+        if [ -d "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait" ]; then
+            echo "Found ${service} \"wait\" package"
+            cp -r "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api/wait"
+        fi
+
+        # If the service version has a wait test package, move them inside the service folder
+        if [ -d "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait" ]; then
+            echo "Found ${service} \"wait\" test package"
+            cp -r "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api/wait"
+        fi
+    done
+
+    # If the service has a CHANGELOG file, move it inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then
+        echo "Found ${service} \"CHANGELOG\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/CHANGELOG.md" "${SERVICES_FOLDER}/${service}/CHANGELOG.md"
+    fi
+
+    # If the service has a LICENSE file, move it inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/LICENSE.md" ]; then
+        echo "Found ${service} \"LICENSE\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
+    fi
+
+    # If the service has a NOTICE file, move it inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/NOTICE.txt" ]; then
+        echo "Found ${service} \"NOTICE\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/NOTICE.txt" "${SERVICES_FOLDER}/${service}/NOTICE.txt"
+    fi
+
+    # If the service has a VERSION file, move it inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/VERSION" ]; then
+        echo "Found ${service} \"VERSION\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/VERSION" "${SERVICES_FOLDER}/${service}/VERSION"
+    fi
+
+    # If the service has oas_commit file, move it inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/oas_commit" ]; then
+        echo "Found ${service} \"oas_commit\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/oas_commit" "${SERVICES_FOLDER}/${service}/oas_commit"
+    fi
 }
