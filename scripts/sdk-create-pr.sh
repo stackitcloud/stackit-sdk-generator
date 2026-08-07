@@ -147,12 +147,20 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
         if [[ "$branch" != "main" ]]; then
             echo ">> Creating PR for $service"
             git commit -m "Generate $service"
-            git push origin "$branch"
-            echo -e "$COMMIT_INFO\nspec comparison: ${compare_link}" | gh pr create --title "Generator: Update SDK /services/$service" --body-file - --head "$branch" --base "main"
+            if [[ -z "${NO_PUSH+x}" ]]; then
+                git push origin "$branch"
+                echo -e "$COMMIT_INFO\nspec comparison: ${compare_link}" | gh pr create --title "Generator: Update SDK /services/$service" --body-file - --head "$branch" --base "main"
+            else
+                echo ">> NO_PUSH is set; skipping push and PR creation for $service"
+            fi
         else
             echo ">> Pushing changes for $service service..."
             git commit -m "Generate $service: $COMMIT_INFO"
-            git push origin "$branch"
+            if [[ -z "${NO_PUSH+x}" ]]; then
+                git push origin "$branch"
+            else
+                echo ">> NO_PUSH is set; skipping push for $service"
+            fi
         fi
     fi
 done
@@ -199,11 +207,19 @@ while IFS= read -r service; do
     if [[ "${branch}" != "main" ]]; then
         echo ">> Creating removal PR for $service"
         git commit -m "Remove $service: removed from API specifications"
-        git push origin "${branch}"
-        echo -e "$COMMIT_INFO" | gh pr create --title "Generator: Remove SDK /services/$service" --body-file - --head "${branch}" --base "main"
+        if [[ -z "${NO_PUSH+x}" ]]; then
+            git push origin "${branch}"
+            echo -e "$COMMIT_INFO" | gh pr create --title "Generator: Remove SDK /services/$service" --body-file - --head "${branch}" --base "main"
+        else
+            echo ">> NO_PUSH is set; skipping push and PR creation for $service"
+        fi
     else
         echo ">> Pushing removal of $service service..."
         git commit -m "Remove $service: $COMMIT_INFO"
-        git push origin "${branch}"
+        if [[ -z "${NO_PUSH+x}" ]]; then
+            git push origin "${branch}"
+        else
+            echo ">> NO_PUSH is set; skipping push for $service"
+        fi
     fi
 done <<< "${deleted_services}"
