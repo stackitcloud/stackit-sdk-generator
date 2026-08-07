@@ -96,7 +96,13 @@ generate_python_sdk() {
     # --inline-schema-options "SKIP_SCHEMA_REUSE=true"
 
     while IFS= read -r -d '' oas_service && IFS= read -r service; do
-        generate_python_service "${ROOT_DIR}/oas/legacy/${oas_service}.json" "${service}"
+        local service_spec="${ROOT_DIR}/oas/legacy/${oas_service}.json"
+        if [[ ! -f "${service_spec}" ]]; then
+            echo "Skipping \"${service}\": legacy OpenAPI spec not found at ${service_spec}"
+            continue
+        fi
+
+        generate_python_service "${service_spec}" "${service}"
     done < <(
         "${ROOT_DIR}/scripts/bin/build" generate --plan "generation-plan.json"
     )
