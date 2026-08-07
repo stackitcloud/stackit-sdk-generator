@@ -45,6 +45,7 @@ func (dst *AreaId) UnmarshalJSON(data []byte) error {
 	err = json.Unmarshal(data, &dst.StaticAreaID)
 	if err == nil {
 		jsonStaticAreaID, _ := json.Marshal(dst.StaticAreaID)
+         // OVERRIDE: added expr after ||
 		if string(jsonStaticAreaID) == "{}" || *dst.StaticAreaID == STATICAREAID_UNKNOWN_DEFAULT_OPEN_API { // empty struct or unknown fallback enum
 			dst.StaticAreaID = nil
 		} else {
