@@ -6,8 +6,6 @@ set -eo pipefail
 ROOT_DIR=$(git rev-parse --show-toplevel)
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
 
-OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
-
 SDK_GO_VERSION="1.21"
 
 SERVICES_FOLDER="${SDK_REPO_LOCAL_PATH}/services"
@@ -123,40 +121,11 @@ generate_go_sdk() {
 
     warning=""
 
-    for service_dir in "${ROOT_DIR}/oas/services"/*; do
-        service="${service_dir##*/}"
-        service="${service%.json}"
-
-        compat_layer_service_oas_name="${service}"
-
-        # Remove invalid characters to ensure a valid Go pkg name
-        service="${service//-/}"                                  # remove dashes
-        service="${service// /}"                                  # remove empty spaces
-        service="${service//_/}"                                  # remove underscores
-        service=$(echo "${service}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
-        service=$(echo "${service}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
-
-        go_pkg_name_format="^[a-z0-9]+$"
-        if [[ ! ${service} =~ ${go_pkg_name_format} ]]; then # check that it is a single lower case word
-            echo "Service ${service} has an invalid Go package name even after removing invalid characters. The generate-sdk.sh script might need to be updated to catch corner case, contact the repo maintainers."
-            exit 1
-        fi
-
-        contains_empty_space_pattern=" |'"
-        if [[ ${service_json} =~ ${contains_empty_space_pattern} ]]; then
-            echo "OAS filename ${service_json} has empty spaces, the generation will fail. If the OAS was downloaded using the make download-oas command, it should be fixed in the api-specifications repo, please contact the repo maintainers at ${OAS_REPO}."
-            exit 1
-        fi
-
-        # check if the whole service is blocklisted
-        if grep -E "^$service$" "${ROOT_DIR}/languages/golang/blocklist.txt"; then
-            echo "Skipping blocklisted service ${service}"
-            warning+="Skipping blocklisted service ${service}\n"
-            continue
-        fi
-
-        generate_go_service "${service_dir}" "${service}" "${compat_layer_service_oas_name}"
-    done
+    while IFS= read -r -d '' oas_service && IFS= read -r service; do
+        generate_go_service "${ROOT_DIR}/oas/services/${oas_service}" "${service}" "${oas_service}"
+    done < <(
+        "${ROOT_DIR}/scripts/bin/build" generate --plan "generation-plan.json"
+    )
 
     # Add examples to workspace
     if [ -d "${EXAMPLES_FOLDER}" ]; then

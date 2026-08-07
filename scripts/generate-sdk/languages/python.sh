@@ -6,8 +6,6 @@ set -eo pipefail
 ROOT_DIR=$(git rev-parse --show-toplevel)
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
 
-OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
-
 SERVICES_FOLDER="${SDK_REPO_LOCAL_PATH}/services"
 
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
@@ -87,8 +85,6 @@ generate_python_sdk() {
     # Remove old contents of services dir (services/)
     rm -rf "${SERVICES_FOLDER}"
 
-    warning=""
-
     # There is no core in the internal python sdk, therefore the generation of pyproject.toml
     # needs some adjustment.
     local extra_props_internal="useLocalCore=true"
@@ -99,31 +95,11 @@ generate_python_sdk() {
     # TODO: add to generator below when adding multi-API-version support:
     # --inline-schema-options "SKIP_SCHEMA_REUSE=true"
 
-    # Generate SDK for each service
-    for service_json in ${ROOT_DIR}/oas/legacy/*.json; do
-        service="${service_json##*/}"
-        service="${service%.json}"
-
-        # Remove invalid characters to ensure a valid Go pkg name
-        service="${service//-/}"                                  # remove dashes
-        service="${service// /}"                                  # remove empty spaces
-        service="${service//_/}"                                  # remove underscores
-        service=$(echo "${service}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
-        service=$(echo "${service}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
-
-        if grep -E "^$service$" "${ROOT_DIR}/languages/python/blocklist.txt"; then
-            echo "Skipping blocklisted service ${service}"
-            warning+="Skipping blocklisted service ${service}\n"
-            continue
-        fi
-
-        generate_python_service "${service_json}" "${service}"
-
-    done
-
-    if [[ -n "$warning" ]]; then
-        echo -e "\nSome of the services were skipped during creation!\n$warning"
-    fi
+    while IFS= read -r -d '' oas_service && IFS= read -r service; do
+        generate_python_service "${ROOT_DIR}/oas/legacy/${oas_service}.json" "${service}"
+    done < <(
+        "${ROOT_DIR}/scripts/bin/build" generate --plan "sdk-repo-updated/generation-plan.json"
+    )
 }
 
 generate_python_service() {
@@ -214,6 +190,4 @@ generate_python_service() {
     isort .
     autoimport --ignore-init-modules .
     black .
-
-
 }

@@ -96,39 +96,14 @@ generate_java_sdk() {
 
     warning=""
 
-    # Generate SDK for each service
-    for service_dir in "${ROOT_DIR}/oas/services"/*; do
-        service="${service_dir##*/}"
-        service="${service%.json}"
-
-        service_pascal_case=$(to_pascal_case "${service}")
-
-        # Remove invalid characters to ensure a valid Java pkg name
-        service="${service//-/}"                                  # remove dashes
-        service="${service// /}"                                  # remove spaces
-        service=$(echo "${service}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
-        service=$(echo "${service}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
-
-        # Ensure the package name doesn't start with a number
-        if [[ "${service}" =~ ^[0-9] ]]; then
-          service="_${service}" # Prepend a valid prefix if it starts with a number
-        fi
-
-        if ! [[ ${INCLUDE_SERVICES[*]} =~ ${service} ]]; then
-            echo "Skipping not included service ${service}"
-            warning+="Skipping not included service ${service}\n"
-            continue
-        fi
-
-        # check if the whole service is blocklisted
-        if grep -E "^$service$" "${ROOT_DIR}/languages/java/blocklist.txt"; then
-            echo "Skipping blocklisted service ${service}"
-            warning+="Skipping blocklisted service ${service}\n"
-            continue
-        fi
-
-        generate_java_service "${service_dir}" "${service}" "${service_pascal_case}"
-    done
+    while IFS= read -r -d '' oas_service && IFS= read -r service; do
+        generate_java_service \
+            "${ROOT_DIR}/oas/services/${oas_service}" \
+            "${service}" \
+            "$(to_pascal_case "${oas_service}")"
+    done < <(
+        "${ROOT_DIR}/scripts/bin/build" generate --plan "sdk-repo-updated/generation-plan.json"
+    )
 
     cd "${SDK_REPO_LOCAL_PATH}"
     make fmt
