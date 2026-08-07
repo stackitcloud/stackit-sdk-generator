@@ -67,7 +67,7 @@ generate_java_sdk() {
             --spec-dir "oas/services" \
             --service-dir "sdk-repo-updated/services" \
             --blocklist "languages/java/blocklist.txt" \
-            --output "sdk-repo-updated/generation-plan.json" \
+            --output "generation-plan.json" \
             "${plan_include_args[@]}"
     )
 
@@ -102,7 +102,7 @@ generate_java_sdk() {
             "${service}" \
             "$(to_pascal_case "${oas_service}")"
     done < <(
-        "${ROOT_DIR}/scripts/bin/build" generate --plan "sdk-repo-updated/generation-plan.json"
+        "${ROOT_DIR}/scripts/bin/build" generate --plan "generation-plan.json"
     )
 
     cd "${SDK_REPO_LOCAL_PATH}"

@@ -61,7 +61,7 @@ generate_python_sdk() {
             --spec-dir "oas/services" \
             --service-dir "sdk-repo-updated/services" \
             --blocklist "languages/python/blocklist.txt" \
-            --output "sdk-repo-updated/generation-plan.json"
+            --output "generation-plan.json"
     )
 
     # Install SDK project tools
@@ -98,7 +98,7 @@ generate_python_sdk() {
     while IFS= read -r -d '' oas_service && IFS= read -r service; do
         generate_python_service "${ROOT_DIR}/oas/legacy/${oas_service}.json" "${service}"
     done < <(
-        "${ROOT_DIR}/scripts/bin/build" generate --plan "sdk-repo-updated/generation-plan.json"
+        "${ROOT_DIR}/scripts/bin/build" generate --plan "generation-plan.json"
     )
 }
 
