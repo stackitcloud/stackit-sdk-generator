@@ -20,7 +20,7 @@ import (
 // AreaId - The identifier (ID) of an area.
 type AreaId struct {
 	StaticAreaID *StaticAreaID
-	String *string
+	String       *string
 }
 
 // StaticAreaIDAsAreaId is a convenience function that returns StaticAreaID wrapped in AreaId
@@ -37,7 +37,6 @@ func StringAsAreaId(v *string) AreaId {
 	}
 }
 
-
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *AreaId) UnmarshalJSON(data []byte) error {
 	var err error
@@ -46,13 +45,11 @@ func (dst *AreaId) UnmarshalJSON(data []byte) error {
 	err = json.Unmarshal(data, &dst.StaticAreaID)
 	if err == nil {
 		jsonStaticAreaID, _ := json.Marshal(dst.StaticAreaID)
-		// OVERRIDE: this pattern match is custom
-		regex := `^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`
-		isMatched, _ := regexp.MatchString(regex, string(*dst.StaticAreaID))
-		if string(jsonStaticAreaID) != "{}" && isMatched { // empty struct
-			match++
-		} else {
+         // OVERRIDE: added expr after ||
+		if string(jsonStaticAreaID) == "{}" || *dst.StaticAreaID == STATICAREAID_UNKNOWN_DEFAULT_OPEN_API { // empty struct or unknown fallback enum
 			dst.StaticAreaID = nil
+		} else {
+			match++
 		}
 	} else {
 		dst.StaticAreaID = nil
@@ -62,10 +59,13 @@ func (dst *AreaId) UnmarshalJSON(data []byte) error {
 	err = json.Unmarshal(data, &dst.String)
 	if err == nil {
 		jsonString, _ := json.Marshal(dst.String)
-		if string(jsonString) == "{}" { // empty struct
-			dst.String = nil
-		} else {
+		// OVERRIDE: this pattern match is custom
+		regex := `^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$`
+		isMatched, _ := regexp.MatchString(regex, *dst.String)
+		if string(jsonString) != "{}" && isMatched { // empty struct
 			match++
+		} else {
+			dst.String = nil
 		}
 	} else {
 		dst.String = nil
@@ -98,7 +98,7 @@ func (src AreaId) MarshalJSON() ([]byte, error) {
 }
 
 // Get the actual instance
-func (obj *AreaId) GetActualInstance() (interface{}) {
+func (obj *AreaId) GetActualInstance() interface{} {
 	if obj == nil {
 		return nil
 	}
@@ -115,7 +115,7 @@ func (obj *AreaId) GetActualInstance() (interface{}) {
 }
 
 // Get the actual instance value
-func (obj AreaId) GetActualInstanceValue() (interface{}) {
+func (obj AreaId) GetActualInstanceValue() interface{} {
 	if obj.StaticAreaID != nil {
 		return *obj.StaticAreaID
 	}
