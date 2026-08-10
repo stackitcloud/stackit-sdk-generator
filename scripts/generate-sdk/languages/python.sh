@@ -196,5 +196,5 @@ generate_python_service() {
     # Run formatter
     isort .
     autoimport --ignore-init-modules .
-    black .
+    uv run black --config pyproject.toml .
 }
