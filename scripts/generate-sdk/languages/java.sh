@@ -159,6 +159,7 @@ generate_java_service(){
             --git-host "${GIT_HOST}" \
             --git-user-id "${GIT_USER_ID}" \
             --git-repo-id "${GIT_REPO_ID}" \
+            --openapi-normalizer "SIMPLIFY_ONEOF_ANYOF=false" \
             --enable-post-process-file \
             --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=true,supportingFiles \
             --additional-properties="artifactId=${service},artifactDescription=${SERVICE_DESCRIPTION},invokerPackage=cloud.stackit.sdk.${service}.${version}api,modelPackage=cloud.stackit.sdk.${service}.${version}api.model,apiPackage=cloud.stackit.sdk.${service}.${version}api.api,serviceName=${service_pascal_case}" \
