@@ -78,6 +78,8 @@ jobs:
 
       - name: Install Go
         uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -126,6 +128,8 @@ jobs:
 
       - name: Install Go
         uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
 
       - name: Install Java
         uses: actions/setup-java@v4
