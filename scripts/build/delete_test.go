@@ -20,13 +20,13 @@ func TestRunDeletePrintsServicesMarkedForDeletion(t *testing.T) {
 	}
 	var stdout, stderr bytes.Buffer
 
-	ok := runDelete(context.Background(), []string{"--plan", "generation-plan.json"}, IO{
+	err := runDelete(context.Background(), []string{"--plan", "generation-plan.json"}, Environment{
 		Out: &stdout,
 		Err: &stderr,
 		FS:  readOnlyFileSystem{FileSystem: filesystem},
 	})
-	if !ok {
-		t.Fatalf("runDelete returned false: %s", stderr.String())
+	if err != nil {
+		t.Fatalf("runDelete failed: %v", err)
 	}
 	if got, want := stdout.String(), "obsolete\nservice2\n"; got != want {
 		t.Errorf("stdout = %q, want %q", got, want)

@@ -9,37 +9,34 @@ import (
 	"strings"
 )
 
-func runGenerate(ctx context.Context, args []string, io IO) bool {
+func runGenerate(ctx context.Context, args []string, env Environment) error {
 	generateFlags := flag.NewFlagSet("generate", flag.ContinueOnError)
-	generateFlags.SetOutput(io.Err)
+	generateFlags.SetOutput(env.Err)
 
 	var planPath string
 	generateFlags.StringVar(&planPath, "plan", "", "path to the generation plan")
 	if err := generateFlags.Parse(args); err != nil {
-		return false
+		return fmt.Errorf("parse generate flags: %w", err)
 	}
 	if len(generateFlags.Args()) != 0 {
-		fmt.Fprintf(io.Err, "unexpected arguments: %s\n", strings.Join(generateFlags.Args(), " "))
-		return false
+		return fmt.Errorf("unexpected arguments: %s\n", strings.Join(generateFlags.Args(), " "))
 	}
 	if planPath == "" {
-		fmt.Fprintln(io.Err, "--plan is required")
-		return false
+		return fmt.Errorf("--plan is required")
 	}
 
-	plan, err := readPlan(io.FS, planPath)
+	plan, err := readPlan(env.FS, planPath)
 	if err != nil {
-		fmt.Fprintf(io.Err, "read generation plan: %v\n", err)
-		return false
+		return fmt.Errorf("read generation plan: %w\n", err)
 	}
 
 	for _, service := range plan.Services {
-		if service.Action == "generate" {
+		if service.Action == ActionGenerate {
 			// use null byte as field separator to avoid parsing/escaping issues
-			fmt.Fprintf(io.Out, "%s\x00%s\n", service.OASService, service.Service)
+			fmt.Fprintf(env.Out, "%s\x00%s\n", service.OASService, service.Service)
 		}
 	}
-	return true
+	return nil
 }
 
 func readPlan(filesystem fs.FS, path string) (Plan, error) {

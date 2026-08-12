@@ -5,9 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"io/fs"
-	"reflect"
 	"testing"
 	"testing/fstest"
+
+	"github.com/google/go-cmp/cmp"
 )
 
 type mapFileSystem struct {
@@ -31,18 +32,19 @@ func TestRunPlan(t *testing.T) {
 		"oas/services/foo-bar/v1/foo-bar.json": {Data: []byte{}},
 		"services/foobar/.keep":                {Data: []byte{}},
 		"services/obsolete/.keep":              {Data: []byte{}},
-		"languages/go/blocklist.txt":           {Data: []byte("# blocked services\nblocked\n")},
+		"services/deleteblocked/.keep":         {Data: []byte{}},
+		"languages/go/blocklist.txt":           {Data: []byte("# blocked services\nblocked\ndeleteblocked")},
 	}, writes: make(map[string][]byte)}
 	var stdout, stderr bytes.Buffer
 
-	ok := runPlan(context.Background(), Global{Language: "go"}, goLanguage{}, []string{
+	err := runPlan(context.Background(), Global{Language: "go"}, goLanguage{}, []string{
 		"--spec-dir", "oas/services",
 		"--service-dir", "services",
 		"--blocklist", "languages/go/blocklist.txt",
 		"--output", outputPath,
-	}, IO{Out: &stdout, Err: &stderr, FS: filesystem})
-	if !ok {
-		t.Fatalf("runPlan returned false: %s", stderr.String())
+	}, Environment{Out: &stdout, Err: &stderr, FS: filesystem})
+	if err != nil {
+		t.Fatalf("runPlan failed: %v", err)
 	}
 
 	contents, ok := filesystem.writes[outputPath]
@@ -57,12 +59,13 @@ func TestRunPlan(t *testing.T) {
 		t.Errorf("stdout = %q, want %q", got, want)
 	}
 	want := []PlannedService{
-		{Service: "blocked", OASService: "blocked", Action: "block"},
-		{Service: "foobar", OASService: "foo-bar", Action: "generate"},
-		{Service: "obsolete", Action: "delete"},
+		{Service: "blocked", OASService: "blocked", Action: ActionBlock},
+		{Service: "deleteblocked", Action: ActionDelete},
+		{Service: "foobar", OASService: "foo-bar", Action: ActionGenerate},
+		{Service: "obsolete", Action: ActionDelete},
 	}
-	if !reflect.DeepEqual(plan.Services, want) {
-		t.Errorf("services = %#v, want %#v", plan.Services, want)
+	if diff := cmp.Diff(want, plan.Services); diff != "" {
+		t.Errorf("services mismatch (-want +got):\n%s", diff)
 	}
 }
 
@@ -82,16 +85,16 @@ func TestRunPlanIncludeService(t *testing.T) {
 	}
 	var stdout, stderr bytes.Buffer
 
-	ok := runPlan(context.Background(), Global{Language: "go"}, goLanguage{}, []string{
+	err := runPlan(context.Background(), Global{Language: "go"}, goLanguage{}, []string{
 		"--spec-dir", "oas/services",
 		"--service-dir", "services",
 		"--blocklist", "languages/go/blocklist.txt",
 		"--output", outputPath,
 		"--include-service", "alice",
 		"--include-service", "bob",
-	}, IO{Out: &stdout, Err: &stderr, FS: filesystem})
-	if !ok {
-		t.Fatalf("runPlan returned false: %s", stderr.String())
+	}, Environment{Out: &stdout, Err: &stderr, FS: filesystem})
+	if err != nil {
+		t.Fatalf("runPlan failed: %v", err)
 	}
 
 	contents, ok := filesystem.writes[outputPath]
@@ -106,11 +109,11 @@ func TestRunPlanIncludeService(t *testing.T) {
 		t.Errorf("stdout = %q, want %q", got, want)
 	}
 	want := []PlannedService{
-		{Service: "alice", OASService: "alice", Action: "generate"},
-		{Service: "bob", OASService: "bob", Action: "block"},
-		{Service: "charlie", OASService: "charlie", Action: "not_included"},
+		{Service: "alice", OASService: "alice", Action: ActionGenerate},
+		{Service: "bob", OASService: "bob", Action: ActionBlock},
+		{Service: "charlie", OASService: "charlie", Action: ActionNotIncluded},
 	}
-	if !reflect.DeepEqual(plan.Services, want) {
-		t.Errorf("services = %#v, want %#v", plan.Services, want)
+	if diff := cmp.Diff(want, plan.Services); diff != "" {
+		t.Errorf("services mismatch (-want +got):\n%s", diff)
 	}
 }

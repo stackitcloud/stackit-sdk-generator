@@ -22,15 +22,24 @@ type Plan struct {
 	Services []PlannedService `json:"services"`
 }
 
+type Action string
+
+const (
+	ActionGenerate    Action = "generate"
+	ActionBlock       Action = "block"
+	ActionDelete      Action = "delete"
+	ActionNotIncluded Action = "not_included"
+)
+
 type PlannedService struct {
 	Service    string `json:"service"`
 	OASService string `json:"oas_service,omitempty"`
-	Action     string `json:"action"`
+	Action     Action `json:"action"`
 }
 
-func runPlan(ctx context.Context, global Global, language Language, args []string, io IO) bool {
+func runPlan(ctx context.Context, global Global, language Language, args []string, env Environment) error {
 	planFlags := flag.NewFlagSet("plan", flag.ContinueOnError)
-	planFlags.SetOutput(io.Err)
+	planFlags.SetOutput(env.Err)
 
 	var params PlanParams
 	var includedServices []string
@@ -43,11 +52,10 @@ func runPlan(ctx context.Context, global Global, language Language, args []strin
 		return nil
 	})
 	if err := planFlags.Parse(args); err != nil {
-		return false
+		return fmt.Errorf("parsing plan flages: %w", err)
 	}
 	if len(planFlags.Args()) != 0 {
-		fmt.Fprintf(io.Err, "unexpected arguments: %s\n", strings.Join(planFlags.Args(), " "))
-		return false
+		return fmt.Errorf("unexpected arguments: %s", strings.Join(planFlags.Args(), " "))
 	}
 	params.IncludedService = make(map[string]struct{}, len(includedServices))
 	for _, service := range includedServices {
@@ -55,33 +63,28 @@ func runPlan(ctx context.Context, global Global, language Language, args []strin
 	}
 
 	if err := validatePlanParams(params); err != nil {
-		fmt.Fprintf(io.Err, "invalid plan arguments: %v\n", err)
-		return false
+		return fmt.Errorf("invalid plan arguments: %w\n", err)
 	}
 
-	plan, err := createPlan(io.FS, params, language)
+	plan, err := createPlan(env.FS, params, language)
 	if err != nil {
-		fmt.Fprintf(io.Err, "create plan: %v\n", err)
-		return false
+		return fmt.Errorf("create plan: %w\n", err)
 	}
 	var formatted []byte
 	if formatted, err = formatPlan(plan); err != nil {
-		fmt.Fprintf(io.Err, "format plan: %v\n", err)
-		return false
+		return fmt.Errorf("format plan: %w\n", err)
 	}
-	if _, err = io.Out.Write(formatted); err != nil {
-		fmt.Fprintf(io.Err, "print plan: %v\n", err)
-		return false
+	if _, err = env.Out.Write(formatted); err != nil {
+		return fmt.Errorf("print plan: %w\n", err)
 	}
-	if err = io.FS.WriteFile(params.OutputPath, formatted, 0o644); err != nil {
-		fmt.Fprintf(io.Err, "write plan: %v\n", err)
-		return false
+	if err = env.FS.WriteFile(params.OutputPath, formatted, 0o644); err != nil {
+		return fmt.Errorf("write plan: %w\n", err)
 	}
 
 	if global.Verbose {
-		fmt.Fprintf(io.Err, "wrote plan for %d services to %s\n", len(plan.Services), params.OutputPath)
+		fmt.Fprintf(env.Err, "wrote plan for %d services to %s\n", len(plan.Services), params.OutputPath)
 	}
-	return true
+	return nil
 }
 
 func validatePlanParams(params PlanParams) error {
@@ -123,11 +126,11 @@ func createPlan(filesystem FileSystem, params PlanParams, language Language) (Pl
 			return Plan{}, fmt.Errorf("OAS services %q and %q both normalize to %q", previous.OASService, oasService, service)
 		}
 
-		action := "generate"
+		action := ActionGenerate
 		if _, isBlocked := blocked[service]; isBlocked {
-			action = "block"
+			action = ActionBlock
 		} else if len(params.IncludedService) > 0 && !isIncluded(params.IncludedService, service) {
-			action = "not_included"
+			action = ActionNotIncluded
 		}
 		services[service] = PlannedService{Service: service, OASService: oasService, Action: action}
 	}
@@ -142,7 +145,7 @@ func createPlan(filesystem FileSystem, params PlanParams, language Language) (Pl
 		}
 		service := entry.Name()
 		if _, exists := services[service]; !exists {
-			services[service] = PlannedService{Service: service, Action: "delete"}
+			services[service] = PlannedService{Service: service, Action: ActionDelete}
 		}
 	}
 

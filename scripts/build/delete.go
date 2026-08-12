@@ -7,34 +7,31 @@ import (
 	"strings"
 )
 
-func runDelete(ctx context.Context, args []string, io IO) bool {
+func runDelete(ctx context.Context, args []string, env Environment) error {
 	deleteFlags := flag.NewFlagSet("delete", flag.ContinueOnError)
-	deleteFlags.SetOutput(io.Err)
+	deleteFlags.SetOutput(env.Err)
 
 	var planPath string
 	deleteFlags.StringVar(&planPath, "plan", "", "path to the generation plan")
 	if err := deleteFlags.Parse(args); err != nil {
-		return false
+		return fmt.Errorf("parsing delete flags: %w", err)
 	}
 	if len(deleteFlags.Args()) != 0 {
-		fmt.Fprintf(io.Err, "unexpected arguments: %s\n", strings.Join(deleteFlags.Args(), " "))
-		return false
+		return fmt.Errorf("unexpected arguments: %s\n", strings.Join(deleteFlags.Args(), " "))
 	}
 	if planPath == "" {
-		fmt.Fprintln(io.Err, "--plan is required")
-		return false
+		return fmt.Errorf("--plan is required")
 	}
 
-	plan, err := readPlan(io.FS, planPath)
+	plan, err := readPlan(env.FS, planPath)
 	if err != nil {
-		fmt.Fprintf(io.Err, "read generation plan: %v\n", err)
-		return false
+		return fmt.Errorf("read generation plan: %v\n", err)
 	}
 
 	for _, service := range plan.Services {
-		if service.Action == "delete" {
-			fmt.Fprintln(io.Out, service.Service)
+		if service.Action == ActionDelete {
+			fmt.Fprintln(env.Out, service.Service)
 		}
 	}
-	return true
+	return nil
 }

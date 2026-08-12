@@ -21,13 +21,13 @@ func TestRunGeneratePrintsServicesMarkedForGeneration(t *testing.T) {
 	}
 	var stdout, stderr bytes.Buffer
 
-	ok := runGenerate(context.Background(), []string{"--plan", "generation-plan.json"}, IO{
+	err := runGenerate(context.Background(), []string{"--plan", "generation-plan.json"}, Environment{
 		Out: &stdout,
 		Err: &stderr,
 		FS:  readOnlyFileSystem{FileSystem: filesystem},
 	})
-	if !ok {
-		t.Fatalf("runGenerate returned false: %s", stderr.String())
+	if err != nil {
+		t.Fatalf("runGenerate failed: %v", err)
 	}
 	if got, want := stdout.String(), "foo-bar\x00foo\nservice-2\x00service2\n"; got != want {
 		t.Errorf("stdout = %q, want %q", got, want)
