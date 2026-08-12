@@ -1,10 +1,10 @@
 # Stackit SDK Generator - Build Tool
 
 Currently we have a lot of bash scripts to build the SDKs.
-In the long term we want to reduce this because of readbility issues.
+In the long term we want to reduce this because of readability issues.
 
 New build functionality should be implemented in this tool.
-And if we have some time we can also refctor the existing bash scripts to use this tool.
+And if we have some time we can also refactor the existing bash scripts to use this tool.
 
 The end goal for this tool is to have a single entry point for building the SDKs.
 Especially we want to leverage parallelism to speed up the build process.
@@ -44,7 +44,7 @@ https://openapi-generator.tech/docs/usage#batch
 
 Currently only 3 standalone commands are implemented:
 
-- plan.go: write a plan file, which services will be generated, which are blockesd, which should be deleted
+- plan.go: write a plan file, which services will be generated, which are blocked, which should be deleted
 - generate.go: helper command to get oas-service-name, on-disk-service-name pairs from the plan file to generate
 - delete.go: helper command to get on-disk-service-name from the plan file to delete
 
