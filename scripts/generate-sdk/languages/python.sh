@@ -6,8 +6,6 @@ set -eo pipefail
 ROOT_DIR=$(git rev-parse --show-toplevel)
 SDK_REPO_LOCAL_PATH="${ROOT_DIR}/sdk-repo-updated"
 
-OAS_REPO=https://github.com/stackitcloud/stackit-api-specifications
-
 SERVICES_FOLDER="${SDK_REPO_LOCAL_PATH}/services"
 
 GENERATOR_LOG_LEVEL="error" # Must be a Java log level (error, warn, info...)
@@ -57,6 +55,15 @@ generate_python_sdk() {
     fi
     git clone --quiet -b "${SDK_BRANCH}" "${SDK_REPO_URL}" "${SDK_REPO_LOCAL_PATH}"
 
+    (
+        cd "${ROOT_DIR}"
+        "${ROOT_DIR}/scripts/bin/build" --language python plan \
+            --spec-dir "oas/services" \
+            --service-dir "sdk-repo-updated/services" \
+            --blocklist "languages/python/blocklist.txt" \
+            --output "generation-plan.json"
+    )
+
     # Install SDK project tools
     cd "${ROOT_DIR}"
     make project-tools LANGUAGE=python
@@ -78,8 +85,6 @@ generate_python_sdk() {
     # Remove old contents of services dir (services/)
     rm -rf "${SERVICES_FOLDER}"
 
-    warning=""
-
     # There is no core in the internal python sdk, therefore the generation of pyproject.toml
     # needs some adjustment.
     local extra_props_internal="useLocalCore=true"
@@ -90,114 +95,106 @@ generate_python_sdk() {
     # TODO: add to generator below when adding multi-API-version support:
     # --inline-schema-options "SKIP_SCHEMA_REUSE=true"
 
-    # Generate SDK for each service
-    for service_json in ${ROOT_DIR}/oas/legacy/*.json; do
-        service="${service_json##*/}"
-        service="${service%.json}"
-
-        # Remove invalid characters to ensure a valid Go pkg name
-        service="${service//-/}"                                  # remove dashes
-        service="${service// /}"                                  # remove empty spaces
-        service="${service//_/}"                                  # remove underscores
-        service=$(echo "${service}" | tr '[:upper:]' '[:lower:]') # convert upper case letters to lower case
-        service=$(echo "${service}" | tr -d -c '[:alnum:]')       # remove non-alphanumeric characters
-
-        if grep -E "^$service$" "${ROOT_DIR}/languages/python/blocklist.txt"; then
-            echo "Skipping blocklisted service ${service}"
-            warning+="Skipping blocklisted service ${service}\n"
+    while IFS= read -r -d '' oas_service && IFS= read -r service; do
+        local service_spec="${ROOT_DIR}/oas/legacy/${oas_service}.json"
+        if [[ ! -f "${service_spec}" ]]; then
+            echo "Skipping \"${service}\": legacy OpenAPI spec not found at ${service_spec}"
             continue
         fi
 
-        echo ">> Generating \"${service}\" service..."
-        cd "${ROOT_DIR}"
+        generate_python_service "${service_spec}" "${service}"
+    done < <(
+        "${ROOT_DIR}/scripts/bin/build" generate --plan "generation-plan.json"
+    )
+}
 
-        mkdir -p "${SERVICES_FOLDER}/${service}/"
-        cp "${ROOT_DIR}/languages/python/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
+generate_python_service() {
+    local service_json=$1
+    local service=$2
+    echo ">> Generating \"${service}\" service..."
+    cd "${ROOT_DIR}"
 
-        # Run the generator
-        java -Dlog.level="${GENERATOR_LOG_LEVEL}" -jar "${jar_path}" generate \
-            --generator-name python \
-            --input-spec "${service_json}" \
-            --output "${SERVICES_FOLDER}/${service}" \
-            --package-name "stackit.${service}" \
-            --template-dir "${ROOT_DIR}/languages/python/templates/" \
-            --git-host "${GIT_HOST}" \
-            --git-user-id "${GIT_USER_ID}" \
-            --git-repo-id "${GIT_REPO_ID}" \
-            --openapi-normalizer "SIMPLIFY_ONEOF_ANYOF=false" \
-            --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=false,supportingFiles \
-            --additional-properties=pythonPackageName="stackit-${service},removeEnumValuePrefix=false,${extra_props_internal}" >/dev/null \
-            --http-user-agent "stackit-sdk-python/${service}"
+    mkdir -p "${SERVICES_FOLDER}/${service}/"
+    cp "${ROOT_DIR}/languages/python/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
 
-        # Remove unnecessary files
-        rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
-        rm -r "${SERVICES_FOLDER}/${service}/.openapi-generator/"
-        rm "${SERVICES_FOLDER}/${service}/stackit/__init__.py"
-        rm "${SERVICES_FOLDER}/${service}/.github/workflows/python.yml"
+    # Run the generator
+    java -Dlog.level="${GENERATOR_LOG_LEVEL}" -jar "${jar_path}" generate \
+        --generator-name python \
+        --input-spec "${service_json}" \
+        --output "${SERVICES_FOLDER}/${service}" \
+        --package-name "stackit.${service}" \
+        --template-dir "${ROOT_DIR}/languages/python/templates/" \
+        --git-host "${GIT_HOST}" \
+        --git-user-id "${GIT_USER_ID}" \
+        --git-repo-id "${GIT_REPO_ID}" \
+        --openapi-normalizer "SIMPLIFY_ONEOF_ANYOF=false" \
+        --global-property apis,models,modelTests=false,modelDocs=false,apiDocs=false,apiTests=false,supportingFiles \
+        --additional-properties=pythonPackageName="stackit-${service},removeEnumValuePrefix=false,${extra_props_internal}" >/dev/null \
+        --http-user-agent "stackit-sdk-python/${service}"
 
-        # Create source layout
-        mkdir "${SERVICES_FOLDER}/${service}/src"
-        mv "${SERVICES_FOLDER}/${service}/stackit/" "${SERVICES_FOLDER}/${service}/src/"
+    # Remove unnecessary files
+    rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
+    rm -r "${SERVICES_FOLDER}/${service}/.openapi-generator/"
+    rm "${SERVICES_FOLDER}/${service}/stackit/__init__.py"
+    rm "${SERVICES_FOLDER}/${service}/.github/workflows/python.yml"
 
-        # If the service has a wait package files, move them inside the service folder
-        if [ -d "${sdk_services_backup_dir}/${service}/src/wait" ]; then
-            echo "Found ${service} \"wait\" package"
-            cp -r "${sdk_services_backup_dir}/${service}/src/wait" "${SERVICES_FOLDER}/${service}/src/wait"
-        fi
+    # Create source layout
+    mkdir "${SERVICES_FOLDER}/${service}/src"
+    mv "${SERVICES_FOLDER}/${service}/stackit/" "${SERVICES_FOLDER}/${service}/src/"
 
-        # If the service has a README.md file, move them inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/README.md" ]; then
-            echo "Found ${service} \"README.md\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/README.md" "${SERVICES_FOLDER}/${service}/README.md"
-        fi
-
-        # If the service has a pyproject.toml file, move them inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/pyproject.toml" ]; then
-            echo "Found ${service} \"pyproject.toml\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/pyproject.toml" "${SERVICES_FOLDER}/${service}/pyproject.toml"
-        fi
-
-        # If the service has a uv.lock file, move them inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/uv.lock" ]; then
-            echo "Found ${service} \"uv.lock\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/uv.lock" "${SERVICES_FOLDER}/${service}/uv.lock"
-        else 
-            uv lock --directory "${SERVICES_FOLDER}/${service}"
-        fi
-
-        # If the service has a CHANGELOG file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then
-            echo "Found ${service} \"CHANGELOG\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/CHANGELOG.md" "${SERVICES_FOLDER}/${service}/CHANGELOG.md"
-        fi
-
-        # If the service has a LICENSE file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/LICENSE.md" ]; then
-            echo "Found ${service} \"LICENSE\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
-        fi
-
-        # If the service has a NOTICE file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/NOTICE.txt" ]; then
-            echo "Found ${service} \"NOTICE\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/NOTICE.txt" "${SERVICES_FOLDER}/${service}/NOTICE.txt"
-        fi
-
-        # If the service has oas_commit file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/oas_commit" ]; then
-            echo "Found ${service} \"oas_commit\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/oas_commit" "${SERVICES_FOLDER}/${service}/oas_commit"
-        fi
-
-        cd "${SERVICES_FOLDER}/${service}"
-        # Run formatter
-        isort .
-        autoimport --ignore-init-modules .
-        uv run black --config pyproject.toml .
-
-    done
-
-    if [[ -n "$warning" ]]; then
-        echo -e "\nSome of the services were skipped during creation!\n$warning"
+    # If the service has a wait package files, move them inside the service folder
+    if [ -d "${sdk_services_backup_dir}/${service}/src/wait" ]; then
+        echo "Found ${service} \"wait\" package"
+        cp -r "${sdk_services_backup_dir}/${service}/src/wait" "${SERVICES_FOLDER}/${service}/src/wait"
     fi
+
+    # If the service has a README.md file, move them inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/README.md" ]; then
+        echo "Found ${service} \"README.md\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/README.md" "${SERVICES_FOLDER}/${service}/README.md"
+    fi
+
+    # If the service has a pyproject.toml file, move them inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/pyproject.toml" ]; then
+        echo "Found ${service} \"pyproject.toml\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/pyproject.toml" "${SERVICES_FOLDER}/${service}/pyproject.toml"
+    fi
+
+    # If the service has a uv.lock file, move them inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/uv.lock" ]; then
+        echo "Found ${service} \"uv.lock\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/uv.lock" "${SERVICES_FOLDER}/${service}/uv.lock"
+    else
+        uv lock --directory "${SERVICES_FOLDER}/${service}"
+    fi
+
+    # If the service has a CHANGELOG file, move it inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then
+        echo "Found ${service} \"CHANGELOG\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/CHANGELOG.md" "${SERVICES_FOLDER}/${service}/CHANGELOG.md"
+    fi
+
+    # If the service has a LICENSE file, move it inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/LICENSE.md" ]; then
+        echo "Found ${service} \"LICENSE\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
+    fi
+
+    # If the service has a NOTICE file, move it inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/NOTICE.txt" ]; then
+        echo "Found ${service} \"NOTICE\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/NOTICE.txt" "${SERVICES_FOLDER}/${service}/NOTICE.txt"
+    fi
+
+    # If the service has oas_commit file, move it inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/oas_commit" ]; then
+        echo "Found ${service} \"oas_commit\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/oas_commit" "${SERVICES_FOLDER}/${service}/oas_commit"
+    fi
+
+    cd "${SERVICES_FOLDER}/${service}"
+    # Run formatter
+    isort .
+    autoimport --ignore-init-modules .
+    uv run black --config pyproject.toml .
 }
