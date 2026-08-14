@@ -15,13 +15,6 @@ if [ $# -lt 2 ]; then
     exit 1
 fi
 
-if type -p go >/dev/null; then
-    :
-else
-    echo "! Go not installed, unable to proceed."
-    exit 1
-fi
-
 if [ ! -d "${SDK_REPO_LOCAL_PATH}" ]; then
     echo "! SDK to commit not found in root. Please run make generate-sdk"
     exit 1
@@ -38,6 +31,12 @@ if [[ -z $4 ]]; then
     LANGUAGE="go"
 else
     LANGUAGE=$4
+fi
+
+DELETE_PLAN="generation-plan.json"
+if [[ ! -f "${ROOT_DIR}/${DELETE_PLAN}" ]]; then
+    echo "! Generation plan not found: ${DELETE_PLAN}"
+    exit 1
 fi
 
 # Create temp directory to work on
@@ -148,12 +147,79 @@ for service_path in ${work_dir}/sdk_to_push/services/*; do
         if [[ "$branch" != "main" ]]; then
             echo ">> Creating PR for $service"
             git commit -m "Generate $service"
-            git push origin "$branch"
-            echo -e "$COMMIT_INFO\nspec comparison: ${compare_link}" | gh pr create --title "Generator: Update SDK /services/$service" --body-file - --head "$branch" --base "main"
+            if [[ -z "${NO_PUSH+x}" ]]; then
+                git push origin "$branch"
+                echo -e "$COMMIT_INFO\nspec comparison: ${compare_link}" | gh pr create --title "Generator: Update SDK /services/$service" --body-file - --head "$branch" --base "main"
+            else
+                echo ">> NO_PUSH is set; skipping push and PR creation for $service"
+            fi
         else
             echo ">> Pushing changes for $service service..."
             git commit -m "Generate $service: $COMMIT_INFO"
-            git push origin "$branch"
+            if [[ -z "${NO_PUSH+x}" ]]; then
+                git push origin "$branch"
+            else
+                echo ">> NO_PUSH is set; skipping push for $service"
+            fi
         fi
     fi
 done
+
+# Deleted services are absent from sdk_to_push, so obtain them from the plan.
+deleted_services="$(
+    cd "${ROOT_DIR}" &&
+        "${ROOT_DIR}/scripts/bin/build" --language "${LANGUAGE}" delete --plan "${DELETE_PLAN}"
+)"
+
+while IFS= read -r service; do
+    [[ -z "${service}" ]] && continue
+
+    echo -e "\n>> Detected deleted $service service"
+
+    # Each deletion gets its own branch, just like generated-service updates.
+    if [[ "${BRANCH_PREFIX}" != "main" ]]; then
+        git switch main
+        branch="${BRANCH_PREFIX}/${service}"
+        git switch -c "${branch}"
+    else
+        branch="${BRANCH_PREFIX}"
+    fi
+
+    case "${LANGUAGE}" in
+        go)
+            rm -rf "services/${service}" "examples/${service}"
+            # Remove stale service and example modules from the Go workspace.
+            go work use -r .
+            go work sync
+            ;;
+        python|java)
+            rm -rf "services/${service}" "examples/${service}"
+            ;;
+    esac
+
+    # Use -A so removed files, including Go workspace metadata, are staged.
+    git add -A
+    if git diff --cached --quiet; then
+        echo ">> No files to remove for $service service"
+        continue
+    fi
+
+    if [[ "${branch}" != "main" ]]; then
+        echo ">> Creating removal PR for $service"
+        git commit -m "Remove $service: removed from API specifications"
+        if [[ -z "${NO_PUSH+x}" ]]; then
+            git push origin "${branch}"
+            echo -e "$COMMIT_INFO" | gh pr create --title "Generator: Remove SDK /services/$service" --body-file - --head "${branch}" --base "main"
+        else
+            echo ">> NO_PUSH is set; skipping push and PR creation for $service"
+        fi
+    else
+        echo ">> Pushing removal of $service service..."
+        git commit -m "Remove $service: $COMMIT_INFO"
+        if [[ -z "${NO_PUSH+x}" ]]; then
+            git push origin "${branch}"
+        else
+            echo ">> NO_PUSH is set; skipping push for $service"
+        fi
+    fi
+done <<< "${deleted_services}"
