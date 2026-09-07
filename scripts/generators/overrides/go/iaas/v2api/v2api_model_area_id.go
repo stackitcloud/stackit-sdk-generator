@@ -45,7 +45,7 @@ func (dst *AreaId) UnmarshalJSON(data []byte) error {
 	err = json.Unmarshal(data, &dst.StaticAreaID)
 	if err == nil {
 		jsonStaticAreaID, _ := json.Marshal(dst.StaticAreaID)
-         // OVERRIDE: added expr after ||
+		// OVERRIDE: added expr after ||
 		if string(jsonStaticAreaID) == "{}" || *dst.StaticAreaID == STATICAREAID_UNKNOWN_DEFAULT_OPEN_API { // empty struct or unknown fallback enum
 			dst.StaticAreaID = nil
 		} else {
@@ -82,9 +82,9 @@ func (dst *AreaId) UnmarshalJSON(data []byte) error {
 	} else { // no match
 		if err != nil {
 			return fmt.Errorf("data failed to match schemas in oneOf(AreaId): %v", err)
-		} else {
-			return fmt.Errorf("data failed to match schemas in oneOf(AreaId)")
 		}
+
+		return fmt.Errorf("data failed to match schemas in oneOf(AreaId)")
 	}
 }
 
