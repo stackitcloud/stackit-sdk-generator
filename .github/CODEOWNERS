@@ -1,1 +1,5 @@
-*   @stackitcloud/developer-tools
+*   @rubenhoenle @marceljk @PhilippSeitz
+
+languages/golang/blocklist.txt   @stackitcloud/developer-tools
+languages/java/blocklist.txt     @stackitcloud/developer-tools
+languages/python/blocklist.txt   @stackitcloud/developer-tools
