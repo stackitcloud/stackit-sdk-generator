@@ -548,6 +548,16 @@ public class VPCNetworkRangeIPv4 {
       if (!jsonObj.get("ipVersion").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `ipVersion` to be a primitive type in the JSON string but got `%s`", jsonObj.get("ipVersion").toString()));
       }
+      // OVERRIDE: this if block fixes oneOf issues
+      if (!"ipv4".equals(jsonObj.get("ipVersion").getAsString())) {
+        throw new IllegalArgumentException(
+                String.format(
+                        java.util.Locale.ROOT,
+                        "Expectd the field `ipVersion` to have value `ipv4` but got `%s`",
+                        jsonObj.get("ipVersion")
+                )
+        );
+      }
       // validate the required field `ipVersion`
       IpVersionEnum.validateJsonElement(jsonObj.get("ipVersion"));
       // ensure the optional json data is an array if present
