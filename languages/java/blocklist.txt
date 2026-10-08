@@ -1,2 +1,3 @@
 # Transitional file to disable generation for selected services
-iaas
+iaas-v2alpha1
+
