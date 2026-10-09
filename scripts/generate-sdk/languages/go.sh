@@ -154,7 +154,6 @@ generate_go_sdk() {
 generate_go_service() {
     local service_dir=$1
     local service=$2
-    local compat_layer_service_oas_name=$3
 
     echo -e "\n>> Generating SDK for \"${service}\" service..."
     for version_dir in "${service_dir}"/*; do
@@ -209,134 +208,27 @@ generate_go_service() {
         fi
     done
 
-    if ! grep -E "^$service$" "${ROOT_DIR}/languages/golang/compat-layer/allow-list.txt"; then
-        echo "Skipping service ${service}, compatibility layer is not activated for it"
-        warning+="Skipping compatibility layer generation for service ${service}\n"
-
-        if [ ! -f "${SERVICES_FOLDER}/${service}/go.mod" ]; then
-            printf "module ${GIT_HOST}/${GIT_USER_ID}/${GIT_REPO_ID}/services/${service}\n\n" > "${SERVICES_FOLDER}/${service}/go.mod"
-            printf "go ${SDK_GO_VERSION}\n\n" >> "${SERVICES_FOLDER}/${service}/go.mod"
-            printf "require (\n\tgithub.com/stackitcloud/stackit-sdk-go/core v0.21.1\n)\n" >> "${SERVICES_FOLDER}/${service}/go.mod"
-        fi
-
-        # generate package.go
-        printf "package ${service}\n" > "${SERVICES_FOLDER}/${service}/package.go"
-
-        # If the service has a LICENSE file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/LICENSE.md" ]; then
-            echo "Found ${service} \"LICENSE\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
-        else
-            cp "${ROOT_DIR}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
-        fi
-
-        # If the service has a CHANGELOG file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then
-            echo "Found ${service} \"CHANGELOG\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/CHANGELOG.md" "${SERVICES_FOLDER}/${service}/CHANGELOG.md"
-        fi
-
-        # If the service has a NOTICE file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/NOTICE.txt" ]; then
-            echo "Found ${service} \"NOTICE\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/NOTICE.txt" "${SERVICES_FOLDER}/${service}/NOTICE.txt"
-        fi
-
-        # If the service has a VERSION file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/VERSION" ]; then
-            echo "Found ${service} \"VERSION\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/VERSION" "${SERVICES_FOLDER}/${service}/VERSION"
-        fi
-
-        # If the service has oas_commit file, move it inside the service folder
-        if [ -f "${sdk_services_backup_dir}/${service}/oas_commit" ]; then
-            echo "Found ${service} \"oas_commit\" file"
-            cp -r "${sdk_services_backup_dir}/${service}/oas_commit" "${SERVICES_FOLDER}/${service}/oas_commit"
-        fi
-
-        cd "${SERVICES_FOLDER}/${service}"
-        go work use .
-        # Make sure that dependencies are uptodate
-        go get -u ./...
-        go mod tidy
-
-        return
+    if [ ! -f "${SERVICES_FOLDER}/${service}/go.mod" ]; then
+        printf "module ${GIT_HOST}/${GIT_USER_ID}/${GIT_REPO_ID}/services/${service}\n\n" > "${SERVICES_FOLDER}/${service}/go.mod"
+        printf "go ${SDK_GO_VERSION}\n\n" >> "${SERVICES_FOLDER}/${service}/go.mod"
+        printf "require (\n\tgithub.com/stackitcloud/stackit-sdk-go/core v0.21.1\n)\n" >> "${SERVICES_FOLDER}/${service}/go.mod"
     fi
 
-    # COMPAT LAYER - LEGACY !! - START
+    # generate package.go
+    printf "package ${service}\n" > "${SERVICES_FOLDER}/${service}/package.go"
 
-    # Download OpenAPI generator if not already downloaded
-    compat_layer_jar_path="${ROOT_DIR}/scripts/bin/openapi-generator-cli-go-compat-layer.jar"
-    if [ -e ${compat_layer_jar_path} ] && [ $(java -jar ${compat_layer_jar_path} version) == "6.6.0" ]; then
-        :
+    # If the service has a LICENSE file, move it inside the service folder
+    if [ -f "${sdk_services_backup_dir}/${service}/LICENSE.md" ]; then
+        echo "Found ${service} \"LICENSE\" file"
+        cp -r "${sdk_services_backup_dir}/${service}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
     else
-        echo "Downloading OpenAPI generator (version 6.6.0) for generating the compatibility layer..."
-        mkdir -p "${ROOT_DIR}/scripts/bin"
-        wget https://repo1.maven.org/maven2/org/openapitools/openapi-generator-cli/6.6.0/openapi-generator-cli-6.6.0.jar -O ${compat_layer_jar_path} --quiet
-        echo "Download done."
-    fi
-
-    echo -e "\n>> Generating compatibility layer for \"${service}\" service..."
-    cd "${ROOT_DIR}"
-
-    mkdir -p "${SERVICES_FOLDER}/${service}"
-    cp "${ROOT_DIR}/languages/golang/compat-layer/.openapi-generator-ignore" "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
-    regional_api=
-    if grep -E "^$service$" ${ROOT_DIR}/languages/golang/compat-layer/regional-allowlist.txt; then
-        echo "Generating new regional api"
-        regional_api="regional_api"
-    fi
-
-    # Run the compatibility-layer generator for Go
-    java -Dlog.level=${GENERATOR_LOG_LEVEL} -jar ${compat_layer_jar_path} generate \
-        --generator-name go \
-        --input-spec "${ROOT_DIR}/oas/legacy/${compat_layer_service_oas_name}.json" \
-        --output "${SERVICES_FOLDER}/${service}" \
-        --package-name "${service}" \
-        --enable-post-process-file \
-        --git-host "${GIT_HOST}" \
-        --git-user-id "${GIT_USER_ID}" \
-        --git-repo-id "${GIT_REPO_ID}" \
-        --global-property apis,models,modelTests=true,modelDocs=false,apiDocs=false,supportingFiles,apiTests=false \
-        --additional-properties=isGoSubmodule=true,enumClassPrefix=true,generateInterfaces=true,$regional_api \
-        --http-user-agent "stackit-sdk-go/${service}" \
-        --reserved-words-mappings type=types \
-        --config "${ROOT_DIR}/languages/golang/compat-layer/openapi-generator-config.yml"
-
-    # Remove unnecessary files
-    rm "${SERVICES_FOLDER}/${service}/.openapi-generator-ignore"
-    rm "${SERVICES_FOLDER}/${service}/.openapi-generator/FILES"
-
-    # If there's a comment at the start of go.mod, copy it
-    go_mod_backup_path="${sdk_services_backup_dir}/${service}/go.mod"
-    if [ -f ${go_mod_backup_path} ]; then
-        go_mod_backup_first_line="$(head -n 1 ${go_mod_backup_path})"
-        is_comment_pattern="^\/\/"
-        if [[ ${go_mod_backup_first_line} =~ ${is_comment_pattern} ]]; then
-            echo "Found comment at the top of ${service}/go.mod"
-            go_mod_path="${SERVICES_FOLDER}/${service}/go.mod"
-            echo -e "${go_mod_backup_first_line}\n$(cat ${go_mod_path})" >${go_mod_path}
-        fi
-    fi
-
-    # If the service has a wait package files, move them inside the service folder
-    if [ -d "${sdk_services_backup_dir}/${service}/wait" ]; then
-        echo "Found ${service} \"wait\" package"
-        cp -r "${sdk_services_backup_dir}/${service}/wait" "${SERVICES_FOLDER}/${service}/wait"
-        # deprecate legacy wait package
-        printf "// Deprecated: Will be removed after 2026-09-30. Move to the packages generated for each available API version instead\npackage wait\n\n" > "${SERVICES_FOLDER}/${service}/wait/deprecation.go"
+        cp "${ROOT_DIR}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
     fi
 
     # If the service has a CHANGELOG file, move it inside the service folder
     if [ -f "${sdk_services_backup_dir}/${service}/CHANGELOG.md" ]; then
         echo "Found ${service} \"CHANGELOG\" file"
         cp -r "${sdk_services_backup_dir}/${service}/CHANGELOG.md" "${SERVICES_FOLDER}/${service}/CHANGELOG.md"
-    fi
-
-    # If the service has a LICENSE file, move it inside the service folder
-    if [ -f "${sdk_services_backup_dir}/${service}/LICENSE.md" ]; then
-        echo "Found ${service} \"LICENSE\" file"
-        cp -r "${sdk_services_backup_dir}/${service}/LICENSE.md" "${SERVICES_FOLDER}/${service}/LICENSE.md"
     fi
 
     # If the service has a NOTICE file, move it inside the service folder
@@ -362,6 +254,4 @@ generate_go_service() {
     # Make sure that dependencies are uptodate
     go get -u ./...
     go mod tidy
-
-    # COMPAT LAYER - LEGACY !! - END
 }
