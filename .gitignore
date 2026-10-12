@@ -3,6 +3,8 @@ custom
 *.vscode/
 *.idea
 
+generation-plan.json
+
 # Binaries
 bin/
 

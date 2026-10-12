@@ -122,7 +122,7 @@ generate_go_sdk() {
     warning=""
 
     while IFS= read -r -d '' oas_service && IFS= read -r service; do
-        generate_go_service "${ROOT_DIR}/oas/services/${oas_service}" "${service}" "${oas_service}"
+        generate_go_service "${ROOT_DIR}/oas/services/${oas_service}" "${service}"
     done < <(
         "${ROOT_DIR}/scripts/bin/build" generate --plan "generation-plan.json"
     )
