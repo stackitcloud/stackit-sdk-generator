@@ -30,8 +30,8 @@ fi
 
 git clone "${OAS_REPO}" "${ROOT_DIR}/oas" --quiet
 
-# NOTE: Everything below is needed for the "compatibility layer" logic. 
-# It can be completely removed once the compatibility layer isn't needed anymore in the SDK.
+# NOTE: Everything below is needed for the python SDK which doesn't have multi API version support yet. 
+# It can be completely removed once the python SDK got migrated to the new multi API version concept.
 
 # Create temp directory to clone OAS repo
 work_dir=$(mktemp -d)
