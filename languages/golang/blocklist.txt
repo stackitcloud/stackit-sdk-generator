@@ -4,4 +4,4 @@ functionsregistry
 notebooks
 pim
 iaas-v2alpha1
-
+telemetryrouter
