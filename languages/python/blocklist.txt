@@ -7,4 +7,3 @@ functionsregistry
 pim
 smokeapi
 support
-telemetryrouter
