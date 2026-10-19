@@ -96,6 +96,20 @@ generate_java_sdk() {
 
     warning=""
 
+    # Copy services from the blocklist to prevent missing dependencies in the examples or removal of the service
+    mkdir -p "${SERVICES_FOLDER}"
+    while IFS= read -r service; do
+        echo "Skipping blocklisted service ${service}"
+        warning+="Skipping blocklisted service ${service}\n"
+        # If the service exists in the repo, move them inside the service folder
+        if [ -d "${sdk_services_backup_dir}/${service}" ]; then
+            echo "Copy existing ${service} package"
+            cp -r "${sdk_services_backup_dir}/${service}" "${SERVICES_FOLDER}/${service}"
+        fi
+    done < <(
+        "${ROOT_DIR}/scripts/bin/build" copy --plan "generation-plan.json"
+    )
+
     while IFS= read -r -d '' oas_service && IFS= read -r service; do
         generate_java_service \
             "${ROOT_DIR}/oas/services/${oas_service}" \
@@ -139,6 +153,19 @@ generate_java_service(){
         if grep -E "^${service}-${version}$" "${ROOT_DIR}/languages/java/blocklist.txt"; then
             echo "Skipping blocklisted API version ${version} of service ${service}"
             warning+="Skipping blocklisted API version ${version} of service ${service}\n"
+
+            # If the service version exists in the repo, move them inside the service folder
+            if [ -d "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api" ]; then
+                echo "Copy existing ${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api package"
+                mkdir -p "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}"
+                cp -r "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api"
+            fi
+
+            if [ -d "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api" ]; then
+                mkdir -p "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}"
+                cp -r "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api"
+            fi
+
             continue
         fi
 

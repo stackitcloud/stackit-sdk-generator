@@ -111,6 +111,8 @@ func run(ctx context.Context, env Environment) bool {
 		err = runGenerate(ctx, args[1:], env)
 	case "delete":
 		err = runDelete(ctx, args[1:], env)
+	case "copy":
+		err = runCopy(ctx, args[1:], env)
 	default:
 		fmt.Fprintf(env.Err, "unknown command %q\n", args[0])
 		return false
