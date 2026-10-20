@@ -161,9 +161,20 @@ generate_java_service(){
                 cp -r "${sdk_services_backup_dir}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api" "${SERVICES_FOLDER}/${service}/src/main/java/cloud/stackit/sdk/${service}/${version}api"
             fi
 
+            # Copy test files for the blocklisted service version
             if [ -d "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api" ]; then
                 mkdir -p "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}"
                 cp -r "${sdk_services_backup_dir}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api" "${SERVICES_FOLDER}/${service}/src/test/java/cloud/stackit/sdk/${service}/${version}api"
+            fi
+
+            # Copy the existing build.gradle file if exists and not already in the services folder
+            if [[ -f "${sdk_services_backup_dir}/${service}/build.gradle" && ! -f "${SERVICES_FOLDER}/${service}/build.gradle" ]]; then
+                cp "${sdk_services_backup_dir}/${service}/build.gradle" "${SERVICES_FOLDER}/${service}/build.gradle"
+            fi
+
+            # Copy the existing README.md file if exists and not already in the services folder
+            if [[ -f "${sdk_services_backup_dir}/${service}/README.md" && ! -f "${SERVICES_FOLDER}/${service}/README.md" ]]; then
+                cp "${sdk_services_backup_dir}/${service}/README.md" "${SERVICES_FOLDER}/${service}/README.md"
             fi
 
             continue
