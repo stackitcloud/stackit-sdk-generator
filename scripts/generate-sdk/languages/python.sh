@@ -92,6 +92,22 @@ generate_python_sdk() {
         extra_props_internal=""
     fi
 
+    warning=""
+
+    # Copy services from the blocklist to prevent missing dependencies in the examples or removal of the service
+    mkdir -p "${SERVICES_FOLDER}"
+    while IFS= read -r service; do
+        echo "Skipping blocklisted service ${service}"
+        warning+="Skipping blocklisted service ${service}\n"
+        # If the service exists in the repo, move them inside the service folder
+        if [ -d "${sdk_services_backup_dir}/${service}" ]; then
+            echo "Copy existing ${service} package"
+            cp -r "${sdk_services_backup_dir}/${service}" "${SERVICES_FOLDER}/${service}"
+        fi
+    done < <(
+        "${ROOT_DIR}/scripts/bin/build" copy --plan "generation-plan.json"
+    )
+
     # TODO: add to generator below when adding multi-API-version support:
     # --inline-schema-options "SKIP_SCHEMA_REUSE=true"
 
@@ -106,6 +122,10 @@ generate_python_sdk() {
     done < <(
         "${ROOT_DIR}/scripts/bin/build" generate --plan "generation-plan.json"
     )
+
+    if [[ -n "$warning" ]]; then
+        echo -e "\nSome of the services were skipped during creation!\n$warning"
+    fi
 }
 
 generate_python_service() {
