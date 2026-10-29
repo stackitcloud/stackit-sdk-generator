@@ -1,3 +1,9 @@
 # Transitional file to disable generation for selected services
 iaas-v2alpha1
+logme
+mariadb
+opensearch
+rabbitmq
+redis
+valkey
 

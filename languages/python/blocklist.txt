@@ -7,3 +7,9 @@ functionsregistry
 pim
 smokeapi
 support
+logme
+mariadb
+opensearch
+rabbitmq
+redis
+valkey
