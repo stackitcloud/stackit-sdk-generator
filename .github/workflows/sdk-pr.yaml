@@ -95,7 +95,7 @@ jobs:
       - name: install uv
         uses: astral-sh/setup-uv@v7
         with:
-          version: "0.10.4"
+          version: "0.13.7"
 
       - name: Download OAS
         shell: bash
