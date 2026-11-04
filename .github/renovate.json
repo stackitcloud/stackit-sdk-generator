@@ -20,19 +20,6 @@
             "matchStrings": [
                 "# Renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?) versioning=(?<versioning>.*?)?\\s+GENERATOR_VERSION=\"?(?<currentValue>.*?)\""
             ]
-        },
-        {
-            "customType": "regex",
-            "managerFilePatterns": [
-                "/(^|\\/)go\\.mod\\.mustache$/"
-            ],
-            "matchStrings": [
-                "github.com\/stackitcloud\/stackit-sdk-go\/core (?<currentValue>.*?)\\s"
-            ],
-            "datasourceTemplate": "go",
-            "depNameTemplate": "github.com/stackitcloud/stackit-sdk-go",
-            "packageNameTemplate": "github.com/stackitcloud/stackit-sdk-go/core",
-            "versioningTemplate": "semver"
         }
     ]
 }

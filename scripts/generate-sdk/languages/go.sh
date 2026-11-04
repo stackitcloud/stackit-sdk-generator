@@ -145,22 +145,9 @@ generate_go_sdk() {
         "${ROOT_DIR}/scripts/bin/build" generate --plan "generation-plan.json"
     )
 
-    # Add examples to workspace
-    if [ -d "${EXAMPLES_FOLDER}" ]; then
-        for example_dir in ${EXAMPLES_FOLDER}/*; do
-            cd "${example_dir}"
-            go work use .
-        done
-    fi
-
-    # Add scripts to workspace
-    if [ -d "${SCRIPTS_FOLDER}" ]; then
-        cd "${SCRIPTS_FOLDER}"
-        go work use .
-    fi
-
     # Cleanup after SDK generation
     cd "${SDK_REPO_LOCAL_PATH}"
+    go work use -r .
     goimports -w "${SERVICES_FOLDER}/"
     make sync-tidy
 
