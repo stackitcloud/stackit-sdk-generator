@@ -6,4 +6,5 @@ opensearch
 rabbitmq
 redis
 valkey
-
+vpn-v1
+vpn-v1beta1
