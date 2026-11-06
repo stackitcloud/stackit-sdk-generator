@@ -6,4 +6,3 @@ opensearch
 rabbitmq
 redis
 valkey
-
